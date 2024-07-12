@@ -1,3 +1,14 @@
+<?php
+session_start();
+if (!isset($_SESSION['userId'])) {
+    // Rediriger vers index.php si l'identifiant n'est pas défini
+    header('Location: index.php');
+    exit();
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -45,32 +56,6 @@
     </style>
 </head>
 <body>
-
-
-
-
-
-
-
-
-<!-- <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <h2>Veuillez entrer votre identifiant</h2>
-            <input type="text" id="userId" placeholder="Entrez votre identifiant">
-            <button onclick="validateUserId()">Valider</button>
-        </div>
-    </div>
- -->
-
-
-
-
-
-
-
-
-
 
 
 

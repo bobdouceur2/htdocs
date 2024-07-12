@@ -1,23 +1,105 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Accueil Gestion de Projets</title>
-    <link rel="stylesheet" href="home.css">
+    <title>Demande d'Identifiants</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styles pour la modal d'identification */
+        .modal {
+            display: block; /* Affichez la modal par défaut */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .modal-content input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #45a049;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 30px;
+            color: #aaa;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <div class="header-text">Choix du plan de transformation</div>
-    <div class="logos-container">
-        <!-- Logo 1 -->
-        <div class="logo" onclick="window.location.href='table1.php';">
-            <img src="logo1.png" alt="Logo 1" class="logo-image"/>
-        </div>
-        <!-- Logo 2 -->
-        <div class="logo" onclick="window.location.href='table2.php';">
-            <img src="logo2.png" alt="Logo 2" class="logo-image"/>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Veuillez entrer votre identifiant</h2>
+            <input type="text" id="userId" placeholder="Entrez votre identifiant">
+            <button id="validateButton">Valider</button>
         </div>
     </div>
-    <!-- Autres éléments de votre page d'accueil -->
+
+    <script>
+        function validateUserId() {
+            const userId = document.getElementById('userId').value;
+            console.log('User ID:', userId);  // Debug log
+            if (userId) {
+                // Stocker l'identifiant dans la session via une requête POST
+                fetch('store_user_id.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'userId=' + encodeURIComponent(userId)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Rediriger vers choixplan.php après le stockage
+                        window.location.href = 'choixplan.php';
+                    } else {
+                        alert('Erreur lors de la sauvegarde de l\'identifiant.');
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+            } else {
+                alert('Veuillez entrer un identifiant.');
+            }
+        }
+
+        // Associer la fonction validateUserId au bouton Valider
+        document.getElementById('validateButton').addEventListener('click', validateUserId);
+    </script>
 </body>
 </html>

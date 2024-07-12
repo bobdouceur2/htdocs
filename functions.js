@@ -215,33 +215,3 @@ document.querySelectorAll('#tableContainer th').forEach((header, index) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     // Affiche le modal d'identification dès que la page est chargée
-//     document.getElementById('loginModal').style.display = 'block';
-// });
-
-// function closeLoginModal() {
-//     document.getElementById('loginModal').style.display = 'none';
-// }
-
-// function validateUserId() {
-//     const userId = document.getElementById('userId').value;
-//     if (userId) {
-//         closeLoginModal();
-//         // Vous pouvez ajouter des vérifications supplémentaires ici
-//     } else {
-//         alert('Veuillez entrer un identifiant.');
-//     }
-// }
-
