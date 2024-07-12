@@ -1,0 +1,375 @@
+/* CSS principal */
+body {
+    margin: 0;
+    font-family: 'Noto Sans', sans-serif;
+    text-align: center;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--header-background);
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+#logoSafran {
+    height: 100px;
+    margin-left: 40px;
+}
+
+.main-content {
+    margin-top: 130px;
+}
+
+#tableContainer, #tableContainerAdmin {
+    width: 80%;
+    margin: 20px auto;
+}
+
+.site-header {
+    position: relative;
+}
+
+.button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: var(--button-background);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.button:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+.admin-button-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1001;
+}
+
+.buttonsContainer {
+    margin-bottom: 20px;
+}
+
+.formContainer {
+    background-color: var(--form-background);
+    border: 1px solid #222;
+    padding: 20px;
+    margin: auto;
+    width: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 20px;
+    color: var(--text-color);
+}
+
+.formContainer h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"],
+textarea,
+select {
+    display: block;
+    width: 90%;
+    padding: 10px;
+    margin: 10px auto;
+    border: none;
+    background-color: var(--form-input-background);
+    color: var(--text-color);
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: background-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+label {
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    margin-top: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: var(--table-background);
+    color: var(--table-text-color);
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid var(--table-cell-border);
+    border-radius: 20px;
+}
+
+th {
+    background-color: var(--table-header-background);
+}
+
+#filterFormContainer,
+#sortFormContainer {
+    margin-left: 40px;
+    display: flex;
+    align-items: center;
+}
+
+#filterForm,
+#sortForm {
+    display: flex;
+    align-items: center;
+}
+
+#filterForm label,
+#sortForm label {
+    color: var(--text-color);
+}
+
+#filterForm select,
+#sortForm select,
+#filterForm button,
+#sortForm button {
+    padding: 5px 10px;
+    margin: 0 10px;
+    border: 1px solid #fff;
+    border-radius: 20px;
+    background-color: var(--form-input-background);
+    color: var(--text-color);
+}
+
+#filterForm button,
+#sortForm button {
+    background-color: var(--filter-form-button-background);
+    border-color: var(--filter-form-button-background);
+    cursor: pointer;
+}
+
+#filterForm button:hover,
+#sortForm button:hover {
+    background-color: var(--filter-form-button-hover);
+}
+
+.table-scroll {
+    overflow-x: auto;
+    margin: 20px auto;
+    width: 95%;
+}
+
+#addRowForm input[type="range"],
+#addRowForm span,
+#addRowForm label,
+#editRowForm input[type="range"],
+#editRowForm span,
+#editRowForm label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#editAvancementLabel {
+    width: auto;
+    margin-right: 10px;
+}
+
+.sidebar {
+    width: 300px;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.dropdown-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar .btn,
+.sidebar select {
+    width: 80%;
+    margin-bottom: 10px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.small-dropdown {
+    max-width: 260px;
+}
+
+/* Style pour le popup */
+.popup-form {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+    background: linear-gradient(135deg, #1e1e52, #4a4a90);
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
+    color: #fff;
+}
+
+.popup-content h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.popup-content input[type=text],
+.popup-content input[type=date],
+.popup-content input[type=range],
+.popup-content textarea,
+.popup-content select {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 20px;
+    box-sizing: border-box;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.popup-content input[type=text]:focus,
+.popup-content input[type=date]:focus,
+.popup-content input[type=range]:focus,
+.popup-content textarea:focus,
+.popup-content select:focus {
+    outline: none;
+    background-color: rgba(160, 160, 160, 0.2);
+}
+
+.popup-content button {
+    width: 100%;
+    padding: 15px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.popup-content button:hover {
+    background-color: #45a049;
+}
+
+.close {
+    
+    top: 25px;
+    right: 25px;
+    font-size: 40px;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.modal-content input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 30px;
+    color: #aaa;
+    cursor: pointer;
+}
