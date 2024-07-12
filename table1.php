@@ -53,7 +53,7 @@
 
 
 
-<div id="loginModal" class="modal">
+<!-- <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeLoginModal()">&times;</span>
             <h2>Veuillez entrer votre identifiant</h2>
@@ -61,7 +61,7 @@
             <button onclick="validateUserId()">Valider</button>
         </div>
     </div>
-
+ -->
 
 
 
