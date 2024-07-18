@@ -57,7 +57,20 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     echo "<table border='1'>";
-    echo "<tr><th>ID</th><th>Intitulé</th><th>Objectifs</th><th>Date de début</th><th>Date de fin</th><th>Avancement (%)</th><th>Levier</th><th>Participants</th></tr>";
+    echo "<thead>";
+    echo "<tr>";
+    echo "<th><input type='checkbox' id='selectAll'></th>"; // Ajout de la case à cocher pour tout sélectionner
+    echo "<th>ID</th>";
+    echo "<th>Intitulé</th>";
+    echo "<th>Objectifs</th>";
+    echo "<th>Date de début</th>";
+    echo "<th>Date de fin</th>";
+    echo "<th>Avancement (%)</th>";
+    echo "<th>Levier</th>";
+    echo "<th>Participants</th>";
+    echo "</tr>";
+    echo "</thead>";
+    echo "<tbody>";
 
     while($row = $result->fetch_assoc()) {
         $dateDeFin = new DateTime($row["DateDeFin"]);
@@ -65,6 +78,7 @@ if ($result->num_rows > 0) {
         $classeDateDepassee = ($dateDeFin < $aujourdhui) ? 'date-depassee' : '';
 
         echo "<tr>";
+        echo "<td><input type='checkbox' class='rowCheckbox' data-id='" . $row['ID'] . "'></td>"; // Case à cocher pour chaque ligne
         echo "<td>" . $row["ID"] . "</td>";
         echo "<td>" . htmlspecialchars($row["Intitule"]) . "</td>";
         echo "<td>" . htmlspecialchars($row["Objectifs"]) . "</td>";
@@ -75,6 +89,7 @@ if ($result->num_rows > 0) {
         echo "<td>" . htmlspecialchars($row["Participants"]) . "</td>";
         echo "</tr>";
     }
+    echo "</tbody>";
     echo "</table>";
 } else {
     echo "0 résultats";

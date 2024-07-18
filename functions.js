@@ -60,6 +60,12 @@ function toggleAddForm() {
     toggleForm("addFormContainer");
 }
 
+
+function toggleEditForm() {
+    toggleForm("editFormContainer");
+}
+
+
 function toggleDeleteForm() {
     toggleForm("deleteFormContainer");
 }
@@ -245,6 +251,41 @@ document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('sortSelect').value = sortValue;
     }
 });
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.rowCheckbox');
+
+    // Sélectionner/Désélectionner toutes les lignes
+    selectAllCheckbox.addEventListener('change', function() {
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+    // Si une case de ligne est décochée, désélectionner la case "tout sélectionner"
+    rowCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (!this.checked) {
+                selectAllCheckbox.checked = false;
+            }
+        });
+    });
+});
+
+// Fonction pour obtenir les ID des lignes sélectionnées
+function getSelectedRowIds() {
+    const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
+    const selectedIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.id);
+    return selectedIds;
+}
+
+// Exemple d'utilisation de la fonction pour obtenir les ID sélectionnés
+function handleSelectedRows() {
+    const selectedIds = getSelectedRowIds();
+    console.log(selectedIds); // Vous pouvez utiliser ces ID pour effectuer des opérations sur les lignes sélectionnées
+}
 
 
 

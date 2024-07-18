@@ -110,7 +110,7 @@ $userId = $_SESSION['userId'];
             </div>
 
             <div class="form-group">
-    <!-- Ajout du dropdown Trier par date ou avancement -->
+                <!-- Ajout du dropdown Trier par date ou avancement -->
                 <form id="sortForm" class="form-inline">
                     <select id="sortSelect" name="sort" class="form-control mb-2" style="width: 100%;" onchange="sortProjects()">
                         <option value="">Trier par</option>
@@ -119,15 +119,12 @@ $userId = $_SESSION['userId'];
                         <option value="avancementAsc">Avancement croissant</option>
                         <option value="avancementDesc">Avancement décroissant</option>
                     </select>
-                 </form>
+                </form>
             </div>
-
 
             <button class="btn btn-primary btn-custom" onclick="showAllProjects()">Afficher tous les Projets</button>
             <button class="btn btn-secondary btn-custom" onclick="showMyProjects()">Afficher uniquement les projets me concernant</button>
-
-
-
+            <button class="btn btn-secondary btn-custom" onclick="openVisualization()">Visualisation</button>
         </div>
 
         <!-- Conteneur de contenu principal -->
@@ -138,7 +135,8 @@ $userId = $_SESSION['userId'];
 
             <div class="buttonsContainer">
                 <button onclick="openPopupForm()" class="button">Ajouter une ligne</button>
-                <button onclick="toggleEditForm()" class="button">Modifier une ligne</button>
+                <button class="button" onclick="toggleEditForm()">Modifier une ligne</button>
+
             </div>
 
             <div id="addFormContainer" class="formContainer" style="display: none;">
@@ -177,7 +175,7 @@ $userId = $_SESSION['userId'];
         </div>
     </div>
 
-
+    
     <script>
         // Ajout de l'événement pour la touche Entrée sur le champ de recherche
         document.getElementById('searchInput').addEventListener('keypress', function (e) {
@@ -201,6 +199,11 @@ $userId = $_SESSION['userId'];
             // Mettez à jour le contenu du span avec la valeur du slider
             avancementValue.textContent = slider.value + '%';
         });
+
+        // Fonction pour ouvrir une nouvelle fenêtre vide
+        function openVisualization() {
+            window.open('', '_blank', 'width=800,height=600');
+        }
     </script>
 </body>
 </html>
