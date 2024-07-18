@@ -221,8 +221,30 @@ function showAllProjects() {
 function showMyProjects() {
     // Recharge la page avec un filtre sur les projets de l'utilisateur courant
     window.location.href = window.location.pathname;
+
+    
 }
 
+
+
+
+function sortProjects() {
+    const sortValue = document.getElementById('sortSelect').value;
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('sort', sortValue);
+    window.location.search = urlParams.toString();
+
+}
+
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sortValue = urlParams.get('sort');
+    if (sortValue) {
+        document.getElementById('sortSelect').value = sortValue;
+    }
+});
 
 
 

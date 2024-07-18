@@ -110,14 +110,18 @@ $userId = $_SESSION['userId'];
             </div>
 
             <div class="form-group">
-                <!-- Ajout du dropdown Trier par date -->
+    <!-- Ajout du dropdown Trier par date ou avancement -->
                 <form id="sortForm" class="form-inline">
-                    <select id="sortDateSelect" name="sortDate" class="form-control mb-2" style="width: 100%;" onchange="sortByDate()">
-                        <option value="">Trier par Date</option>
-                        <?php include 'trier_options.php'; ?>
+                    <select id="sortSelect" name="sort" class="form-control mb-2" style="width: 100%;" onchange="sortProjects()">
+                        <option value="">Trier par</option>
+                        <option value="dateAsc">Date de début croissante</option>
+                        <option value="dateDesc">Date de début décroissante</option>
+                        <option value="avancementAsc">Avancement croissant</option>
+                        <option value="avancementDesc">Avancement décroissant</option>
                     </select>
-                </form>
+                 </form>
             </div>
+
 
             <button class="btn btn-primary btn-custom" onclick="showAllProjects()">Afficher tous les Projets</button>
             <button class="btn btn-secondary btn-custom" onclick="showMyProjects()">Afficher uniquement les projets me concernant</button>
