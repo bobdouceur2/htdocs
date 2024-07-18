@@ -5,9 +5,8 @@ if (!isset($_SESSION['userId'])) {
     header('Location: index.php');
     exit();
 }
+$userId = $_SESSION['userId'];
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -23,7 +22,6 @@ if (!isset($_SESSION['userId'])) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    
 
     <style>
         /* Styles existants ici */
@@ -34,7 +32,6 @@ if (!isset($_SESSION['userId'])) {
         .sidebar {
             width: 300px; /* Ajustez la largeur selon vos besoins */
             padding: 10px;
-            border-right: 1px solid #ddd;
             display: grid;
             gap: 5px;
             justify-items: center;
@@ -53,20 +50,39 @@ if (!isset($_SESSION['userId'])) {
         .form-group {
             margin-bottom: 10px;
         }
+        .admin-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px;
+            background-color: #121a45;
+            
+        }
+        .admin-header .userid {
+            margin-right: 20px;
+            font-weight: bold;
+        }
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #121a45;
+            
+        }
+        #logoSafran {
+            height: 50px; /* Ajustez selon la taille souhaitée */
+        }
     </style>
 </head>
 <body>
-
-
-
-
     <header class="site-header">
         <img src="logo.png" alt="Logo Safran" id="logoSafran" />
+        <div class="admin-header">
+            <div class="userid">Utilisateur: <?php echo htmlspecialchars($userId); ?></div>
+            <button onclick="location.href='login.php'" class="btn btn-outline-primary">Mode Administrateur</button>
+        </div>
     </header>
-
-    <div class="admin-button-container">
-        <button onclick="location.href='login.php'" class="button">Mode Administrateur</button>
-    </div>
 
     <?php require_once 'db_connection.php'; ?>
 
@@ -75,12 +91,10 @@ if (!isset($_SESSION['userId'])) {
         <div class="sidebar">
             <!-- Regroupement des éléments de recherche, filtrage et tri -->
 
-
-
             <div class="form-group">
                 <!-- Barre de recherche universelle -->
                 <form id="filterForm" class="form-inline">
-                    <input type="text" id="searchInput" class="form-control mb-2" style="width: 100%; " placeholder="Rechercher...">
+                    <input type="text" id="searchInput" class="form-control mb-2" style="width: 100%;" placeholder="Rechercher...">
                     <!-- BOUTON RECHERCHER <button type="button" onclick="searchTable()" class="btn btn-outline-primary mb-2" style="margin-left: auto; margin-right: auto;">Rechercher</button>-->
                 </form>
             </div>
@@ -95,8 +109,6 @@ if (!isset($_SESSION['userId'])) {
                 </form>
             </div>
 
-
-            
             <div class="form-group">
                 <!-- Ajout du dropdown Trier par date -->
                 <form id="sortForm" class="form-inline">
@@ -107,8 +119,11 @@ if (!isset($_SESSION['userId'])) {
                 </form>
             </div>
 
-            <button class="btn btn-primary">Bouton 4</button>
-            
+            <button class="btn btn-primary btn-custom" onclick="showAllProjects()">Afficher tous les Projets</button>
+            <button class="btn btn-secondary btn-custom" onclick="showMyProjects()">Afficher uniquement les projets me concernant</button>
+
+
+
         </div>
 
         <!-- Conteneur de contenu principal -->
@@ -132,32 +147,9 @@ if (!isset($_SESSION['userId'])) {
         </div>
     </div>
 
-    
-
-    <script>
-        // Ajout de l'événement pour la touche Entrée sur le champ de recherche
-        document.getElementById('searchInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Empêche le comportement par défaut du formulaire
-                searchTable();
-            }
-        });
-    </script>
-
-
-
-
-
-
-
-
-
     <div id="popupForm" class="popup-form">
         <div class="popup-content">
-
             <span class="close" onclick="closePopupForm()">&times;</span>
-
-
             <h2>Ajouter une nouvelle ligne</h2>
             <form id="addRowForm" class="form-container">
                 <label for="intitule"><b>Intitulé</b></label>
@@ -182,12 +174,20 @@ if (!isset($_SESSION['userId'])) {
     </div>
 
 
-
-
-
-
-    
     <script>
+        // Ajout de l'événement pour la touche Entrée sur le champ de recherche
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Empêche le comportement par défaut du formulaire
+                searchTable();
+            }
+        });
+
+        function showAllProjects() {
+            // Recharge la page sans filtre ni tri
+            window.location.href = window.location.pathname + "?showAll=true";
+        }
+
         // Sélectionnez le slider et l'élément span pour la valeur d'avancement
         const slider = document.getElementById('avancement');
         const avancementValue = document.getElementById('avancementValue');
@@ -198,9 +198,5 @@ if (!isset($_SESSION['userId'])) {
             avancementValue.textContent = slider.value + '%';
         });
     </script>
-
-
-
-
 </body>
 </html>

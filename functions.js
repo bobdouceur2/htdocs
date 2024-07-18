@@ -208,8 +208,20 @@ function sortTable(columnIndex, ascending = true) {
 
 document.querySelectorAll('#tableContainer th').forEach((header, index) => {
     header.addEventListener('click', () => sortTable(index));
+
 });
 
+
+
+function showAllProjects() {
+    // Recharge la page sans filtre ni tri
+    window.location.href = window.location.pathname + "?showAll=true";
+}
+
+function showMyProjects() {
+    // Recharge la page avec un filtre sur les projets de l'utilisateur courant
+    window.location.href = window.location.pathname;
+}
 
 
 

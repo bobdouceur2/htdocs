@@ -100,6 +100,13 @@
 
         // Associer la fonction validateUserId au bouton Valider
         document.getElementById('validateButton').addEventListener('click', validateUserId);
+
+        // Ajouter un écouteur d'événements pour la touche "Entrée" sur l'élément input
+        document.getElementById('userId').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                validateUserId();
+            }
+        });
     </script>
 </body>
 </html>

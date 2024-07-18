@@ -308,6 +308,76 @@ th {
     cursor: pointer;
 }
 
+/* Styles existants ici */
+        .main-container {
+            display: flex;
+            align-items: flex-start;
+        }
+        .sidebar {
+            width: 300px; /* Ajustez la largeur selon vos besoins */
+            padding: 10px;
+            display: grid;
+            gap: 5px;
+            justify-items: center;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 10px;
+        }
+        .sidebar .btn, .sidebar select {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .small-dropdown {
+            max-width: 260px; /* Ajustez cette valeur selon vos besoins */
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px;
+            background-color: #121a45;
+            
+        }
+        .admin-header .userid {
+            margin-right: 20px;
+            font-weight: bold;
+        }
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #121a45;
+            
+        }
+        #logoSafran {
+            height: 50px; /* Ajustez selon la taille souhaitée */
+        }
+
+
+
+        .btn-custom {
+            background-color: #1a245b;
+            color: white;
+            border: none;
+            border-radius: 25px; /* Arrondir les bords */
+            padding: 10px 20px; /* Ajuster le padding pour une meilleure apparence */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Animation de transition pour l'effet hover */
+        }
+    
+        .btn-custom:hover {
+            background-color: #141c42; /* Couleur légèrement plus foncée pour l'effet hover */
+        }
 
 
 

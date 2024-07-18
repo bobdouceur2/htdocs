@@ -6,4 +6,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['userId'])) {
 } else {
     http_response_code(400);
 }
-?>
+
