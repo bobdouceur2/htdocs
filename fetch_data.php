@@ -11,13 +11,9 @@ echo "<style>
     }
 </style>";
 
-// Récupération du paramètre 'levier' de la requête GET
+// Récupération des paramètres de la requête GET
 $levier = isset($_GET['levier']) ? $_GET['levier'] : null;
-
-// Récupération du paramètre 'sort' de la requête GET avec une valeur par défaut 'dateAsc'
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'dateAsc';
-
-// Récupération du paramètre 'showAll' de la requête GET avec une valeur par défaut false
 $showAll = isset($_GET['showAll']) ? $_GET['showAll'] : false;
 
 // Récupération de l'ID de l'utilisateur connecté
@@ -44,24 +40,39 @@ switch ($sort) {
 if ($showAll) {
     $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants FROM projets ORDER BY $orderBy";
 } else {
-    $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants FROM projets WHERE FIND_IN_SET(?, Participants) ORDER BY $orderBy";
+    $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants 
+              FROM projets 
+              WHERE Participants = ? OR Participants LIKE ? 
+              ORDER BY $orderBy";
 }
 
 // Ajout de la condition 'Levier' à la requête si le paramètre 'levier' est spécifié
 if ($levier) {
-    $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants FROM projets WHERE Levier = ? AND FIND_IN_SET(?, Participants) ORDER BY $orderBy";
+    if ($showAll) {
+        $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants 
+                  FROM projets 
+                  WHERE Levier = ? 
+                  ORDER BY $orderBy";
+    } else {
+        $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants 
+                  FROM projets 
+                  WHERE Levier = ? AND (Participants = ? OR Participants LIKE ?) 
+                  ORDER BY $orderBy";
+    }
 }
 
 // Préparation de la requête SQL avec les paramètres
+$stmt = $conn->prepare($query);
+$searchUserId = "%" . $userId . "%";
 if ($levier) {
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $levier, $userId);
-} else {
     if ($showAll) {
-        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $levier);
     } else {
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $userId);
+        $stmt->bind_param("sss", $levier, $userId, $searchUserId);
+    }
+} else {
+    if (!$showAll) {
+        $stmt->bind_param("ss", $userId, $searchUserId);
     }
 }
 
@@ -89,7 +100,7 @@ if ($result->num_rows > 0) {
     echo "</thead>";
     echo "<tbody>";
 
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
         $dateDeFin = new DateTime($row["DateDeFin"]);
         $aujourdhui = new DateTime();
         $classeDateDepassee = ($dateDeFin < $aujourdhui) ? 'date-depassee' : '';
@@ -111,4 +122,7 @@ if ($result->num_rows > 0) {
 } else {
     echo "0 résultats";
 }
+
+// Fermer la connexion
+$conn->close();
 ?>

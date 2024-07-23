@@ -1,43 +1,35 @@
 <?php
 require_once 'db_connection.php';
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-
-    // Commencer une transaction
-    $conn->begin_transaction();
-
-    try {
-        // Supprimer la ligne spécifiée
-        $sql = "DELETE FROM projets WHERE id = ?";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Lire les données JSON de la requête
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+    
+    // Vérifier si les identifiants sont fournis
+    if (isset($data['ids']) && is_array($data['ids'])) {
+        // Préparer la requête SQL pour supprimer les lignes avec les identifiants fournis
+        $ids = $data['ids'];
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $sql = "DELETE FROM projets WHERE ID IN ($placeholders)";
+        
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-        if (!$stmt->execute()) {
-            throw new Exception("Erreur de suppression : " . $stmt->error);
+        
+        // Lier les paramètres
+        $types = str_repeat('i', count($ids));
+        $stmt->bind_param($types, ...$ids);
+        
+        if ($stmt->execute()) {
+            echo "Lignes supprimées avec succès.";
+        } else {
+            echo "Erreur: " . $stmt->error;
         }
+        
         $stmt->close();
-
-        // Mettre à jour les IDs des lignes restantes
-        $sql = "UPDATE projets SET id = id - 1 WHERE id > ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-        if (!$stmt->execute()) {
-            throw new Exception("Erreur de mise à jour des IDs : " . $stmt->error);
-        }
-        $stmt->close();
-
-        // Valider la transaction
-        $conn->commit();
-        echo "Ligne supprimée et IDs mis à jour avec succès.";
-
-    } catch (Exception $e) {
-        // Annuler la transaction en cas d'erreur
-        $conn->rollback();
-        echo "Erreur : " . $e->getMessage();
+    } else {
+        echo "Aucun identifiant fourni.";
     }
 } else {
-    echo "ID non spécifié.";
+    echo "Méthode de requête incorrecte.";
 }
 
-$conn->close();
-?>

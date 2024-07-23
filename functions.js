@@ -49,11 +49,7 @@ function deleteById() {
     }
 }
 
-// Fonction pour afficher la valeur de l'avancement
-function avancementValueDisplay(elementId, value) {
-    var avancementPercentage = value + '%';
-    document.getElementById(elementId + 'Value').textContent = avancementPercentage;
-}
+
 
 // JavaScript pour gérer les actions du formulaire
 function toggleAddForm() {
@@ -75,9 +71,36 @@ function toggleForm(formId) {
     });
 }
 
+
+
+
+
+
 // Fonction pour ajouter une nouvelle ligne
 function addRow() {
-    var formData = new FormData(document.getElementById("addRowForm"));
+    // Obtenir les éléments du formulaire
+    var form = document.getElementById("addRowForm");
+    var formData = new FormData(form);
+
+    // Initialiser un tableau pour collecter les paramètres manquants
+    var missingParams = [];
+
+    // Vérifier chaque champ requis
+    if (!formData.get('intitule')) missingParams.push('Intitulé');
+    if (!formData.get('objectifs')) missingParams.push('Objectifs');
+    if (!formData.get('datededebut')) missingParams.push('Date de début');
+    if (!formData.get('datedefin')) missingParams.push('Date de fin');
+    if (!formData.get('avancement')) missingParams.push('Avancement');
+    if (!formData.get('participants')) missingParams.push('Participants');
+    if (!formData.get('levier')) missingParams.push('Levier');
+
+    // Si des paramètres sont manquants, afficher un message d'erreur
+    if (missingParams.length > 0) {
+        alert("Les paramètres suivants sont manquants ou vides : " + missingParams.join(', '));
+        return; // Arrêter l'exécution de la fonction si des paramètres sont manquants
+    }
+
+    // Si tous les champs requis sont remplis, envoyer la requête
     fetch("insert_row.php", {
             method: "POST",
             body: formData,
@@ -86,12 +109,18 @@ function addRow() {
     .then(data => {
             alert(data);
             if (data.includes("succès")) {
-                    closePopupForm();
-                    refreshTableData();
+                closePopupForm();
+                refreshTableData();
             }
     })
     .catch(error => console.error('Error:', error));
 }
+
+
+
+
+
+
 
 // Fonction pour rechercher dans le tableau
 function searchTable() {
@@ -132,17 +161,23 @@ function sortTableByStartDate() {
 }
 
 // Fonction pour rafraîchir les données du tableau
+// Fonction pour rafraîchir les données du tableau
 function refreshTableData() {
     fetch("fetch_data.php")
-    .then(response => response.text())
-    .then(html => {
+        .then(response => response.text())
+        .then(html => {
             const tableContainer = document.getElementById("tableContainer");
-            if(tableContainer) {
-                    tableContainer.innerHTML = html;
+            if (tableContainer) {
+                tableContainer.innerHTML = html;
             }
-    })
-    .catch(error => console.error('Erreur lors de la mise à jour des données du tableau:', error));
+        })
+        .then(() => {
+            // Recharger la page une fois les données du tableau mises à jour
+            location.reload();
+        })
+        .catch(error => console.error('Erreur lors de la mise à jour des données du tableau:', error));
 }
+
 
 // Fonction pour afficher le popup
 function openPopupForm() {
@@ -192,24 +227,63 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 });
 
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', (event) => {
     const selectAllCheckbox = document.getElementById('selectAll');
     const rowCheckboxes = document.querySelectorAll('.rowCheckbox');
+    const editButton = document.querySelector('.right-sidebar .btn-primary');
+    const deleteButton = document.querySelector('.right-sidebar .btn-danger');
+
+    // Fonction pour obtenir les ID des lignes sélectionnées
+    function getSelectedRowIds() {
+        const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
+        const selectedIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.id);
+        return selectedIds;
+    }
+
+    // Fonction pour mettre à jour le texte du bouton de suppression et la visibilité du bouton de modification
+    function updateButtons() {
+        const selectedIds = getSelectedRowIds();
+        
+        if (selectedIds.length === 1) {
+            editButton.style.display = "block";
+            deleteButton.textContent = "Supprimer la ligne";
+        } else if (selectedIds.length > 1) {
+            editButton.style.display = "none";
+            deleteButton.textContent = "Supprimer les lignes";
+        } else {
+            editButton.style.display = "block";
+            deleteButton.textContent = "Supprimer la ligne";
+        }
+    }
 
     selectAllCheckbox.addEventListener('change', function() {
         rowCheckboxes.forEach(checkbox => {
             checkbox.checked = this.checked;
         });
+        updateButtons();
     });
 
     rowCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             if (!this.checked) {
                 selectAllCheckbox.checked = false;
+            } else if (Array.from(rowCheckboxes).every(checkbox => checkbox.checked)) {
+                selectAllCheckbox.checked = true;
             }
+            updateButtons();
         });
     });
+
+    // Initial update of the buttons when the page loads
+    updateButtons();
 });
+
+
 
 
 
@@ -289,7 +363,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function getSelectedRowIds() {
     const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
     const selectedIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.id);
-    alert("getSelectedRowIds : " + selectedIds.join(', ')); // Afficher les ID sélectionnés
+    alert("fct 'getSelectedRowids' : " + selectedIds.join(', ')); // Afficher les ID sélectionnés
     return selectedIds;
 }
 
@@ -311,15 +385,29 @@ function editSelectedRow() {
 
 // Fonction pour ouvrir le formulaire de modification
 function openEditPopupForm() {
+    // Obtenir les identifiants des lignes sélectionnées
     const selectedIds = getSelectedRowIds();
-    alert("SELECTEDIDS : " + selectedIds);
+
+    // Afficher les identifiants sélectionnés pour le débogage
+    alert("SELECTED ID : " + selectedIds);
+
+    // Vérifier si plus d'une ligne est sélectionnée
+    if (selectedIds.length !== 1) {
+        alert("Vous ne pouvez modifier qu'une seule ligne à la fois.");
+        return; // Arrêter l'exécution de la fonction si plus d'une ligne est sélectionnée
+    }
+
+    // Obtenir l'ID de la ligne sélectionnée
+    const id = selectedIds[0];
+
     // Effectuer une requête fetch vers le script PHP pour obtenir les données de la ligne spécifique par son identifiant (id)
-    fetch(`get_row.php?id=${selectedIds}`)
+    fetch(`get_row.php?id=${id}`)
         // Attendre la réponse de la requête et la convertir en JSON
         .then(response => response.json())
         // Une fois les données converties en JSON, les utiliser pour remplir le formulaire
         .then(data => {
             alert("openEditPopupForm : " + JSON.stringify(data)); // Afficher les données reçues
+
             // Vérifier s'il y a une erreur dans les données reçues
             if (data.error) {
                 // Si une erreur est présente, afficher une alerte avec le message d'erreur
@@ -343,38 +431,106 @@ function openEditPopupForm() {
         .catch(error => console.error('Error:', error));
 }
 
+
+
+
+
+
 // Fonction pour fermer le formulaire de modification
 function closeEditPopupForm() {
     document.getElementById('editPopupForm').style.display = 'none';
 }
 
+
+
+
+
+
+
+
+
+
 // Fonction pour sauvegarder les modifications
 function saveEditedRow() {
+    // Récupérer le formulaire de modification par son identifiant 'editRowForm'
     const formData = new FormData(document.getElementById('editRowForm'));
+    
+    // Envoyer une requête fetch pour sauvegarder les modifications sur le serveur
     fetch('edit_row.php', {
+        // Utiliser la méthode POST pour envoyer les données
         method: 'POST',
+        // Inclure le formulaire contenant les données modifiées
         body: formData,
     })
-    .then(response => response.text())
+    // Traiter la réponse du serveur après l'envoi du formulaire
+    .then(response => response.text()) // Convertir la réponse en texte
     .then(data => {
+        // Afficher un message de confirmation avec les données retournées par le serveur
         alert("saveEditedRow : " + data); // Affiche le message de réponse pour vérifier la mise à jour
+        
+        // Fermer le formulaire popup de modification
         closeEditPopupForm();
+        
+        // Recharger les données du tableau pour refléter les modifications
         refreshTableData(); // Recharge le tableau après la mise à jour
     })
-    .catch(error => console.error('Error:', error));
+    // Gérer les erreurs éventuelles de la requête fetch
+    .catch(error => console.error('Error:', error)); // Afficher les erreurs dans la console
 }
+
+
+
+
+
+
+
+
 
 // Mise à jour de la valeur de l'avancement
 document.getElementById('editAvancement').addEventListener('input', function() {
     document.getElementById('editAvancementValue').textContent = this.value + '%';
 });
 
-function refreshTableData() {
-    fetch('fetch_data.php')
-        .then(response => response.text())
-        .then(data => {
-            alert("refreshTableData : Données du tableau mises à jour"); // Indiquer que les données du tableau ont été mises à jour
-            document.getElementById('tableContainer').innerHTML = data;
-        })
-        .catch(error => console.error('Error:', error));
+
+
+
+
+
+// Fonction pour supprimer les lignes sélectionnées
+function deleteSelectedRow() {
+    // Obtenir les identifiants des lignes sélectionnées
+    const selectedIds = getSelectedRowIds();
+
+    // Vérifier si des lignes sont sélectionnées
+    if (selectedIds.length > 0) {
+        const confirmMessage = selectedIds.length === 1 ?
+            "Êtes-vous sûr de vouloir supprimer cette ligne ?" :
+            "Êtes-vous sûr de vouloir supprimer ces lignes ?";
+        
+        // Demander confirmation avant la suppression
+        if (confirm(confirmMessage)) {
+            // Effectuer une requête fetch vers le script PHP pour supprimer les lignes
+            fetch('delete_row.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ids: selectedIds })
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("deleteSelectedRow : " + data); // Afficher le message de réponse
+                refreshTableData(); // Recharger le tableau après la suppression
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    } else {
+        alert("Veuillez sélectionner au moins une ligne à supprimer.");
+    }
 }
+
+
+
+
+
+

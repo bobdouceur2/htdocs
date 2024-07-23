@@ -128,15 +128,23 @@ $userId = $_SESSION['userId'];
             </div>
         </div>
 
+
+
+
+
+
         <!-- Conteneur de contenu principal -->
         <div class="content" id="mainContent">
             <div id="tableContainer">
                 <?php require_once 'fetch_data.php'; ?>
             </div>
 
-            <div id="addFormContainer" class="formContainer" style="display: none;">
-                <!-- Formulaires ajout ici -->
-            </div>
+            
+
+
+
+
+            
         </div>
 
         <!-- Colonne à droite -->
@@ -200,14 +208,13 @@ $userId = $_SESSION['userId'];
             }
         });
 
-        function showAllProjects() {
-            // Recharge la page sans filtre ni tri
-            window.location.href = window.location.pathname + "?showAll=true";
-        }
+       
 
         // Sélectionnez le slider et l'élément span pour la valeur d'avancement
         const slider = document.getElementById('avancement');
         const avancementValue = document.getElementById('avancementValue');
+
+        
 
         // Écoutez les changements de valeur du slider
         slider.addEventListener('input', function() {
@@ -224,7 +231,7 @@ $userId = $_SESSION['userId'];
             <input type="hidden" id="originalId" name="original_id"> <!-- Champ caché pour l'ID original -->
 
             <label for="editId"><b>ID</b></label>
-            <input type="text" id="editId" name="id" required>
+            <input type="text" id="editId" name="id" readonly>
 
             <label for="editIntitule"><b>Intitulé</b></label>
             <input type="text" id="editIntitule" name="intitule" required>
@@ -263,6 +270,9 @@ $userId = $_SESSION['userId'];
 
 
 
+    </body>
+    </html>
+
     <script>
         // Ajout de l'événement pour la touche Entrée sur le champ de recherche
         document.getElementById('searchInput').addEventListener('keypress', function (e) {
@@ -277,14 +287,14 @@ $userId = $_SESSION['userId'];
             window.location.href = window.location.pathname + "?showAll=true";
         }
 
-        // Sélectionnez le slider et l'élément span pour la valeur d'avancement
-        const slider = document.getElementById('avancement');
-        const avancementValue = document.getElementById('avancementValue');
+        // Sélectionner les éléments du slider et du span associés à l'avancement
+        const editSlider = document.getElementById('editAvancement');
+        const editAvancementValue = document.getElementById('editAvancementValue');
 
-        // Écoutez les changements de valeur du slider
-        slider.addEventListener('input', function() {
-            // Mettez à jour le contenu du span avec la valeur du slider
-            avancementValue.textContent = slider.value + '%';
+        // Écouter les changements de valeur du slider
+        editSlider.addEventListener('input', function() {
+            // Mettre à jour le contenu du span avec la valeur du slider
+            editAvancementValue.textContent = editSlider.value + '%';
         });
 
         // Fonction pour ouvrir une nouvelle fenêtre vide

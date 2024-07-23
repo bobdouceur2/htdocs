@@ -185,10 +185,20 @@ th {
     width: 95%;
 }
 
-.sidebar, .right-sidebar {
+.sidebar {
     width: 300px;
     padding: 10px;
     border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.right-sidebar {
+    width: 300px;
+    padding: 10px;
+    border-left: 1px solid #ddd;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -204,6 +214,14 @@ th {
 
 .sidebar .btn,
 .sidebar select {
+    width: 80%;
+    margin-bottom: 10px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+
+.right-sidebar .btn,
+.right-sidebar select {
     width: 80%;
     margin-bottom: 10px;
     font-family: 'Noto Sans', sans-serif;
@@ -301,7 +319,7 @@ th {
     transition: all 0.3s ease;
 }
 
-.sidebar {
+.sidebar, .right-sidebar {
     width: 300px; /* Ajustez la largeur selon vos besoins */
     padding: 10px;
     display: grid;
@@ -309,13 +327,19 @@ th {
     justify-items: center;
 }
 
-.content {
+.mainContent {
     flex-grow: 1;
     padding: 10px;
 }
 
 .sidebar .btn,
 .sidebar select {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.right-sidebar .btn,
+.right-sidebar select {
     width: 100%;
     margin-bottom: 10px;
 }
@@ -378,8 +402,8 @@ th {
 
 
 /* Réduire la largeur du contenu principal de 20% */
-.content.shrink {
-    width: 80%; /* Réduire la largeur de 20% */
+.tableContainer.shrink {
+    width: 70%; /* Réduire la largeur de 30% */
     transition: width 0.3s ease;
 }
 
@@ -475,4 +499,7 @@ th {
     color: #fff;
     cursor: pointer;
 }
+
+
+
 

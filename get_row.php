@@ -8,7 +8,7 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
     
     // Ajouter une vérification pour voir l'identifiant reçu
-    error_log("Received ID: " . $id);
+    error_log(" ID REÇU : " . $id);
     
     // Préparer une requête SQL pour sélectionner toutes les colonnes de la table 'projets' où l'identifiant correspond à celui fourni
     $sql = "SELECT * FROM projets WHERE id = ?";
