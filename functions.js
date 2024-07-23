@@ -76,46 +76,6 @@ function toggleForm(formId) {
 
 
 
-// Fonction pour ajouter une nouvelle ligne
-function addRow() {
-    // Obtenir les éléments du formulaire
-    var form = document.getElementById("addRowForm");
-    var formData = new FormData(form);
-
-    // Initialiser un tableau pour collecter les paramètres manquants
-    var missingParams = [];
-
-    // Vérifier chaque champ requis
-    if (!formData.get('intitule')) missingParams.push('Intitulé');
-    if (!formData.get('objectifs')) missingParams.push('Objectifs');
-    if (!formData.get('datededebut')) missingParams.push('Date de début');
-    if (!formData.get('datedefin')) missingParams.push('Date de fin');
-    if (!formData.get('avancement')) missingParams.push('Avancement');
-    if (!formData.get('participants')) missingParams.push('Participants');
-    if (!formData.get('levier')) missingParams.push('Levier');
-
-    // Si des paramètres sont manquants, afficher un message d'erreur
-    if (missingParams.length > 0) {
-        alert("Les paramètres suivants sont manquants ou vides : " + missingParams.join(', '));
-        return; // Arrêter l'exécution de la fonction si des paramètres sont manquants
-    }
-
-    // Si tous les champs requis sont remplis, envoyer la requête
-    fetch("insert_row.php", {
-            method: "POST",
-            body: formData,
-    })
-    .then(response => response.text())
-    .then(data => {
-            alert(data);
-            if (data.includes("succès")) {
-                closePopupForm();
-                refreshTableData();
-            }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
 
 
 

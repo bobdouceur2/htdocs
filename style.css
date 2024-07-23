@@ -500,6 +500,107 @@ th {
     cursor: pointer;
 }
 
+/* Styles pour la barre de recherche */
+#searchInput {
+    color: var(--text-color); /* Couleur du texte */
+    background-color: var(--form-input-background); /* Couleur de fond */
+    border: 1px solid var(--table-cell-border); /* Bordure */
+    padding: 10px; /* Espacement intérieur */
+    border-radius: 20px; /* Arrondir les bords */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Ombre interne */
+    font-size: 16px; /* Taille de la police */
+    box-sizing: border-box; /* Inclure le padding et la bordure dans la largeur et la hauteur */
+}
+
+#searchInput::placeholder {
+    color: var(--placeholder-color); /* Couleur du texte du placeholder */
+}
+
+
+.add-icon {
+    font-size: 54px;
+    color: green;
+    cursor: pointer;
+    display: inline-block;
+    margin: 10px 0;
+}
+.add-icon:hover {
+    color: darkgreen;
+}
+
+
+
+
+.view-icon {
+    font-size: 24px; /* Taille de l'icône, ajustée pour laisser de la place pour le padding */
+    color: #6c757d; /* Couleur de l'icône */
+    cursor: pointer; /* Curseur en forme de main pour indiquer que c'est cliquable */
+    display: inline-block; /* Affichage en ligne */
+    margin: 5px; /* Marges autour de l'icône */
+    padding: 15px; /* Padding autour de l'icône pour l'espacer du bord du cercle */
+    background-color: #f0f0f0; /* Couleur de fond du cercle */
+    border-radius: 50%; /* Bordures arrondies pour créer un cercle */
+    transition: color 0.3s, background-color 0.3s, transform 0.3s; /* Animation de transition pour les changements de couleur et de transformation */
+    width: 54px; /* Largeur fixe pour assurer un diamètre constant */
+    height: 54px; /* Hauteur fixe pour assurer un diamètre constant */
+    line-height: 24px; /* Hauteur de ligne pour centrer verticalement l'icône */
+    text-align: center; /* Centrer l'icône horizontalement */
+    box-sizing: border-box; /* Inclure le padding et la bordure dans la largeur et la hauteur */
+}
+
+.view-icon:hover {
+    color: #5a6268; /* Couleur de l'icône au survol */
+    background-color: #e0e0e0; /* Couleur de fond au survol */
+    transform: scale(1.1); /* Agrandir légèrement l'icône au survol */
+}
+
+
+
+
+
+
+
+
+
+
+
+.modern-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.modern-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.modern-button i {
+    margin-right: 8px;
+}
+
+.modern-button.secondary {
+    background-color: #6c757d;
+}
+
+.modern-button.secondary:hover {
+    background-color: #565e64;
+}
+
+
+
+
+
+
 
 
 

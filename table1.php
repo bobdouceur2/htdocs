@@ -17,6 +17,7 @@ $userId = $_SESSION['userId'];
     <link rel="stylesheet" href="colors.css">
     <script src="functions.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Ajout des balises de lien pour charger la police depuis Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,6 +97,9 @@ $userId = $_SESSION['userId'];
                 </form>
             </div>
 
+            <i class="fas fa-plus-circle add-icon" onclick="openPopupForm()"></i>
+            <i class="fas fa-chart-line view-icon" onclick="openVisualization()" title="Visualisation"></i>
+
             <div class="form-group">
                 <!-- Ajout du dropdown Filtrer par levier -->
                 <form id="filterForm" class="form-inline">
@@ -121,11 +125,12 @@ $userId = $_SESSION['userId'];
 
             <button class="btn btn-primary btn-custom" onclick="showAllProjects()">Afficher tous les Projets</button>
             <button class="btn btn-secondary btn-custom" onclick="showMyProjects()">Afficher uniquement les projets me concernant</button>
-            <button class="btn btn-secondary btn-custom" onclick="openVisualization()">Visualisation</button>
+            
 
-            <div class="buttonsContainer">
-                <button onclick="openPopupForm()" class="button">Ajouter une ligne</button>
-            </div>
+            
+                
+
+            
         </div>
 
 
@@ -144,7 +149,7 @@ $userId = $_SESSION['userId'];
 
 
 
-            
+
         </div>
 
         <!-- Colonne à droite -->
@@ -159,45 +164,110 @@ $userId = $_SESSION['userId'];
     </div>
 
     <div id="popupForm" class="popup-form">
-        <div class="popup-content">
-            <span class="close" onclick="closePopupForm()">&times;</span>
-            <h2>Ajouter une nouvelle ligne</h2>
-            <form id="addRowForm" class="form-container">
+    <div class="popup-content">
+        <span class="close" onclick="closePopupForm()">&times;</span>
+        <h2>Ajouter une nouvelle ligne</h2>
+        <form id="addRowForm" class="form-container">
 
-                <label for="ID"><b>ID</b></label>
-                <input type="text" placeholder="Entrer l'ID" name="ID" required>
+            <label for="id"><b>ID</b></label>
+            <input type="number" id="id" placeholder="Entrer l'ID" name="id" required>
 
-                <label for="intitule"><b>Intitulé</b></label>
-                <input type="text" placeholder="Entrer l'intitulé" name="intitule" required>
+            <label for="intitule"><b>Intitulé</b></label>
+            <input type="text" id="intitule" placeholder="Entrer l'intitulé" name="intitule" required>
 
-                <label for="objectifs"><b>Objectifs</b></label>
-                <input type="text" placeholder="Entrer les objectifs" name="objectifs" required>
+            <label for="objectifs"><b>Objectifs</b></label>
+            <input type="text" id="objectifs" placeholder="Entrer les objectifs" name="objectifs" required>
 
-                <label for="datededebut"><b>Date de début</b></label>
-                <input type="date" name="datededebut" required>
+            <label for="datededebut"><b>Date de début</b></label>
+            <input type="date" id="datededebut" name="datededebut" required>
 
-                <label for="datedefin"><b>Date de fin</b></label>
-                <input type="date" name="datedefin" required>
+            <label for="datedefin"><b>Date de fin</b></label>
+            <input type="date" id="datedefin" name="datedefin" required>
 
-                <label for="avancement"><b>Avancement</b></label>
-                <input type="range" min="0" max="100" value="0" class="slider" id="avancement" name="avancement">
-                <span id="avancementValue">0%</span>
+            <label for="avancement"><b>Avancement</b></label>
+            <input type="range" min="0" max="100" value="0" class="slider" id="avancement" name="avancement">
+            <span id="avancementValue">0%</span>
 
-                <br><br>
+            <br><br>
 
-                <label for="participants"><b>Participants</b></label>
-                <input type="text" placeholder="Entrer les participants" name="participants" required>
+            <label for="participants"><b>Participants</b></label>
+            <input type="text" id="participants" placeholder="Entrer les participants" name="participants" required>
 
-                <label for="levier"><b>Levier</b></label>
-                <select name="levier" required>
-                    <option value="">Sélectionner un levier</option>
-                    <?php include 'levier_options.php'; ?>
-                </select>
+            <label for="levier"><b>Levier</b></label>
+            <select id="levier" name="levier" required>
+                <option value="">Sélectionner un levier</option>
+                <?php include 'levier_options.php'; ?>
+            </select>
 
-                <button type="button" onclick="addRow()">Ajouter</button>
-            </form>
-        </div>
+            <i class="fas fa-plus-circle add-icon" onclick="addRow()"></i>
+        </form>
+        <div id="message" style="display: none;"></div>
     </div>
+</div>
+
+<script>
+document.getElementById('avancement').addEventListener('input', function() {
+    document.getElementById('avancementValue').textContent = this.value + '%';
+});
+
+function addRow() {
+    var form = document.getElementById("addRowForm");
+    var formData = new FormData(form);
+
+    // Initialiser un tableau pour collecter les paramètres manquants
+    var missingParams = [];
+
+    // Vérifier chaque champ requis
+    if (!formData.get('id')) missingParams.push('ID');
+    if (!formData.get('intitule')) missingParams.push('Intitulé');
+    if (!formData.get('objectifs')) missingParams.push('Objectifs');
+    if (!formData.get('datededebut')) missingParams.push('Date de début');
+    if (!formData.get('datedefin')) missingParams.push('Date de fin');
+    if (!formData.get('avancement')) missingParams.push('Avancement');
+    if (!formData.get('participants')) missingParams.push('Participants');
+    if (!formData.get('levier')) missingParams.push('Levier');
+
+    // Si des paramètres sont manquants, afficher un message d'erreur
+    if (missingParams.length > 0) {
+        alert("Les paramètres suivants sont manquants ou vides : " + missingParams.join(', '));
+        return; // Arrêter l'exécution de la fonction si des paramètres sont manquants
+    }
+
+    // Si tous les champs requis sont remplis, envoyer la requête
+    fetch("insert_row.php", {
+        method: "POST",
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Afficher le message de succès ou d'erreur dans le div #message
+        const messageDiv = document.getElementById('message');
+        messageDiv.style.display = 'block';
+        if (data.includes("succès")) {
+            messageDiv.style.color = 'green';
+            closePopupForm();
+            refreshTableData();
+        } else {
+            messageDiv.style.color = 'red';
+        }
+        messageDiv.innerText = data;
+    })
+    .catch(error => {
+        const messageDiv = document.getElementById('message');
+        messageDiv.style.display = 'block';
+        messageDiv.style.color = 'red';
+        messageDiv.innerText = 'Erreur : ' + error;
+    });
+}
+</script>
+
+
+<script>
+document.getElementById('avancement').addEventListener('input', function() {
+    document.getElementById('avancementValue').textContent = this.value + '%';
+});
+</script>
+
 
     <script>
         // Ajout de l'événement pour la touche Entrée sur le champ de recherche
