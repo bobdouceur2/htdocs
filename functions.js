@@ -33,14 +33,14 @@ function deleteById() {
     if (id) {
         if (confirm("Êtes-vous sûr de vouloir supprimer la ligne avec l'ID " + id + " ?")) {
             fetch("delete_row.php", {
-                method: "POST",
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'id=' + id
+                    method: "POST",
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'id=' + id
             })
             .then(response => response.text())
             .then(data => {
-                alert(data);
-                location.reload();
+                    alert(data);
+                    location.reload();
             })
             .catch(error => console.error('Error:', error));
         }
@@ -60,21 +60,13 @@ function toggleAddForm() {
     toggleForm("addFormContainer");
 }
 
-
-function toggleEditForm() {
-    toggleForm("editFormContainer");
-}
-
-
 function toggleDeleteForm() {
     toggleForm("deleteFormContainer");
 }
 
-
-
 function toggleForm(formId) {
     var formContainer = document.getElementById(formId);
-    var otherForms = ["addFormContainer", "deleteFormContainer", "editFormContainer"];
+    var otherForms = ["addFormContainer", "deleteFormContainer"];
     formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
     otherForms.forEach(form => {
         if (form !== formId) {
@@ -87,32 +79,33 @@ function toggleForm(formId) {
 function addRow() {
     var formData = new FormData(document.getElementById("addRowForm"));
     fetch("insert_row.php", {
-        method: "POST",
-        body: formData,
+            method: "POST",
+            body: formData,
     })
     .then(response => response.text())
     .then(data => {
-        alert(data);
-        location.reload();
+            alert(data);
+            if (data.includes("succès")) {
+                    closePopupForm();
+                    refreshTableData();
+            }
     })
     .catch(error => console.error('Error:', error));
 }
 
-
-
 // Fonction pour rechercher dans le tableau
 function searchTable() {
     var input = document.getElementById('searchInput').value.toLowerCase();
-    input = input.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // Remove accents
+    input = input.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     var tableRows = document.querySelectorAll('#tableContainer tr');
 
     tableRows.forEach(function(row) {
-        var columns = row.querySelectorAll('td'); // Ajoutez ici les sélecteurs de vos colonnes
+        var columns = row.querySelectorAll('td');
         var found = false;
 
         columns.forEach(function(column) {
             var text = column.textContent.toLowerCase();
-            text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); 
+            text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             if (text.includes(input)) {
                 found = true;
             }
@@ -124,27 +117,6 @@ function searchTable() {
             row.style.display = 'none';
         }
     });
-}
-
-// Fonction pour éditer une ligne
-function editRow() {
-    var formData = new FormData(document.getElementById("editRowForm"));
-    fetch("update_row.php", {
-        method: "POST",
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        var rowId = document.getElementById('editRowId').value;
-        var editedRow = document.getElementById('row_' + rowId);
-        editedRow.innerHTML = data;
-
-        toggleEditForm();
-        alert("La ligne a été mise à jour avec succès !");
-        var avancementValue = document.getElementById('editAvancement').value;
-        avancementValueDisplay(avancementValue, 'editAvancement');
-    })
-    .catch(error => console.error('Error:', error));
 }
 
 // Fonction pour trier le tableau par date de début
@@ -164,15 +136,13 @@ function refreshTableData() {
     fetch("fetch_data.php")
     .then(response => response.text())
     .then(html => {
-        const tableContainer = document.getElementById("tableContainer");
-        if(tableContainer) {
-            tableContainer.innerHTML = html;
-        }
+            const tableContainer = document.getElementById("tableContainer");
+            if(tableContainer) {
+                    tableContainer.innerHTML = html;
+            }
     })
     .catch(error => console.error('Erreur lors de la mise à jour des données du tableau:', error));
 }
-
-
 
 // Fonction pour afficher le popup
 function openPopupForm() {
@@ -183,23 +153,6 @@ function openPopupForm() {
 function closePopupForm() {
     document.getElementById('popupForm').style.display = 'none';
 }
-
-// Fonction pour ajouter une nouvelle ligne
-function addRow() {
-    var formData = new FormData(document.getElementById("addRowForm"));
-    fetch("insert_row.php", {
-        method: "POST",
-        body: formData,
-    })
-    .then(response => response.text())
-    .then(data => {
-        alert(data);
-        closePopupForm(); // Ferme le popup après ajout
-        refreshTableData(); // Rafraîchit les données du tableau
-    })
-    .catch(error => console.error('Error:', error));
-}
-
 
 function sortTable(columnIndex, ascending = true) {
     const tableContainer = document.getElementById("tableContainer");
@@ -214,35 +167,22 @@ function sortTable(columnIndex, ascending = true) {
 
 document.querySelectorAll('#tableContainer th').forEach((header, index) => {
     header.addEventListener('click', () => sortTable(index));
-
 });
 
-
-
 function showAllProjects() {
-    // Recharge la page sans filtre ni tri
     window.location.href = window.location.pathname + "?showAll=true";
 }
 
 function showMyProjects() {
-    // Recharge la page avec un filtre sur les projets de l'utilisateur courant
     window.location.href = window.location.pathname;
-
-    
 }
-
-
-
 
 function sortProjects() {
     const sortValue = document.getElementById('sortSelect').value;
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('sort', sortValue);
     window.location.search = urlParams.toString();
-
 }
-
-
 
 document.addEventListener('DOMContentLoaded', (event) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -252,19 +192,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 });
 
-
 document.addEventListener('DOMContentLoaded', (event) => {
     const selectAllCheckbox = document.getElementById('selectAll');
     const rowCheckboxes = document.querySelectorAll('.rowCheckbox');
 
-    // Sélectionner/Désélectionner toutes les lignes
     selectAllCheckbox.addEventListener('change', function() {
         rowCheckboxes.forEach(checkbox => {
             checkbox.checked = this.checked;
         });
     });
 
-    // Si une case de ligne est décochée, désélectionner la case "tout sélectionner"
     rowCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             if (!this.checked) {
@@ -274,19 +211,170 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const rowCheckboxes = document.querySelectorAll('.rowCheckbox');
+
+    rowCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                const id = this.getAttribute('data-id');
+                alert("ID sélectionné: " + id);
+            }
+        });
+    });
+
+    // Sélectionner/Désélectionner toutes les checkboxes
+    const selectAllCheckbox = document.getElementById('selectAll');
+    selectAllCheckbox.addEventListener('change', function() {
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+            if (this.checked) {
+                const id = checkbox.getAttribute('data-id');
+                alert("ID sélectionné: " + id);
+            }
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.rowCheckbox');
+    const rightSidebar = document.getElementById('rightSidebar');
+    const mainContent = document.getElementById('mainContent');
+
+    selectAllCheckbox.addEventListener('change', function() {
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        toggleRightSidebar();
+    });
+
+    rowCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (!this.checked) {
+                selectAllCheckbox.checked = false;
+            }
+            toggleRightSidebar();
+        });
+    });
+
+    function toggleRightSidebar() {
+        const selectedCount = document.querySelectorAll('.rowCheckbox:checked').length;
+        if (selectedCount > 0) {
+            rightSidebar.classList.add('active');
+            mainContent.classList.add('shrink');
+        } else {
+            rightSidebar.classList.remove('active');
+            mainContent.classList.remove('shrink');
+        }
+    }
+});
+
 // Fonction pour obtenir les ID des lignes sélectionnées
 function getSelectedRowIds() {
     const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
     const selectedIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.id);
+    alert("getSelectedRowIds : " + selectedIds.join(', ')); // Afficher les ID sélectionnés
     return selectedIds;
 }
 
-// Exemple d'utilisation de la fonction pour obtenir les ID sélectionnés
-function handleSelectedRows() {
+function displaySelectedIds() {
     const selectedIds = getSelectedRowIds();
-    console.log(selectedIds); // Vous pouvez utiliser ces ID pour effectuer des opérations sur les lignes sélectionnées
+    alert("displaySelectedIds : " + selectedIds.join(', '));
 }
 
+function editSelectedRow() {
+    const selectedIds = getSelectedRowIds();
+    if (selectedIds.length === 1) {
+        const id = selectedIds[0];
+        alert("editSelectedRow : " + id); // Afficher l'ID sélectionné pour édition
+        openEditPopupForm(id);
+    } else {
+        alert("Veuillez sélectionner une seule ligne à modifier.");
+    }
+}
 
+// Fonction pour ouvrir le formulaire de modification
+function openEditPopupForm() {
+    const selectedIds = getSelectedRowIds();
+    alert("SELECTEDIDS : " + selectedIds);
+    // Effectuer une requête fetch vers le script PHP pour obtenir les données de la ligne spécifique par son identifiant (id)
+    fetch(`get_row.php?id=${selectedIds}`)
+        // Attendre la réponse de la requête et la convertir en JSON
+        .then(response => response.json())
+        // Une fois les données converties en JSON, les utiliser pour remplir le formulaire
+        .then(data => {
+            alert("openEditPopupForm : " + JSON.stringify(data)); // Afficher les données reçues
+            // Vérifier s'il y a une erreur dans les données reçues
+            if (data.error) {
+                // Si une erreur est présente, afficher une alerte avec le message d'erreur
+                alert(data.error);
+            } else {
+                // Sinon, remplir les champs du formulaire avec les données reçues
+                document.getElementById('originalId').value = data.ID;
+                document.getElementById('editId').value = data.ID;
+                document.getElementById('editIntitule').value = data.Intitule;
+                document.getElementById('editObjectifs').value = data.Objectifs;
+                document.getElementById('editDatededebut').value = data.DateDeDebut;
+                document.getElementById('editDatedefin').value = data.DateDeFin;
+                document.getElementById('editAvancement').value = data.Avancement;
+                document.getElementById('editAvancementValue').textContent = data.Avancement + '%';
+                document.getElementById('editParticipants').value = data.Participants;
+                document.getElementById('editLevier').value = data.Levier;
+                document.getElementById('editPopupForm').style.display = 'block';
+            }
+        })
+        // Gérer les erreurs éventuelles de la requête fetch et les afficher dans la console
+        .catch(error => console.error('Error:', error));
+}
 
+// Fonction pour fermer le formulaire de modification
+function closeEditPopupForm() {
+    document.getElementById('editPopupForm').style.display = 'none';
+}
 
+// Fonction pour sauvegarder les modifications
+function saveEditedRow() {
+    const formData = new FormData(document.getElementById('editRowForm'));
+    fetch('edit_row.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert("saveEditedRow : " + data); // Affiche le message de réponse pour vérifier la mise à jour
+        closeEditPopupForm();
+        refreshTableData(); // Recharge le tableau après la mise à jour
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Mise à jour de la valeur de l'avancement
+document.getElementById('editAvancement').addEventListener('input', function() {
+    document.getElementById('editAvancementValue').textContent = this.value + '%';
+});
+
+function refreshTableData() {
+    fetch('fetch_data.php')
+        .then(response => response.text())
+        .then(data => {
+            alert("refreshTableData : Données du tableau mises à jour"); // Indiquer que les données du tableau ont été mises à jour
+            document.getElementById('tableContainer').innerHTML = data;
+        })
+        .catch(error => console.error('Error:', error));
+}

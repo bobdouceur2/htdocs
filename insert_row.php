@@ -7,13 +7,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $datededebut = $_POST['datededebut'];
     $datedefin = $_POST['datedefin'];
     $avancement = $_POST['avancement'];
+    $participants = $_POST['participants'];
     $levier = $_POST['levier'];
 
-    $sql = "INSERT INTO projets (Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO projets (Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Participants, Levier) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssss", $intitule, $objectifs, $datededebut, $datedefin, $avancement, $levier);
+    $stmt->bind_param("sssssss", $intitule, $objectifs, $datededebut, $datedefin, $avancement, $participants, $levier);
+
     if ($stmt->execute()) {
-        require_once 'fetch_data.php'; // Afficher à nouveau le tableau mis à jour
+        echo "Ligne ajoutée avec succès.";
     } else {
         echo "Erreur: " . $stmt->error;
     }
@@ -21,3 +23,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     echo "Méthode de requête incorrecte";
 }
+?>

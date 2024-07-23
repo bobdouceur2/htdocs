@@ -1,19 +1,29 @@
 <?php
 require_once 'db_connection.php';
 
+// Inclusion de la feuille de style CSS
 echo "<link rel='stylesheet' type='text/css' href='style.css'>";
+
+// Style CSS pour les dates dépassées
 echo "<style>
     .date-depassee {
         color: red;
     }
 </style>";
 
+// Récupération du paramètre 'levier' de la requête GET
 $levier = isset($_GET['levier']) ? $_GET['levier'] : null;
-$sort = isset($_GET['sort']) ? $_GET['sort'] : 'dateAsc'; // Valeur par défaut
+
+// Récupération du paramètre 'sort' de la requête GET avec une valeur par défaut 'dateAsc'
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'dateAsc';
+
+// Récupération du paramètre 'showAll' de la requête GET avec une valeur par défaut false
 $showAll = isset($_GET['showAll']) ? $_GET['showAll'] : false;
+
+// Récupération de l'ID de l'utilisateur connecté
 $userId = $_SESSION['userId'];
 
-// Déterminez l'ordre de tri basé sur la valeur du paramètre sort
+// Déterminez l'ordre de tri basé sur la valeur du paramètre 'sort'
 switch ($sort) {
     case 'dateDesc':
         $orderBy = "DateDeDebut DESC";
@@ -30,16 +40,19 @@ switch ($sort) {
         break;
 }
 
+// Construction de la requête SQL en fonction des paramètres
 if ($showAll) {
     $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants FROM projets ORDER BY $orderBy";
 } else {
     $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants FROM projets WHERE FIND_IN_SET(?, Participants) ORDER BY $orderBy";
 }
 
+// Ajout de la condition 'Levier' à la requête si le paramètre 'levier' est spécifié
 if ($levier) {
     $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants FROM projets WHERE Levier = ? AND FIND_IN_SET(?, Participants) ORDER BY $orderBy";
 }
 
+// Préparation de la requête SQL avec les paramètres
 if ($levier) {
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ss", $levier, $userId);
@@ -52,9 +65,13 @@ if ($levier) {
     }
 }
 
+// Exécution de la requête SQL
 $stmt->execute();
+
+// Récupération des résultats de la requête
 $result = $stmt->get_result();
 
+// Affichage des résultats dans un tableau HTML
 if ($result->num_rows > 0) {
     echo "<table border='1'>";
     echo "<thead>";

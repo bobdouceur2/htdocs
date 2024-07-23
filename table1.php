@@ -56,7 +56,6 @@ $userId = $_SESSION['userId'];
             align-items: center;
             padding: 10px;
             background-color: #121a45;
-            
         }
         .admin-header .userid {
             margin-right: 20px;
@@ -68,7 +67,6 @@ $userId = $_SESSION['userId'];
             align-items: center;
             padding: 10px;
             background-color: #121a45;
-            
         }
         #logoSafran {
             height: 50px; /* Ajustez selon la taille souhaitée */
@@ -95,7 +93,6 @@ $userId = $_SESSION['userId'];
                 <!-- Barre de recherche universelle -->
                 <form id="filterForm" class="form-inline">
                     <input type="text" id="searchInput" class="form-control mb-2" style="width: 100%;" placeholder="Rechercher...">
-                    <!-- BOUTON RECHERCHER <button type="button" onclick="searchTable()" class="btn btn-outline-primary mb-2" style="margin-left: auto; margin-right: auto;">Rechercher</button>-->
                 </form>
             </div>
 
@@ -125,28 +122,32 @@ $userId = $_SESSION['userId'];
             <button class="btn btn-primary btn-custom" onclick="showAllProjects()">Afficher tous les Projets</button>
             <button class="btn btn-secondary btn-custom" onclick="showMyProjects()">Afficher uniquement les projets me concernant</button>
             <button class="btn btn-secondary btn-custom" onclick="openVisualization()">Visualisation</button>
+
+            <div class="buttonsContainer">
+                <button onclick="openPopupForm()" class="button">Ajouter une ligne</button>
+            </div>
         </div>
 
         <!-- Conteneur de contenu principal -->
-        <div class="content">
+        <div class="content" id="mainContent">
             <div id="tableContainer">
                 <?php require_once 'fetch_data.php'; ?>
             </div>
 
-            <div class="buttonsContainer">
-                <button onclick="openPopupForm()" class="button">Ajouter une ligne</button>
-                <button class="button" onclick="toggleEditForm()">Modifier une ligne</button>
-
-            </div>
-
             <div id="addFormContainer" class="formContainer" style="display: none;">
-                <!-- Formulaires ajout et édition ici -->
-            </div>
-
-            <div id="editFormContainer" class="formContainer" style="display: none;">
-                <!-- Formulaires ajout et édition ici -->
+                <!-- Formulaires ajout ici -->
             </div>
         </div>
+
+        <!-- Colonne à droite -->
+        <div class="right-sidebar" id="rightSidebar">
+            <button class="btn btn-primary btn-custom" onclick="openEditPopupForm()">Modifier la ligne</button>
+            <button class="btn btn-danger btn-custom" onclick="deleteSelectedRow()">Supprimer la ligne</button>
+        </div>
+
+
+
+
     </div>
 
     <div id="popupForm" class="popup-form">
@@ -154,6 +155,10 @@ $userId = $_SESSION['userId'];
             <span class="close" onclick="closePopupForm()">&times;</span>
             <h2>Ajouter une nouvelle ligne</h2>
             <form id="addRowForm" class="form-container">
+
+                <label for="ID"><b>ID</b></label>
+                <input type="text" placeholder="Entrer l'ID" name="ID" required>
+
                 <label for="intitule"><b>Intitulé</b></label>
                 <input type="text" placeholder="Entrer l'intitulé" name="intitule" required>
 
@@ -170,12 +175,94 @@ $userId = $_SESSION['userId'];
                 <input type="range" min="0" max="100" value="0" class="slider" id="avancement" name="avancement">
                 <span id="avancementValue">0%</span>
 
+                <br><br>
+
+                <label for="participants"><b>Participants</b></label>
+                <input type="text" placeholder="Entrer les participants" name="participants" required>
+
+                <label for="levier"><b>Levier</b></label>
+                <select name="levier" required>
+                    <option value="">Sélectionner un levier</option>
+                    <?php include 'levier_options.php'; ?>
+                </select>
+
                 <button type="button" onclick="addRow()">Ajouter</button>
             </form>
         </div>
     </div>
 
-    
+    <script>
+        // Ajout de l'événement pour la touche Entrée sur le champ de recherche
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Empêche le comportement par défaut du formulaire
+                searchTable();
+            }
+        });
+
+        function showAllProjects() {
+            // Recharge la page sans filtre ni tri
+            window.location.href = window.location.pathname + "?showAll=true";
+        }
+
+        // Sélectionnez le slider et l'élément span pour la valeur d'avancement
+        const slider = document.getElementById('avancement');
+        const avancementValue = document.getElementById('avancementValue');
+
+        // Écoutez les changements de valeur du slider
+        slider.addEventListener('input', function() {
+            // Mettez à jour le contenu du span avec la valeur du slider
+            avancementValue.textContent = slider.value + '%';
+        });
+    </script>
+
+<div id="editPopupForm" class="popup-form">
+    <div class="popup-content">
+        <span class="close" onclick="closeEditPopupForm()">&times;</span>
+        <h2>Modifier une ligne</h2>
+        <form id="editRowForm" class="form-container">
+            <input type="hidden" id="originalId" name="original_id"> <!-- Champ caché pour l'ID original -->
+
+            <label for="editId"><b>ID</b></label>
+            <input type="text" id="editId" name="id" required>
+
+            <label for="editIntitule"><b>Intitulé</b></label>
+            <input type="text" id="editIntitule" name="intitule" required>
+
+            <label for="editObjectifs"><b>Objectifs</b></label>
+            <input type="text" id="editObjectifs" name="objectifs" required>
+
+            <label for="editDatededebut"><b>Date de début</b></label>
+            <input type="date" id="editDatededebut" name="datededebut" required>
+
+            <label for="editDatedefin"><b>Date de fin</b></label>
+            <input type="date" id="editDatedefin" name="datedefin" required>
+
+            <label for="editAvancement"><b>Avancement</b></label>
+            <input type="range" min="0" max="100" id="editAvancement" name="avancement">
+            <span id="editAvancementValue">0%</span>
+
+            <br><br>
+
+            <label for="editParticipants"><b>Participants</b></label>
+            <input type="text" id="editParticipants" name="participants" required>
+
+            <label for="editLevier"><b>Levier</b></label>
+            <select id="editLevier" name="levier" required>
+                <option value="">Sélectionner un levier</option>
+                <?php include 'levier_options.php'; ?>
+            </select>
+
+            <button type="button" onclick="saveEditedRow()">Sauvegarder</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
     <script>
         // Ajout de l'événement pour la touche Entrée sur le champ de recherche
         document.getElementById('searchInput').addEventListener('keypress', function (e) {
