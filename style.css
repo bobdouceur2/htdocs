@@ -518,41 +518,57 @@ th {
 
 
 .add-icon {
-    font-size: 54px;
-    color: green;
-    cursor: pointer;
-    display: inline-block;
-    margin: 10px 0;
+    font-size: 54px; /* Taille de l'icône */
+    color: green; /* Couleur du texte ou de l'icône */
+    cursor: pointer; /* Curseur en forme de main */
+    display: inline-block; /* Pour le formatage du bouton */
+    margin: 10px 0; /* Marges autour du bouton */
+    padding: 10px 20px; /* Espacement interne du bouton */
+    background-color: #1a245b; /* Couleur de fond du bouton */
+    border: 2px solid #1a245b; /* Bordure du bouton */
+    border-radius: 12px; /* Bords arrondis */
+    text-align: center; /* Centre le texte ou l'icône */
+    text-decoration: none; /* Supprime les soulignements si le texte est un lien */
+    width: 200px; /* Ajuste la largeur en fonction du contenu */
+    height: auto; /* Ajuste la hauteur en fonction du contenu */
+    box-sizing: border-box; /* Inclut la bordure et le padding dans les dimensions totales */
 }
+
 .add-icon:hover {
-    color: darkgreen;
+    color: darkgreen; /* Couleur du texte ou de l'icône au survol */
+    background-color: #2d3c7d; /* Couleur de fond au survol */
+    border-color: #1a245b; /* Couleur de la bordure au survol */
 }
+
+
 
 
 
 
 .view-icon {
-    font-size: 24px; /* Taille de l'icône, ajustée pour laisser de la place pour le padding */
-    color: #6c757d; /* Couleur de l'icône */
+    font-size: 44px; /* Taille de l'icône, alignée avec celle de .add-icon */
+    color: green; /* Couleur de l'icône, alignée avec celle de .add-icon */
     cursor: pointer; /* Curseur en forme de main pour indiquer que c'est cliquable */
     display: inline-block; /* Affichage en ligne */
-    margin: 5px; /* Marges autour de l'icône */
-    padding: 15px; /* Padding autour de l'icône pour l'espacer du bord du cercle */
-    background-color: #f0f0f0; /* Couleur de fond du cercle */
-    border-radius: 50%; /* Bordures arrondies pour créer un cercle */
+    margin: 10px 0; /* Marges autour de l'icône, alignées avec celles de .add-icon */
+    padding: 10px 20px; /* Padding pour correspondre aux dimensions de .add-icon */
+    background-color: #1a245b; /* Couleur de fond du bouton, alignée avec celle de .add-icon */
+    border: 2px solid #1a245b; /* Bordure du bouton */
+    border-radius: 12px; /* Bords arrondis pour correspondre à .add-icon */
     transition: color 0.3s, background-color 0.3s, transform 0.3s; /* Animation de transition pour les changements de couleur et de transformation */
-    width: 54px; /* Largeur fixe pour assurer un diamètre constant */
-    height: 54px; /* Hauteur fixe pour assurer un diamètre constant */
-    line-height: 24px; /* Hauteur de ligne pour centrer verticalement l'icône */
-    text-align: center; /* Centrer l'icône horizontalement */
+    width: 200px; /* Largeur du bouton pour correspondre à .add-icon */
+    height: auto; /* Ajuste la hauteur en fonction du contenu */
     box-sizing: border-box; /* Inclure le padding et la bordure dans la largeur et la hauteur */
+    text-align: center; /* Centrer l'icône horizontalement */
 }
 
 .view-icon:hover {
-    color: #5a6268; /* Couleur de l'icône au survol */
-    background-color: #e0e0e0; /* Couleur de fond au survol */
+    color: darkgreen; /* Couleur de l'icône au survol, alignée avec celle de .add-icon */
+    background-color: #2d3c7d; /* Couleur de fond au survol, alignée avec celle de .add-icon */
+    border-color: #1a245b; /* Couleur de la bordure au survol */
     transform: scale(1.1); /* Agrandir légèrement l'icône au survol */
 }
+
 
 
 
@@ -595,12 +611,3 @@ th {
 .modern-button.secondary:hover {
     background-color: #565e64;
 }
-
-
-
-
-
-
-
-
-

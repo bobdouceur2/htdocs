@@ -123,8 +123,12 @@ $userId = $_SESSION['userId'];
                 </form>
             </div>
 
-            <button class="btn btn-primary btn-custom" onclick="showAllProjects()">Afficher tous les Projets</button>
-            <button class="btn btn-secondary btn-custom" onclick="showMyProjects()">Afficher uniquement les projets me concernant</button>
+            <button class="modern-button" onclick="showAllProjects()">
+                <i class="fas fa-tasks"></i> Afficher tous les projets
+            </button>
+            <button class="modern-button secondary" onclick="showMyProjects()">
+                <i class="fas fa-user"></i> Afficher uniquement les projets me concernant
+            </button>
             
 
             

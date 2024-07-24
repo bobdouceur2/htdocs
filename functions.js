@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         checkbox.addEventListener('change', function() {
             if (this.checked) {
                 const id = this.getAttribute('data-id');
-                alert("ID sélectionné: " + id);
+                
             }
         });
     });
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             checkbox.checked = this.checked;
             if (this.checked) {
                 const id = checkbox.getAttribute('data-id');
-                alert("ID sélectionné: " + id);
+                
             }
         });
     });
@@ -323,20 +323,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function getSelectedRowIds() {
     const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
     const selectedIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.dataset.id);
-    alert("fct 'getSelectedRowids' : " + selectedIds.join(', ')); // Afficher les ID sélectionnés
+    
     return selectedIds;
 }
 
 function displaySelectedIds() {
     const selectedIds = getSelectedRowIds();
-    alert("displaySelectedIds : " + selectedIds.join(', '));
+    
 }
 
 function editSelectedRow() {
     const selectedIds = getSelectedRowIds();
     if (selectedIds.length === 1) {
         const id = selectedIds[0];
-        alert("editSelectedRow : " + id); // Afficher l'ID sélectionné pour édition
+        
         openEditPopupForm(id);
     } else {
         alert("Veuillez sélectionner une seule ligne à modifier.");
@@ -349,7 +349,7 @@ function openEditPopupForm() {
     const selectedIds = getSelectedRowIds();
 
     // Afficher les identifiants sélectionnés pour le débogage
-    alert("SELECTED ID : " + selectedIds);
+    
 
     // Vérifier si plus d'une ligne est sélectionnée
     if (selectedIds.length !== 1) {
@@ -366,7 +366,7 @@ function openEditPopupForm() {
         .then(response => response.json())
         // Une fois les données converties en JSON, les utiliser pour remplir le formulaire
         .then(data => {
-            alert("openEditPopupForm : " + JSON.stringify(data)); // Afficher les données reçues
+            
 
             // Vérifier s'il y a une erreur dans les données reçues
             if (data.error) {
@@ -426,7 +426,7 @@ function saveEditedRow() {
     .then(response => response.text()) // Convertir la réponse en texte
     .then(data => {
         // Afficher un message de confirmation avec les données retournées par le serveur
-        alert("saveEditedRow : " + data); // Affiche le message de réponse pour vérifier la mise à jour
+       
         
         // Fermer le formulaire popup de modification
         closeEditPopupForm();
@@ -479,7 +479,7 @@ function deleteSelectedRow() {
             })
             .then(response => response.text())
             .then(data => {
-                alert("deleteSelectedRow : " + data); // Afficher le message de réponse
+                
                 refreshTableData(); // Recharger le tableau après la suppression
             })
             .catch(error => console.error('Error:', error));
