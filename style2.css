@@ -56,7 +56,6 @@ header .user-profile img {
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
-    
 }
 
 .sidebar .logo {
@@ -125,9 +124,6 @@ header .user-profile img {
     position: absolute;
     animation: soft-glow 1.5s infinite alternate;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* Ajoutez un effet lumineux doux */
-
-   
-   
 }
 
 .sidebar .icon.active img {
@@ -144,12 +140,11 @@ header .user-profile img {
 .main-container {
     margin-left: 160px; /* Décalage pour la barre latérale */
     padding: 20px;
-    display: grid;
-    grid-template-columns: 2fr 3fr 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 40px;
-    flex-grow: 1;
-    overflow: hidden; /* Éviter les débordements */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 80px); /* Ajustez en fonction de la hauteur de l'en-tête */
 }
 
 .card {
@@ -165,25 +160,13 @@ header .user-profile img {
     height: 100px; /* Ajuster selon vos besoins */
 }
 
-.card-large {
-    grid-column: span 2;
-    grid-row: 2 / 3;
-    height: calc(100% - 80px);
-    overflow: auto; /* Permettre le défilement interne si nécessaire */
-    padding: 20px 40px;
-    box-sizing: border-box;
-}
-
-.card-right {
-    grid-column: 3 / 4;
-    grid-row: span 2;
-    height: 100%;
+.card-center {
     width: 100%;
+    max-width: 400px;
     display: flex;
-    height: calc(100% - 40px);
     flex-direction: column;
-    justify-content: flex-start;
-    overflow: auto; /* Permettre le défilement interne si nécessaire */
+    align-items: center;
+    justify-content: center;
 }
 
 .buttonsContainer, .admin-button-container, .formContainer {
@@ -198,8 +181,44 @@ header .user-profile img {
 
 .formContainer {
     background-color: #1F1D2B;
-    padding: 10px;
+    padding: 20px;
     border-radius: 5px;
+    color: #E0E0E0;
+}
+
+.formContainer form {
+    display: flex;
+    flex-direction: column;
+}
+
+.formContainer label {
+    margin-bottom: 5px;
+}
+
+.formContainer input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2C2F3F;
+    color: #E0E0E0;
+}
+
+.formContainer button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #48a7db;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.formContainer button:hover {
+    background-color: #1F8AC0;
+}
+
+.formContainer h2 {
     margin-bottom: 20px;
 }
 
@@ -281,12 +300,13 @@ svg text {
     display: flex;
     justify-content: center;
 }
+
 .settings-icon {
     position: relative;
     cursor: pointer;
-  }
+}
   
-  .settings-icon::after {
+.settings-icon::after {
     content: '';
     position: absolute;
     top: 0;
@@ -295,47 +315,4 @@ svg text {
     height: 100%;
     background-color: transparent;
     cursor: pointer;
-  }
-
-  .formContainer {
-    background-color: #1F1D2B;
-    padding: 20px;
-    border-radius: 5px;
-    color: #E0E0E0;
-}
-
-.formContainer form {
-    display: flex;
-    flex-direction: column;
-}
-
-.formContainer label {
-    margin-bottom: 5px;
-}
-
-.formContainer input {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #444;
-    border-radius: 5px;
-    background-color: #2C2F3F;
-    color: #E0E0E0;
-}
-
-.formContainer button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #48a7db;
-    color: #FFFFFF;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.formContainer button:hover {
-    background-color: #1F8AC0;
-}
-
-.formContainer h2 {
-    margin-bottom: 20px;
 }

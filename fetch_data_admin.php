@@ -58,3 +58,4 @@ if ($result->num_rows > 0) {
 }
 
 // Fermer la connexion à la base de données si vous avez terminé d'utiliser la connexion dans ce script;
+?>

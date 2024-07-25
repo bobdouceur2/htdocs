@@ -1,24 +1,26 @@
 <?php
 require_once 'db_connection.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $intitule = $_POST['intitule'];
-    $objectifs = $_POST['objectifs'];
-    $datededebut = $_POST['datededebut'];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
+    $id = $_POST['id'];
     $datedefin = $_POST['datedefin'];
     $avancement = $_POST['avancement'];
 
-    // Assurez-vous d'utiliser des requêtes préparées pour éviter les injections SQL
-    $stmt = $conn->prepare("UPDATE projets SET intitule = ?, objectifs = ?, datededebut = ?, datedefin = ?, avancement = ? WHERE id = ?");
-    $stmt->bind_param("sssssi", $intitule, $objectifs, $datededebut, $datedefin, $avancement, $id);
+    // Préparez et exécutez la mise à jour.
+    $sql = "UPDATE projets SET DateDeFin = ?, Avancement = ? WHERE ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssi", $datedefin, $avancement, $id);
 
     if ($stmt->execute()) {
-        echo json_encode(['success' => true]);
+        // Si la mise à jour réussit, renvoyez une réponse vide ou un message JSON
+        echo json_encode(["success" => true]);
     } else {
-        echo json_encode(['success' => false]);
+        echo json_encode(["success" => false, "error" => "Erreur lors de la modification : " . $stmt->error]);
     }
-
     $stmt->close();
-    $conn->close();
+} else {
+    echo json_encode(["success" => false, "error" => "Requête non autorisée."]);
 }
+
+$conn->close();
 ?>
