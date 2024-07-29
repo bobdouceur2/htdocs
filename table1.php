@@ -13,20 +13,19 @@
         <!--
         <div class="icon">
             <img src="recherche.png" alt="Recherche Icon">
-        </div>
+        </div> -->
         <div class="user-profile">
-            -->
-
-          <!--  <span>Karim CHABANE</span> -->
+            <img src="user.png" alt="User Icon">
+            <span>Utilisateur</span> 
         </div>
         <div class="wrapper">
-            
+            <!--
 	            <svg>
                     <text x="80" y="50%" text-anchor="start" dominant-baseline="middle">
 			        SE 
 		            </text>
 	            </svg>
-                
+                -->
         </div>
     </header>
     

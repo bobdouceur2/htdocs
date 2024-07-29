@@ -203,39 +203,58 @@ header .user-profile img {
     margin-bottom: 20px;
 }
 
-/* Style pour le tableau */
+/* Style pour le conteneur du tableau */
 .table-container {
     width: 100%;
-    height: 100%;
     overflow-x: auto;
     overflow-y: auto;
     border-radius: 20px;
     background-color: #1F1D2B;
     padding: 20px;
     box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre portée */
 }
 
+/* Style pour le tableau */
 table {
     width: 100%;
-    height: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     border-radius: 10px;
     overflow: hidden;
+    background-color: #2A2E3E;
 }
 
+/* Style pour l'en-tête du tableau */
+table thead tr {
+    background-color: #1F8AC0; /* Couleur de fond bleue */
+    color: white; /* Texte en blanc */
+    font-weight: bold; /* Texte en gras */
+    text-transform: uppercase; /* Texte en majuscules */
+}
+
+table thead th {
+    padding: 15px 10px;
+    border-right: 1px solid #1F1D2B; /* Bordure droite pour séparer les colonnes */
+}
+
+table thead th:last-child {
+    border-right: none; /* Supprimer la bordure droite de la dernière cellule */
+}
+
+/* Style pour les cellules */
 table, th, td {
-    border: 1px solid #444;
+    border: none; /* Pas de bordure */
 }
 
 th, td {
-    padding: 10px;
+    padding: 15px 10px;
     text-align: left;
+    color: #E0E0E0; /* Couleur du texte */
+    position: relative; /* Position relative pour les effets */
 }
 
-th {
-    background-color: #2C2F3F;
-}
-
+/* Style pour les lignes du corps du tableau */
 tr:nth-child(even) {
     background-color: #2C2F3F;
 }
@@ -243,6 +262,163 @@ tr:nth-child(even) {
 tr:nth-child(odd) {
     background-color: #252836;
 }
+
+/* Ajout de l'effet au survol */
+tr:hover {
+    background-color: #/* Style pour le conteneur du tableau */
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        border-radius: 20px;
+        background-color: #1F1D2B;
+        padding: 20px;
+        box-sizing: border-box;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style pour le tableau */
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #2A2E3E;
+    }
+
+    /* Style pour l'en-tête du tableau */
+    table thead tr {
+        background-color: #1F8AC0; /* Couleur de fond bleue */
+        color: white; /* Texte en blanc */
+        font-weight: bold; /* Texte en gras */
+        text-transform: uppercase; /* Texte en majuscules */
+    }
+
+    table thead th {
+        padding: 15px 10px;
+        border-right: 1px solid #1F1D2B; /* Bordure droite pour séparer les colonnes */
+    }
+
+    table thead th:last-child {
+        border-right: none; /* Supprimer la bordure droite de la dernière cellule */
+    }
+
+    /* Style pour les cellules */
+    table, th, td {
+        border: none; /* Pas de bordure */
+    }
+
+    th, td {
+        padding: 15px 10px;
+        text-align: left;
+        color: #E0E0E0; /* Couleur du texte */
+        position: relative; /* Position relative pour les effets */
+    }
+
+    /* Style pour les lignes du corps du tableau */
+    tr:nth-child(even) {
+        background-color: #2C2F3F;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #252836;
+    }
+
+    /* Ajout de l'effet au survol */
+    tr:hover {
+        background-color: #333;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Ombre portée lors du survol */
+        transform: scale(1.01); /* Légère mise à l'échelle */
+    }
+
+    /* Ajout de bordures arrondies aux premières et dernières cellules */
+    table thead tr:first-child th:first-child, 
+    table tbody tr:first-child td:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    table thead tr:first-child th:last-child, 
+    table tbody tr:first-child td:last-child {
+        border-top-right-radius: 10px;
+    }
+
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+    }
+
+    /* Ajout de transitions pour les effets */
+    tr, th, td {
+        transition: all 0.2s ease;
+    }
+
+    /* Ajout d'animations pour les cellules */
+    td::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    td:hover::before {
+        opacity: 1;
+    };
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Ombre portée lors du survol */
+    transform: scale(1.01); /* Légère mise à l'échelle */
+}
+
+/* Ajout de bordures arrondies aux premières et dernières cellules */
+table tr:first-child th:first-child, 
+table tr:first-child td:first-child {
+    border-top-left-radius: 10px;
+}
+
+table tr:first-child th:last-child, 
+table tr:first-child td:last-child {
+    border-top-right-radius: 10px;
+}
+
+table tr:last-child th:first-child, 
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+table tr:last-child th:last-child, 
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+/* Ajout de transitions pour les effets */
+tr, th, td {
+    transition: all 0.3s ease;
+}
+
+/* Ajout d'animations pour les cellules */
+td::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+td:hover::before {
+    opacity: 1;
+}
+
 
 /* SLS Animé */
 @import url("https://fonts.googleapis.com/css2?family=Russo+One&display=swap");
