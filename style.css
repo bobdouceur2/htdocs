@@ -197,7 +197,7 @@ header .user-profile img {
 }
 
 .formContainer {
-    background-color: #1F1D2B;
+    background-color: #252836;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 20px;
@@ -296,6 +296,44 @@ svg text {
     background-color: transparent;
     cursor: pointer;
   }
+ /* Style de base pour le bouton */
+.button {
+    background-color: #252836; /* Couleur de fond grise */
+    border: none; /* Pas de bordure */
+    color: white; /* Texte en blanc */
+    padding: 15px 32px; /* Padding */
+    text-align: center; /* Texte centré */
+    text-decoration: none; /* Pas de soulignement */
+    display: inline-block; /* Affichage en ligne */
+    font-size: 16px; /* Taille de police */
+    margin: 4px 2px; /* Marges */
+    cursor: pointer; /* Curseur de pointeur */
+    border-radius: 20px; /* Bordures arrondies */
+    transition-duration: 0.4s; /* Transition pour les effets */
+  }
+  
+  /* Style pour le survol du bouton */
+  .button:hover {
+    background-color: white; /* Fond blanc au survol */
+    color: #1F8AC0; /* Texte Bleu au survol */
+    border: 2px solid #1F8AC0; /* Bordure bleue */
+  }
+  
+  /* Style pour le bouton lorsque cliqué (focus) */
+  .button:active {
+    background-color: #252836; /* Couleur de fond gris foncé */
+    color: white; /* Texte en blanc */
+    border: none; /* Pas de bordure */
+  }
+  
+  /* Style pour les écrans plus petits */
+  @media (max-width: 600px) {
+    .button {
+      padding: 12px 24px; /* Ajustement du padding pour les petits écrans */
+      font-size: 14px; /* Ajustement de la taille de la police */
+    }
+  }
+   
 
   .formContainer {
     background-color: #1F1D2B;
@@ -326,7 +364,7 @@ svg text {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #48a7db;
+    background-color: #1F8AC0;
     color: #FFFFFF;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -339,3 +377,40 @@ svg text {
 .formContainer h2 {
     margin-bottom: 20px;
 }
+/* Firefox (uncomment to work in Firefox, although other properties will not work!)  */
+/** {
+  scrollbar-width: thin;
+  scrollbar-color: #1F8AC0 #DFE9EB;
+}*/
+
+/* Chrome, Edge and Safari */
+*::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background-color: #DFE9EB;
+  }
+  
+  *::-webkit-scrollbar-track:hover {
+    background-color: #B8C0C2;
+  }
+  
+  *::-webkit-scrollbar-track:active {
+    background-color: #B8C0C2;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #1F8AC0;
+  }
+  
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #1F8AC0;
+  }
+  
+  *::-webkit-scrollbar-thumb:active {
+    background-color: #1F8AC0;
+  }
+  
