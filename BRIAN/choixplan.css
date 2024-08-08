@@ -1,0 +1,295 @@
+/* Styles globaux */
+body {
+    background-color: #252835; /* Fond sombre issu de l'image */
+    color: #E0E0E0; /* Texte clair */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Assurer que le corps prend toute la hauteur de la fenêtre */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Conteneur pour l'identifiant utilisateur en haut à droite */
+.user-info {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #E0E0E0; /* Texte clair */
+    background-color: #1F1D2B; /* Fond sombre cohérent avec la barre latérale */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre pour la profondeur */
+}
+
+/* Style pour le choix du plan de transformation */
+.header-text {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    color: #E0E0E0; /* Texte clair */
+    background-color: #252836; /* Fond sombre */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre portée */
+    width: 80%; /* Ajustez la largeur selon vos préférences */
+}
+
+
+/* Styles supplémentaires pour les logos */
+.logos-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px; /* Espace entre les logos */
+    margin : 10px; /* Réduit l'espace au-dessus des logos */
+}
+
+.logo {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1); /* Zoomer légèrement au survol */
+}
+
+.logo-image {
+    max-width: 150px; /* Limite la taille des logos */
+    height: auto;
+}
+
+/* Styles globaux pour les boutons */
+.button {
+    background-color: #252836; /* Couleur de fond grise foncée */
+    border: none; /* Pas de bordure */
+    color: white; /* Texte en blanc */
+    padding: 15px 32px; /* Padding */
+    text-align: center; /* Texte centré */
+    text-decoration: none; /* Pas de soulignement */
+    display: inline-block; /* Affichage en ligne */
+    font-size: 16px; /* Taille de police */
+    margin: 4px 2px; /* Marges */
+    cursor: pointer; /* Curseur de pointeur */
+    border-radius: 20px; /* Bordures arrondies */
+    transition-duration: 0.4s; /* Transition pour les effets */
+}
+
+.button:hover {
+    background-color: white; /* Fond blanc au survol */
+    color: #1F8AC0; /* Texte bleu au survol */
+    border: 2px solid #1F8AC0; /* Bordure bleue */
+}
+
+/* Style de base pour les formulaires */
+.formContainer {
+    background-color: #1F1D2B; /* Fond sombre */
+    padding: 20px;
+    border-radius: 5px;
+    color: #E0E0E0;
+}
+
+.formContainer form {
+    display: flex;
+    flex-direction: column;
+}
+
+.formContainer label {
+    margin : 5px;
+}
+
+.formContainer input {
+    padding: 10px;
+    margin : 15px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2C2F3F;
+    color: #E0E0E0;
+}
+
+.formContainer button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #1F8AC0;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.formContainer button:hover {
+    background-color: #1F8AC0;
+}
+
+.formContainer h2 {
+    margin : 20px;
+}
+
+/* Style pour les tableaux */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    border-radius: 20px;
+    background-color: #1F1D2B;
+    padding: 20px;
+    box-sizing: border-box;
+    
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #2A2E3E;
+}
+
+table thead tr {
+    background-color: #1F8AC0; /* Couleur de fond bleue */
+    color: white; /* Texte en blanc */
+    font-weight: bold; /* Texte en gras */
+    text-transform: uppercase; /* Texte en majuscules */
+}
+
+table thead th {
+    padding: 15px 10px;
+    border-right: 1px solid #1F1D2B; /* Bordure droite pour séparer les colonnes */
+}
+
+table thead th:last-child {
+    border-right: none; /* Supprimer la bordure droite de la dernière cellule */
+}
+
+table, th, td {
+    border: none; /* Pas de bordure */
+}
+
+th, td {
+    padding: 15px 10px;
+    text-align: left;
+    color: #E0E0E0; /* Couleur du texte */
+    position: relative; /* Position relative pour les effets */
+}
+
+tr:nth-child(even) {
+    background-color: #2C2F3F;
+}
+
+tr:nth-child(odd) {
+    background-color: #252836;
+}
+
+tr:hover {
+    background-color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Ombre portée lors du survol */
+    transform: scale(1.01); /* Légère mise à l'échelle */
+}
+
+td::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+td:hover::before {
+    opacity: 1;
+}
+
+
+
+/* Styles globaux */
+body {
+    background-color: #252835; /* Fond sombre issu de l'image */
+    color: #E0E0E0; /* Texte clair */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Assurer que le corps prend toute la hauteur de la fenêtre */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centrer verticalement le contenu */
+    align-items: center; /* Centrer horizontalement le contenu */
+}
+
+/* Conteneur pour l'identifiant utilisateur en haut à droite */
+.user-info {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #E0E0E0; /* Couleur du texte clair */
+    background-color: #1F1D2B; /* Fond sombre cohérent avec la barre latérale */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ajout d'une ombre pour la profondeur */
+}
+
+/* Style pour le choix du plan de transformation */
+.header-text {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    
+    margin : 20px;
+    color: #E0E0E0; /* Texte clair */
+    
+    padding: 20px;
+    border-radius: 10px;
+    
+}
+
+/* Styles supplémentaires pour les logos */
+.logos-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px; /* Espace entre les logos */
+    margin : 40px;
+}
+
+.logo {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1); /* Zoomer légèrement au survol */
+}
+
+.logo-image {
+    max-width: 150px; /* Limite la taille des logos */
+    height: auto;
+}
+
+/* Conteneur pour le rectangle supplémentaire */
+.header-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1F1D2B; /* Fond pour le rectangle supplémentaire */
+    padding: 10px; /* Espace autour du texte à l'intérieur du rectangle */
+    border-radius: 15px; /* Bordures arrondies pour le rectangle */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ombre pour la profondeur */
+    margin : 20px; /* Espace entre le rectangle et les icônes */
+}
+
+.header-text {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    color: #E0E0E0; /* Texte clair */
+    background-color: #252836; /* Fond sombre */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre portée */
+    width: 80%; /* Ajustez la largeur selon vos préférences */
+}
+
+
