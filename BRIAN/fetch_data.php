@@ -58,7 +58,58 @@
             border-width: 0 3px 3px 0;
             transform: rotate(45deg);
         }
+
+        /* Styles pour les icônes de tri */
+        .sort-icon {
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .sort-asc::after {
+            content: '▲';
+        }
+        .sort-desc::after {
+            content: '▼';
+        }
+
+
+        a {
+            color: white;
+            text-decoration: none; /* Supprimer la sous-ligne */
+        }
+
+        /* Pour changer la couleur lors du survol, si nécessaire */
+        a:hover {
+            color: #ddd; /* Couleur légèrement différente lors du survol */
+        }
+
+        /* Styles spécifiques pour les liens de tri dans les en-têtes de tableau */
+        th a {
+            color: white; /* Couleur blanche pour les liens dans les en-têtes */
+        }
+
+        /* Couleur pour les icônes de tri */
+        .sort-icon {
+            font-size: 12px;
+            margin-left: 5px;
+            color: white; /* Couleur blanche pour les icônes de tri */
+        }
     </style>
+    <script>
+        function sortTable(column) {
+            const url = new URL(window.location.href);
+            const currentSort = url.searchParams.get('sort');
+            let newSort;
+
+            if (currentSort === column + 'Asc') {
+                newSort = column + 'Desc';
+            } else {
+                newSort = column + 'Asc';
+            }
+
+            url.searchParams.set('sort', newSort); // Ajouter ou mettre à jour le paramètre 'sort'
+            window.location.href = url.toString(); // Rediriger vers la nouvelle URL
+        }
+    </script>
 </head>
 <body>
     <?php
@@ -76,17 +127,82 @@
     $userId = $_SESSION['userId'];
 
     // Déterminez l'ordre de tri basé sur la valeur du paramètre 'sort'
+    $sortIcons = [
+        'id' => '',
+        'intitule' => '',
+        'objectifs' => '',
+        'date' => '',
+        'dateFin' => '',
+        'avancement' => '',
+        'levier' => '',
+        'participants' => ''
+    ];
+
     switch ($sort) {
-        case 'dateDesc':
-            $orderBy = "DateDeDebut DESC";
+        case 'idAsc':
+            $orderBy = "ID ASC";
+            $sortIcons['id'] = 'sort-asc';
+            break;
+        case 'idDesc':
+            $orderBy = "ID DESC";
+            $sortIcons['id'] = 'sort-desc';
+            break;
+        case 'intituleAsc':
+            $orderBy = "Intitule ASC";
+            $sortIcons['intitule'] = 'sort-asc';
+            break;
+        case 'intituleDesc':
+            $orderBy = "Intitule DESC";
+            $sortIcons['intitule'] = 'sort-desc';
+            break;
+        case 'objectifsAsc':
+            $orderBy = "Objectifs ASC";
+            $sortIcons['objectifs'] = 'sort-asc';
+            break;
+        case 'objectifsDesc':
+            $orderBy = "Objectifs DESC";
+            $sortIcons['objectifs'] = 'sort-desc';
+            break;
+        case 'dateFinAsc':
+            $orderBy = "DateDeFin ASC";
+            $sortIcons['dateFin'] = 'sort-asc';
+            break;
+        case 'dateFinDesc':
+            $orderBy = "DateDeFin DESC";
+            $sortIcons['dateFin'] = 'sort-desc';
             break;
         case 'avancementAsc':
             $orderBy = "Avancement ASC";
+            $sortIcons['avancement'] = 'sort-asc';
             break;
         case 'avancementDesc':
             $orderBy = "Avancement DESC";
+            $sortIcons['avancement'] = 'sort-desc';
+            break;
+        case 'levierAsc':
+            $orderBy = "Levier ASC";
+            $sortIcons['levier'] = 'sort-asc';
+            break;
+        case 'levierDesc':
+            $orderBy = "Levier DESC";
+            $sortIcons['levier'] = 'sort-desc';
+            break;
+        case 'participantsAsc':
+            $orderBy = "Participants ASC";
+            $sortIcons['participants'] = 'sort-asc';
+            break;
+        case 'participantsDesc':
+            $orderBy = "Participants DESC";
+            $sortIcons['participants'] = 'sort-desc';
             break;
         case 'dateAsc':
+            $orderBy = "DateDeDebut ASC";
+            $sortIcons['date'] = 'sort-asc';
+            break;
+        case 'dateDesc':
+            $orderBy = "DateDeDebut DESC";
+            $sortIcons['date'] = 'sort-desc';
+            break;
         default:
             $orderBy = "DateDeDebut ASC";
             break;
@@ -111,7 +227,6 @@
                       ORDER BY $orderBy";
         } else {
             $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants 
-                      FROM projets 
                       WHERE Levier = ? AND (Participants = ? OR Participants LIKE ?) 
                       ORDER BY $orderBy";
         }
@@ -149,14 +264,14 @@
                     <span class='checkmark'></span>
                 </label>
               </th>"; // Ajout de la case à cocher pour tout sélectionner
-        echo "<th>ID</th>";
-        echo "<th>Intitulé</th>";
-        echo "<th>Objectifs</th>";
-        echo "<th>Date de début</th>";
-        echo "<th>Date de fin</th>";
-        echo "<th>Avancement (%)</th>";
-        echo "<th>Levier</th>";
-        echo "<th>Participants</th>";
+        echo "<th><a href='#' onclick=\"sortTable('id')\">ID<span class='sort-icon {$sortIcons['id']}'></span></a></th>";
+        echo "<th><a href='#' onclick=\"sortTable('intitule')\">Intitulé<span class='sort-icon {$sortIcons['intitule']}'></span></a></th>";
+        echo "<th><a href='#' onclick=\"sortTable('objectifs')\">Objectifs<span class='sort-icon {$sortIcons['objectifs']}'></span></a></th>";
+        echo "<th><a href='#' onclick=\"sortTable('date')\">Date de début<span class='sort-icon {$sortIcons['date']}'></span></a></th>";
+        echo "<th><a href='#' onclick=\"sortTable('dateFin')\">Date de fin<span class='sort-icon {$sortIcons['dateFin']}'></span></a></th>";
+        echo "<th><a href='#' onclick=\"sortTable('avancement')\">Avancement (%)<span class='sort-icon {$sortIcons['avancement']}'></span></a></th>";
+        echo "<th><a href='#' onclick=\"sortTable('levier')\">Levier<span class='sort-icon {$sortIcons['levier']}'></span></a></th>";
+        echo "<th><a href='#' onclick=\"sortTable('participants')\">Participants<span class='sort-icon {$sortIcons['participants']}'></span></a></th>";
         echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
@@ -188,7 +303,6 @@
     } else {
         echo "0 résultats";
     }
-   
     ?>
 </body>
 </html>
