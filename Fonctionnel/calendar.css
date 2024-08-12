@@ -1,0 +1,101 @@
+/* Styles pour le calendrier */
+
+.calendar-container {
+    margin: 20px auto; /* Centrer et marger le conteneur du calendrier */
+    width: 90%; /* Largeur du conteneur */
+    background-color: var(--form-background); /* Couleur de fond du conteneur */
+    padding: 20px; /* Padding intérieur du conteneur */
+    border-radius: 20px; /* Bordure arrondie du conteneur */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ombre du conteneur */
+}
+
+.calendar-container h3 {
+    text-align: center; /* Centrer le texte */
+    margin-bottom: 20px; /* Marge inférieure */
+    color: var(--text-color); /* Couleur du texte */
+}
+
+.calendar {
+    width: 100%; /* Largeur du tableau */
+    border-collapse: collapse; /* Fusionner les bordures */
+    border-spacing: 0; /* Pas d'espacement entre les cellules */
+    margin-top: 20px; /* Marge supérieure */
+    border-radius: 20px; /* Bordure arrondie du tableau */
+    overflow: hidden; /* Cacher le débordement */
+    background-color: var(--table-background); /* Couleur de fond du tableau */
+    color: var(--table-text-color); /* Couleur du texte du tableau */
+}
+
+.calendar th, .calendar td {
+    padding: 10px; /* Padding des cellules */
+    text-align: center; /* Centrer le texte dans les cellules */
+    border: none; /* Supprimer les bordures */
+}
+
+.calendar th {
+    background-color: var(--table-header-background); /* Couleur de fond des en-têtes */
+    color: var(--table-text-color); /* Couleur du texte des en-têtes */
+}
+
+.calendar td {
+    background-color: var(--table-background); /* Couleur de fond des cellules */
+    color: var(--text-color); /* Couleur du texte des cellules */
+}
+
+.calendar td.empty {
+    background-color: transparent; /* Couleur de fond des cellules vides */
+    border: none; /* Pas de bordure pour les cellules vides */
+}
+
+.calendar .event {
+    font-size: 12px; /* Taille de la police des événements */
+    margin-top: 5px; /* Marge supérieure des événements */
+    border-radius: 5px; /* Bordure arrondie des événements */
+    padding: 2px 5px; /* Padding des événements */
+    background-color: var(--event-background-color); /* Couleur de fond des événements */
+    color: var(--event-text-color); /* Couleur du texte des événements */
+}
+
+.calendar td:hover {
+    background-color: var(--table-cell-hover); /* Couleur de fond au survol des cellules */
+}
+
+.calendar tr:nth-child(even) td {
+    background-color: var(--table-even-row-background); /* Couleur de fond des cellules des lignes paires */
+}
+
+.calendar tr:nth-child(even) th {
+    background-color: var(--table-header-background); /* Couleur de fond des en-têtes des lignes paires */
+}
+
+.calendar-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Répartir l'espace entre les éléments */
+    margin-bottom: 20px;
+}
+
+.calendar-navigation span {
+    flex-grow: 1; /* Permettre au texte de prendre l'espace restant */
+    text-align: center; /* Centrer le texte */
+    font-weight: bold;
+    font-size: 1.2rem; /* Taille de police pour le texte */
+}
+
+.calendar-nav-icon {
+    font-size: 20px; /* Ajuster la taille de l'icône si nécessaire */
+    color: var(--text-color); /* Assurez-vous que la couleur correspond à votre thème */
+    text-decoration: none; /* Supprimer la décoration de texte */
+}
+
+.calendar-nav-icon.prev {
+    margin-right: 10px; /* Ajuster l'espace à gauche de l'icône */
+}
+
+.calendar-nav-icon.next {
+    margin-left: 10px; /* Ajuster l'espace à droite de l'icône */
+}
+
+.calendar-nav-icon:hover {
+    color: var(--button-hover); /* Couleur de survol */
+}

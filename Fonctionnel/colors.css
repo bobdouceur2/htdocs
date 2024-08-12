@@ -1,0 +1,17 @@
+:root {
+    --background-color: #0a0f29; /* Couleur de fond principale en bleu nuit très sombre */
+    --text-color: #ffffff; /* Couleur de texte en gris clair */
+    --header-background: #121a45; /* Couleur du header en bleu foncé */
+    --button-background: #1a245b; /* Couleur des boutons en bleu très sombre */
+    --button-hover: #2d3c7d; /* Couleur différente des boutons lors du survol */
+    --form-background: #121a45; /* Couleur de fond des formulaires en bleu foncé */
+    --form-input-background: #1c1c2e; /* Fond des champs de formulaire en bleu très foncé */
+    --form-input-border: #343456; /* Bordure des champs de formulaire en gris foncé */
+    --table-background: #121a45; /* Couleur de fond du tableau en bleu foncé */
+    --table-text-color: #ffffff; /* Couleur du texte des cellules en gris clair */
+    --table-header-background: #1c1c2e; /* Couleur des en-têtes de colonnes en bleu très foncé */
+    --table-cell-border: #2c2c4600; /* Bordure des cellules en gris très foncé */
+    --table-even-row-background: #0f112e; /* Couleur de fond des cellules paires en bleu nuit très sombre */
+    --filter-form-button-background: #1a245b; /* Couleur des boutons du formulaire en bleu très sombre */
+    --filter-form-button-hover: #2d3c7d; /* Couleur différente des boutons du formulaire lors du survol */
+}

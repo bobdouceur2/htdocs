@@ -1,0 +1,35 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff; /* Fond blanc */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.header-text {
+    margin-bottom: 20px; /* Espace en dessous du texte */
+    font-size: 2em; /* Taille du texte */
+    color: #53546b; /* Couleur du texte */
+    font-weight: bold; /* Texte en gras */
+}
+
+.logos-container {
+    display: flex;
+    justify-content: center; /* Centre les logos horizontalement */
+    align-items: center; /* Centre les logos verticalement */
+}
+
+.logo {
+    margin: 0 20px; /* Espace horizontal entre les logos */
+    cursor: pointer; /* Change le curseur au survol */
+}
+
+.logo-image {
+    height: 120px; /* Hauteur fixe pour les logos */
+    width: auto; /* La largeur s'ajuste automatiquement */
+    object-fit: contain; /* Conserve les proportions des logos */
+}

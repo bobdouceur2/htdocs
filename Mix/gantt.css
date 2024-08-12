@@ -1,0 +1,136 @@
+:root {
+    --background-color: #0a0f29; /* Couleur de fond principale en bleu nuit très sombre */
+    --text-color: #ffffff; /* Couleur de texte en gris clair */
+    --header-background: #121a45; /* Couleur du header en bleu foncé */
+    --button-background: #1a245b; /* Couleur des boutons en bleu très sombre */
+    --button-hover: #2d3c7d; /* Couleur différente des boutons lors du survol */
+    --form-background: #121a45; /* Couleur de fond des formulaires en bleu foncé */
+    --form-input-background: #1c1c2e; /* Fond des champs de formulaire en bleu très foncé */
+    --form-input-border: #343456; /* Bordure des champs de formulaire en gris foncé */
+    --table-background: #121a45; /* Couleur de fond du tableau en bleu foncé */
+    --table-text-color: #ffffff; /* Couleur du texte des cellules en gris clair */
+    --table-header-background: #1c1c2e; /* Couleur des en-têtes de colonnes en bleu très foncé */
+    --table-cell-border: transparent; /* Bordure des cellules en gris très foncé */
+    --table-even-row-background: #0f112e; /* Couleur de fond des cellules paires en bleu nuit très sombre */
+    --filter-form-button-background: #1a245b; /* Couleur des boutons du formulaire en bleu très sombre */
+    --filter-form-button-hover: #2d3c7d; /* Couleur différente des boutons du formulaire lors du survol */
+
+    /* Couleurs des barres de Gantt */
+    --gantt-bar-color-1: #75a8de; /* Couleur 1 - plus claire */
+    --gantt-bar-color-2: #629deb; /* Couleur 2 */
+    --gantt-bar-color-3: #4d8ae6; /* Couleur 3 */
+    --gantt-bar-color-4: #3071e1; /* Couleur 4 */
+    --gantt-bar-color-5: #2166e5; /* Couleur 5 */
+    --gantt-bar-color-6: #1156e0; /* Couleur 6 */
+    --gantt-bar-color-7: #0044cc; /* Couleur 7 */
+    --gantt-bar-color-8: #0035b2; /* Couleur 8 */
+    --gantt-bar-color-9: #0e35a0; /* Couleur 9 */
+    --gantt-bar-color-10: #001762; /* Couleur 10 - plus foncée */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.card-top {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    padding: 20px; /* Ajoute 20px de padding de chaque côté, en haut et en bas */
+    box-sizing: border-box; /* Inclut le padding dans la largeur totale */
+    background-color: #1F1D2B; /* Couleur de fond de la carte */
+    border-radius: 30px;
+    overflow: hidden; /* Éviter les débordements */
+    margin-bottom: 0; /* S'assurer qu'il n'y a pas de marge en bas */
+}
+
+
+.gantt-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Assurer que le contenu ne dépasse pas */
+    padding-bottom: 0; /* Assurez-vous qu'il n'y a pas de padding en bas */
+    margin-bottom: 0; /* S'assurer qu'il n'y a pas de marge en bas */
+}
+
+.gantt-chart {
+    width: 140%; /* Prend toute la largeur disponible moins 20px (10px de chaque côté) */
+    border-collapse: collapse;
+    height: auto;
+    margin: 0 auto; /* Centre le tableau horizontalement */
+    background-color: var(--table-background);
+    transform: scale(0.71);
+    transform-origin: top left;
+}
+
+.gantt-chart th, .gantt-chart td {
+    border: none; /* Remove cell borders */
+    padding: 5px;
+    text-align: center;
+    vertical-align: top;
+    position: relative;
+    height: 50px;
+    color: var(--table-text-color);
+}
+
+.gantt-chart th:first-child, .gantt-chart td:first-child {
+    width: 150px; /* Largeur plus large pour la colonne des intitulés de projet */
+    max-width: 150px;
+    min-width: 150px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.gantt-chart th:not(:first-child), .gantt-chart td:not(:first-child) {
+    width: auto; /* Largeur auto pour chaque mois */
+}
+
+.gantt-chart th {
+    background-color: var(--table-header-background);
+    font-weight: bold;
+}
+
+.gantt-bar-container {
+    display: flex;
+    height: 20px;
+    margin-top: 15px;
+}
+
+.gantt-bar {
+    height: 100%;
+    border-radius: 5px;
+}
+
+.gantt-bar.color-1 { background-color: var(--gantt-bar-color-1); }
+.gantt-bar.color-2 { background-color: var(--gantt-bar-color-2); }
+.gantt-bar.color-3 { background-color: var(--gantt-bar-color-3); }
+.gantt-bar.color-4 { background-color: var(--gantt-bar-color-4); }
+.gantt-bar.color-5 { background-color: var(--gantt-bar-color-5); }
+.gantt-bar.color-6 { background-color: var(--gantt-bar-color-6); }
+.gantt-bar.color-7 { background-color: var(--gantt-bar-color-7); }
+.gantt-bar.color-8 { background-color: var(--gantt-bar-color-8); }
+.gantt-bar.color-9 { background-color: var(--gantt-bar-color-9); }
+.gantt-bar.color-10 { background-color: var(--gantt-bar-color-10); }
+
+.gantt-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: var(--header-background);
+    padding: 10px;
+    color: var(--text-color);
+}
+
+.gantt-nav-icon {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1.5em;
+}
+
+.gantt-nav-icon:hover {
+    text-decoration: underline;
+    color: var(--button-hover);
+}
