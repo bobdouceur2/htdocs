@@ -1,4 +1,12 @@
-/* Styles globaux */
+/* 
+#1F1D2B
+color: #FFFFFF;
+background-color: #252836; 
+
+
+*/
+
+
 body {
     background-color: #252836; /* Fond sombre */
     color: #E0E0E0; /* Texte clair */
@@ -21,15 +29,32 @@ header {
     flex-shrink: 0;
 }
 
-header .search-bar {
+header .search-bar-container {
+    display: flex;
+    align-items: center;
     background-color: #1F1D2B;
-    border: none;
-    padding: 20px;
     border-radius: 20px;
-    color: #FFFFFF;
+    padding: 10px 20px;
+    width: 300px;
     margin-left: 160px;
     margin-right: auto;
-    width: 300px;
+}
+
+/* Style pour l'image de l'icône de recherche */
+header .search-bar-container img {
+    width: 24px; /* Ajustez la taille de l'image selon vos besoins */
+    height: 24px;
+    margin-right: 10px; /* Espacement entre l'image et l'input */
+}
+
+/* Style pour l'input de la barre de recherche */
+header .search-bar-container input {
+    background-color: #1F1D2B;
+    border: none;
+    outline: none;
+    color: #FFFFFF;
+    flex-grow: 1;
+    padding: 10px; /* Ajustement du padding pour s'adapter au conteneur */
 }
 
 header .user-profile {
@@ -50,8 +75,6 @@ header .user-profile img {
     width: 100px; /* Augmenter légèrement la largeur */
     height: 100vh;
     position: fixed;
-    top: 0;
-    left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -142,37 +165,58 @@ header .user-profile img {
 
 /* Conteneur principal */
 .main-container {
+    height: auto; /* La hauteur s'adapte au contenu */
     margin-left: 160px; /* Décalage pour la barre latérale */
     padding: 20px;
     display: grid;
     grid-template-columns: 2fr 3fr 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto; /* Ajuste les lignes en fonction du contenu */
     gap: 40px;
-    flex-grow: 1;
+    flex-grow: 1; /* Permet aux éléments de grandir pour remplir l'espace */
     overflow: hidden; /* Éviter les débordements */
+    margin-bottom: 0; /* Pas de marge en bas */
+    padding-bottom: 0; /* Pas de padding en bas */
 }
 
+/* Carte générale */
 .card {
+    margin-left: 160px; /* Décalage pour la barre latérale */
+    max-width: calc(100vw - 160px - 40px);
     background-color: #1F1D2B;
     border-radius: 30px;
     padding: 20px;
     color: #FFFFFF;
     overflow: hidden; /* Éviter les débordements */
+    margin-bottom: 0; /* Pas de marge en bas */
+    padding-bottom: 0; /* Pas de padding en bas */
+    box-sizing: border-box; /* Assure que padding et bordures sont inclus dans la taille */
+    display: flex; /* Permet l'utilisation de flexbox pour le contenu interne */
+    flex-direction: column; /* Organise le contenu verticalement */
+    flex-grow: 1; /* Permet à la carte de prendre l'espace disponible */
 }
 
+/* Carte supérieure */
 .card-top {
-    grid-column: span 2;
-    height: 100px; /* Ajuster selon vos besoins */
+    grid-column: span 2; /* S'étend sur deux colonnes dans la grille */
+  
+    
 }
+
+
 
 .card-large {
-    grid-column: span 2;
-    grid-row: 2 / 3;
-    height: calc(100% - 80px);
-    overflow: auto; /* Permettre le défilement interne si nécessaire */
+    grid-column: span 2; /* S'étend sur deux colonnes dans la grille */
+    grid-row: 2 / 3; /* Définit la ligne de début et de fin dans la grille */
     padding: 20px 40px;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Assure que le padding et les bordures sont inclus dans la taille */
+    overflow: auto; /* Permet le défilement interne si nécessaire */
+    display: flex; /* Utilisation de flexbox pour le contenu interne */
+    flex-direction: column; /* Organise le contenu verticalement */
+    flex-grow: 0; /* Permet à l'élément de grandir pour remplir l'espace disponible */
+    height: 100%; /* Prend toute la hauteur disponible dans sa ligne de grille */
 }
+
+
 
 .card-right {
     grid-column: 3 / 4;
@@ -203,17 +247,10 @@ header .user-profile img {
     margin-bottom: 20px;
 }
 
-/* Style pour le conteneur du tableau */
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: auto;
-    border-radius: 20px;
-    background-color: #1F1D2B;
-    padding: 20px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre portée */
-}
+
+
+
+
 
 /* Style pour le tableau */
 table {
@@ -265,112 +302,116 @@ tr:nth-child(odd) {
 
 /* Ajout de l'effet au survol */
 tr:hover {
-    background-color: #333;
+    background-color: #FFFFFF;/* Style pour le conteneur du tableau */
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        border-radius: 20px;
+        background-color: #1F1D2B;
+        padding: 20px;
+        box-sizing: border-box;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style pour le tableau */
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #2A2E3E;
+    }
+
+    /* Style pour l'en-tête du tableau */
+    table thead tr {
+        background-color: #1F8AC0; /* Couleur de fond bleue */
+        color: white; /* Texte en blanc */
+        font-weight: bold; /* Texte en gras */
+        text-transform: uppercase; /* Texte en majuscules */
+    }
+
+    table thead th {
+        padding: 15px 10px;
+        border-right: 1px solid #1F1D2B; /* Bordure droite pour séparer les colonnes */
+    }
+
+    table thead th:last-child {
+        border-right: none; /* Supprimer la bordure droite de la dernière cellule */
+    }
+
+    /* Style pour les cellules */
+    table, th, td {
+        border: none; /* Pas de bordure */
+    }
+
+    th, td {
+        padding: 15px 10px;
+        text-align: left;
+        color: #E0E0E0; /* Couleur du texte */
+        position: relative; /* Position relative pour les effets */
+    }
+
+    /* Style pour les lignes du corps du tableau */
+    tr:nth-child(even) {
+        background-color: #2C2F3F;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #252836;
+    }
+
+    /* Ajout de l'effet au survol */
+    tr:hover {
+        background-color: #333;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Ombre portée lors du survol */
+        transform: scale(1.01); /* Légère mise à l'échelle */
+    }
+
+    /* Ajout de bordures arrondies aux premières et dernières cellules */
+    table thead tr:first-child th:first-child, 
+    table tbody tr:first-child td:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    table thead tr:first-child th:last-child, 
+    table tbody tr:first-child td:last-child {
+        border-top-right-radius: 10px;
+    }
+
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+    }
+
+    /* Ajout de transitions pour les effets */
+    tr, th, td {
+        transition: all 0.2s ease;
+    }
+
+    /* Ajout d'animations pour les cellules */
+    td::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    td:hover::before {
+        opacity: 1;
+    };
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Ombre portée lors du survol */
     transform: scale(1.01); /* Légère mise à l'échelle */
 }
-
-/* Style pour le conteneur du tableau */
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: auto;
-    border-radius: 20px;
-    background-color: #1F1D2B;
-    padding: 20px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Style pour le tableau */
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: #2A2E3E;
-}
-
-/* Style pour l'en-tête du tableau */
-table thead tr {
-    background-color: #1F8AC0; /* Couleur de fond bleue */
-    color: white; /* Texte en blanc */
-    font-weight: bold; /* Texte en gras */
-    text-transform: uppercase; /* Texte en majuscules */
-}
-
-table thead th {
-    padding: 15px 10px;
-    border-right: 1px solid #1F1D2B; /* Bordure droite pour séparer les colonnes */
-}
-
-table thead th:last-child {
-    border-right: none; /* Supprimer la bordure droite de la dernière cellule */
-}
-
-/* Style pour les cellules */
-table, th, td {
-    border: none; /* Pas de bordure */
-}
-
-th, td {
-    padding: 15px 10px;
-    text-align: left;
-    color: #E0E0E0; /* Couleur du texte */
-    position: relative; /* Position relative pour les effets */
-}
-
-/* Style pour les lignes du corps du tableau */
-tr:nth-child(even) {
-    background-color: #2C2F3F;
-}
-
-tr:nth-child(odd) {
-    background-color: #252836;
-}
-
-/* Ajout de bordures arrondies aux premières et dernières cellules */
-table thead tr:first-child th:first-child, 
-table tbody tr:first-child td:first-child {
-    border-top-left-radius: 10px;
-}
-
-table thead tr:first-child th:last-child, 
-table tbody tr:first-child td:last-child {
-    border-top-right-radius: 10px;
-}
-
-table tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 10px;
-}
-
-table tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 10px;
-}
-
-/* Ajout de transitions pour les effets */
-tr, th, td {
-    transition: all 0.2s ease;
-}
-
-/* Ajout d'animations pour les cellules */
-td::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-td:hover::before {
-    opacity: 1;
-}
-
 
 /* Ajout de bordures arrondies aux premières et dernières cellules */
 table tr:first-child th:first-child, 

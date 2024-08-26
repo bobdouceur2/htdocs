@@ -1,19 +1,16 @@
 <?php
 session_start();
 if (!isset($_SESSION['userId'])) {
-    // Rediriger vers index.php si l'identifiant n'est pas défini
+  
     header('Location: index.php');
     exit();
 }
+
 $userId = $_SESSION['userId'];
 
 require_once 'db_connection.php';
 
-// Requête pour obtenir le dernier ID utilisé
-$query = "SELECT MAX(ID) as max_id FROM projets";
-$result = $conn->query($query);
-$row = $result->fetch_assoc();
-$nextId = $row['max_id'] + 1; // Calculer le prochain ID disponible
+
 ?>
 
 <!DOCTYPE html>
@@ -55,8 +52,6 @@ $nextId = $row['max_id'] + 1; // Calculer le prochain ID disponible
                     <input type="text" id="searchInput" class="form-control mb-2" placeholder="Rechercher...">
                 </div>
             </div>
-
-            
 
             <i class="fas fa-plus-circle add-icon" onclick="openPopupForm()"></i>
 
@@ -124,10 +119,8 @@ $nextId = $row['max_id'] + 1; // Calculer le prochain ID disponible
                  <i class="fas fa-cog"></i> Réglages
             </button>
 
-                                          
-
+            
         </div>
-      
 
         <!-- Conteneur de contenu principal -->
         <div class="content" id="mainContent">
@@ -141,8 +134,6 @@ $nextId = $row['max_id'] + 1; // Calculer le prochain ID disponible
 
         // Inclure le fichier de génération du diagramme de Gantt
         require_once 'generate_gantt.php';
-
-        
         ?>
     </div>
 
@@ -211,7 +202,6 @@ $nextId = $row['max_id'] + 1; // Calculer le prochain ID disponible
             <button class="btn btn-primary" onclick="goToAdminMode()">Mode Administrateur</button>
         </div>
     </div>
-
 
     <script>
         document.getElementById('avancement').addEventListener('input', function() {
@@ -282,6 +272,3 @@ $nextId = $row['max_id'] + 1; // Calculer le prochain ID disponible
     </script>
 </body>
 </html>
-
-
-

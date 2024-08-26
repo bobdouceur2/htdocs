@@ -1,45 +1,55 @@
+<?php
+session_start();
+if (!isset($_SESSION['userId'])) {
+    // Rediriger vers index.php si l'identifiant n'est pas défini
+    header('Location: index.php');
+    exit();
+}
+$userId = $_SESSION['userId'];
+?>
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Métadonnées et ressources -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <!-- Lien vers la feuille de style CSS externe -->
-    <link rel="stylesheet" href="styles.css">
-    <!-- Lien vers une police de caractères Google Fonts -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gantt.css">
+    <script src="functions.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- En-tête du tableau de bord -->
+
+
+
+
+
     <header>
-        <!-- Champ de recherche -->
-        <input type="text" class="search-bar" placeholder="Rechercher...">
-        
-        <!-- Section du profil utilisateur -->
+    <div class="search-bar-container">
+            <img src="recherche.png" alt="Recherche Icon">
+            <input type="text" class="search-bar" placeholder="Rechercher...">
+        </div>
         <div class="user-profile">
             <img src="user.png" alt="User Icon">
             <span>Utilisateur</span> 
         </div>
         
-        <!-- Espace pour une icône ou un texte supplémentaire (actuellement commenté) -->
-        <div class="wrapper">
-            <!--
-	            <svg>
-                    <text x="80" y="50%" text-anchor="start" dominant-baseline="middle">
-			        SE 
-		            </text>
-	            </svg>
-            -->
-        </div>
     </header>
+
+
+
+
+
     
-    <!-- Barre latérale de navigation -->
     <div class="sidebar">
-        <!-- Logo de l'entreprise -->
         <img src="safran_logo.png" alt="Safran Logo" class="logo">
-        
-        <!-- Icônes de navigation -->
         <div class="icon active">
             <div class="outer-rectangle">
                 <div class="inner-rectangle"></div>
@@ -56,17 +66,40 @@
             <img src="disconnect.png" alt="Disconnect Icon">
         </div>
     </div>
+
+
+
+
+
     
-    <!-- Conteneur principal -->
     <div class="main-container">
-        <!-- Cartes d'information --> 
-        <div class="card card-top"></div>
-        <div class="card card-right">
-            <div class="buttonsContainer">
-                <!-- Boutons pour ajouter ou modifier des lignes -->
-                <button onclick="toggleAddForm()" class="button">Ajouter une ligne</button>
-                <button onclick="toggleEditForm()" class="button">Modifier une ligne</button>
+
+        <div class="card card-top">
+
+            <div id="gantt-container">
+                <?php
+                // Vérifier et récupérer les paramètres year de l'URL ou utiliser les valeurs par défaut
+                if (isset($_GET['year'])) {
+                    $year = (int)$_GET['year'];
+                } else {
+                    $year = date('Y');
+                }
+
+                // Inclure le fichier de génération du diagramme de Gantt
+                require_once 'generate_gantt.php';
+
+                // Appeler la fonction pour générer le diagramme de Gantt
+                generateGanttChart($year, $conn);
+                ?>
             </div>
+        </div>
+
+
+
+
+
+
+        
 
             <!-- Formulaire d'ajout de ligne (caché par défaut) -->
             <div id="addFormContainer" class="formContainer" style="display: none;">
@@ -100,20 +133,163 @@
                 </form>
             </div>
         </div>
+
+
+
+
+
         
-        <!-- Section pour afficher un tableau dynamique -->
         <div class="card card-large table-container">
-            <!-- Insertion du tableau généré par PHP -->
-            <?php require_once 'fetch_data.php'; ?> 
+            <?php require_once 'fetch_data.php'; ?> <!-- Insérer le tableau ici -->
         </div>
+
+
+
+
+
     </div>
 
-    <!-- Inclusion du fichier de connexion à la base de données -->
-    <?php require_once 'db_connection.php'; ?>
 
-    <!-- Lien vers le fichier JavaScript externe -->
-    <script src="functions.js"></script>
+
+
+    
+
+    <?php
+    // Inclusion du fichier de connexion à la base de données.
+    require_once 'db_connection.php';
+    ?>
+
+    <script>
+    // JavaScript pour gérer les actions du formulaire
+    function toggleAddForm() {
+        var addFormContainer = document.getElementById("addFormContainer");
+        var editFormContainer = document.getElementById("editFormContainer");
+
+        addFormContainer.style.display = addFormContainer.style.display === "none" ? "block" : "none";
+        // Assurez-vous de cacher le formulaire de modification si le formulaire d'ajout est affiché
+        if (addFormContainer.style.display === "block") {
+            editFormContainer.style.display = "none";
+        }
+    }
+
+    function toggleEditForm() {
+        var editFormContainer = document.getElementById("editFormContainer");
+        var addFormContainer = document.getElementById("addFormContainer");
+
+        editFormContainer.style.display = editFormContainer.style.display === "none" ? "block" : "none";
+        
+        // Cacher le formulaire d'ajout si le formulaire de modification est affiché
+        if (editFormContainer.style.display === "block") {
+            addFormContainer.style.display = "none";
+        }
+    }
+
+    function getEditFormData() {
+        var id = document.getElementById('editRowId').value;
+        if(id) {
+            fetch("get_row_data.php", {
+                method: "POST",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}, 
+                body: 'id=' + id
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('editIntitule').value = data.Intitule;
+                document.getElementById('editObjectifs').value = data.Objectifs;
+                document.getElementById('editDatededebut').value = data.DateDeDebut;
+                document.getElementById('editDatedefin').value = data.DateDeFin;
+                document.getElementById('editAvancement').value = data.Avancement;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    function addRow() {
+        var formData = new FormData(document.getElementById("addRowForm"));
+        fetch("insert_row.php", {
+            method: "POST",
+            body: formData,
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            location.reload(); // Rechargez la page pour voir les changements
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function deleteById() {
+        var id = document.getElementById('deleteId').value;
+        if (id) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer la ligne avec l'ID " + id + " ?")) {
+                fetch("delete_row.php", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'id=' + id
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    location.reload(); // Rechargez la page pour voir les changements
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        } else {
+            alert("Veuillez entrer un ID.");
+        }
+    }
+
+    // Mettre à jour l'affichage de la valeur d'avancement en pourcentage
+    function avancementValueDisplay(elementId, value) {
+        var avancementPercentage = value + '%';
+        document.getElementById(elementId + 'Value').textContent = avancementPercentage;
+    }
+
+    // Fonction pour modifier une ligne
+    function editRow() {
+        var formData = new FormData(document.getElementById("editRowForm"));
+        fetch("update_row.php", {
+            method: "POST",
+            body: formData,
+        })
+        .then(response => response.json()) // Assurez-vous que le serveur renvoie JSON
+        .then(data => {
+            // Mettez à jour la ligne modifiée dans le tableau
+            var rowId = document.getElementById('editRowId').value;
+            var editedRow = document.getElementById('row_' + rowId);
+            editedRow.innerHTML = data; // Mettez à jour le contenu de la ligne avec les nouvelles données
+
+            toggleEditForm(); // Cacher le formulaire de modification après la mise à jour
+            alert("La ligne a été mise à jour avec succès !");
+
+            // Récupérer la valeur de l'avancement et mettre à jour son affichage
+            var avancementValue = document.getElementById('editAvancement').value;
+            avancementValueDisplay(avancementValue, 'editAvancement');
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Fonction pour rafraîchir les données du tableau
+    function refreshTableData() {
+        fetch("fetch_data.php") 
+        .then(response => response.text())
+        .then(html => {
+            const tableContainer = document.getElementById("tableContainer");
+            if(tableContainer) {
+                tableContainer.innerHTML = html; // Met à jour le contenu du conteneur du tableau
+            }
+        })
+        .catch(error => console.error('Erreur lors de la mise à jour des données du tableau:', error));
+    }
+
+    // Ajouter le gestionnaire d'événement pour l'icône des paramètres
+    document.querySelector('.settings-icon').addEventListener('click', function() {
+        location.href = 'login.php';
+    });
+    </script>
+
+    <?php
+    $conn->close();
+    ?>
 </body>
 </html>
-
-
