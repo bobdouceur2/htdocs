@@ -39,7 +39,7 @@ body {
 header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center; /* Centre le conteneur central */
     position: relative;
     padding: 20px 0;
     background-color: var(--header-background);
@@ -49,20 +49,63 @@ header {
 header h1 {
     margin: 0;
     text-align: center;
-    flex: 1;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* Centrer exactement le texte */
+    font-size: 30px;
 }
 
 #settings-icon {
-    font-size: 24px;
+    font-size: 30px;
     padding: 10px;
     color: var(--text-color);
     margin-left: auto;
     margin-right: 20px;
     cursor: pointer;
+    position: absolute;
+    right: 20px; /* Positionne à droite */
+}
+
+.settings-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.settings-button {
+    padding: 5px 10px; /* Smaller padding to make buttons smaller */
+    background-color: var(--button-background); /* Use theme color */
+    color: var(--text-color); /* Use text color from theme */
+    border: none;
+    border-radius: 5px;
+    font-size: 14px; /* Smaller font size */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; /* Transition effects */
+}
+
+.settings-button:hover {
+    background-color: var(--button-hover); /* Hover color */
+    transform: translateY(-1px); /* Slight lift effect on hover */
+}
+
+
+
+
+
+
+
+
+
+
+
+.card-icon {
+    position: absolute;
+    left: 20px; /* Positionne à gauche */
 }
 
 .header-spacer {
     width: 40px;
+    margin-bottom: 20px;
 }
 
 #map {
@@ -73,7 +116,7 @@ header h1 {
 }
 
 .card {
-    background-color: var(--background-color);
+    background-color: #23202f;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 30px;
     padding: 20px;
@@ -94,6 +137,7 @@ header h1 {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: space-between;
+    margin-top : 40px
 }
 
 .date-depassee {
@@ -125,11 +169,11 @@ header h1 {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7); /* Couleur de fond légèrement plus sombre */
 }
 
 .popup-content {
-    background: linear-gradient(135deg, #1e1e52, #4a4a90);
+    background-color: var(--form-background);
     margin: 10% auto;
     padding: 30px;
     border-radius: 20px;
@@ -137,12 +181,15 @@ header h1 {
     max-width: 600px;
     width: 90%;
     color: var(--text-color);
+    position: relative; /* Ajouté pour permettre le positionnement absolu de l'icône de fermeture */
 }
+
 
 .popup-content h2 {
     text-align: center;
-    font-size: 24px;
+    font-size: 30px;
     margin-bottom: 20px;
+    color: var(--text-color); /* Utilisation de la couleur du texte global */
 }
 
 .popup-content input[type=text],
@@ -154,8 +201,8 @@ header h1 {
     padding: 15px;
     margin: 10px 0;
     border: none;
-    background-color: var(--form-input-background);
-    color: var(--text-color);
+    background-color: var(--form-input-background); /* Utilisation de la couleur d'entrée du formulaire */
+    color: var(--text-color); /* Utilisation de la couleur du texte global */
     border-radius: 20px;
     box-sizing: border-box;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -169,23 +216,23 @@ header h1 {
 .popup-content textarea:focus,
 .popup-content select:focus {
     outline: none;
-    background-color: rgba(160, 160, 160, 0.2);
+    background-color: rgba(52, 52, 86, 0.2); /* Utilisation d'une couleur plus claire pour le focus */
 }
 
 .popup-content button {
     width: 100%;
     padding: 15px;
-    background-color: var(--button-background);
-    color: var(--text-color);
+    background-color: var(--button-background); /* Utilisation de la couleur de fond des boutons */
+    color: var(--text-color); /* Utilisation de la couleur du texte global */
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
     transition: background-color 0.3s;
 }
 
 .popup-content button:hover {
-    background-color: var(--button-hover);
+    background-color: var(--button-hover); /* Utilisation de la couleur de survol des boutons */
 }
 
 .gantt-chart {
@@ -301,3 +348,73 @@ header h1 {
     text-decoration: underline;
     color: var(--button-hover);
 }
+
+
+.close-icon {
+    cursor: pointer;
+    font-size: 30px; /* Ajustez la taille de l'icône selon vos besoins */
+    color: var(--text-color); /* Utilise la couleur définie dans votre thème */
+    transition: color 0.3s ease;
+    position: absolute; /* Position absolue pour placer l'icône */
+    top: 20px; /* Positionne en haut */
+    right: 20px; /* Positionne à droite */
+}
+
+.close-icon:hover {
+    color: #5e6688; /* Utiliser une couleur de survol cohérente avec le thème global */
+}
+
+
+
+
+
+
+
+
+
+
+#pcd-icon svg {
+    fill: var(--text-color); /* Couleur blanche pour correspondre au thème */
+    transition: fill 0.3s; /* Effet de transition pour le changement de couleur */
+    cursor: pointer;
+}
+
+#pcd-icon svg:hover {
+    fill: var(--filter-form-button-hover); /* Couleur au survol du thème */
+}
+
+/* Styles pour le bouton Triangle PCD */
+.pcd-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--button-background); /* Utilisation de la couleur du thème */
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: var(--text-color); /* Couleur du texte selon le thème */
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-left: 20px;
+    position: absolute;
+    left: 20px; /* Positionne le bouton à gauche */
+}
+
+
+.pcd-button:hover {
+    background-color: var(--button-hover); /* Couleur au survol du thème */
+    transform: translateY(-2px); /* Légère animation de montée au survol */
+}
+
+.pcd-button i {
+    margin-right: 5px; /* Espace entre l'icône et le texte */
+    font-size: 20px; /* Taille de l'icône */
+    transition: color 0.3s; /* Effet de transition pour le changement de couleur */
+}
+
+.pcd-button:hover i {
+    color: var(--filter-form-button-hover); /* Couleur de survol selon le thème */
+}
+

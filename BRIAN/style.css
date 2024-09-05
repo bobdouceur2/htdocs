@@ -1,50 +1,20 @@
 :root {
-    --background-color: #0a0f29; /* Couleur de fond principale en bleu nuit très sombre */
-    --text-color: #ffffff; /* Couleur de texte en gris clair */
-    --header-background: #121a45; /* Couleur du header en bleu foncé */
-    --button-background: #1a245b; /* Couleur des boutons en bleu très sombre */
-    --button-hover: #2d3c7d; /* Couleur différente des boutons lors du survol */
-    --form-background: #121a45; /* Couleur de fond des formulaires en bleu foncé */
-    --form-input-background: #1c1c2e; /* Fond des champs de formulaire en bleu très foncé */
-    --form-input-border: #343456; /* Bordure des champs de formulaire en gris foncé */
-    --table-background: #121a45; /* Couleur de fond du tableau en bleu foncé */
-    --table-text-color: #ffffff; /* Couleur du texte des cellules en gris clair */
-    --table-header-background: #1c1c2e; /* Couleur des en-têtes de colonnes en bleu très foncé */
+    --background-color: #1F1D2B; /* Couleur de fond principale en bleu nuit très sombre */
+    --text-color: #FFFFFF; /* Couleur de texte en blanc */
+    --header-background: #252836; /* Couleur du header */
+    --button-background: #1F1D2B; /* Couleur des boutons */
+    --button-hover: #252836; /* Couleur différente des boutons lors du survol */
+    --form-background: #252836; /* Couleur de fond des formulaires */
+    --form-input-background: #252836; /* Fond des champs de formulaire */
+    --form-input-border: #343456; /* Bordure des champs de formulaire */
+    --table-background: #1F1D2B; /* Couleur de fond du tableau */
+    --table-text-color: #FFFFFF; /* Couleur du texte des cellules */
+    --table-header-background: #1F1D2B; /* Couleur des en-têtes de colonnes */
     --table-cell-border: #2c2c4600; /* Bordure des cellules en gris très foncé */
-    --table-even-row-background: #0f112e; /* Couleur de fond des cellules paires en bleu nuit très sombre */
-    --filter-form-button-background: #1a245b; /* Couleur des boutons du formulaire en bleu très sombre */
-    --filter-form-button-hover: #2d3c7d; /* Couleur différente des boutons du formulaire lors du survol */
+    --table-even-row-background: #0f112e; /* Couleur de fond des cellules paires */
+    --filter-form-button-background: #1F1D2B; /* Couleur des boutons du formulaire */
+    --filter-form-button-hover: #252836; /* Couleur différente des boutons du formulaire lors du survol */
 }
-
-
-/* CSS principal */
-
-.sidebar {
-    width: 300px; /* Ajustez la largeur selon vos besoins */
-    padding: 10px;
-    display: grid;
-    gap: 5px;
-    justify-items: center;
-}
-
-.content {
-    flex-grow: 1;
-    padding: 10px;
-}
-
-
-.sidebar .btn, .sidebar select {
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-
-
-
-
-
-
-
 
 body {
     margin: 0;
@@ -68,48 +38,240 @@ header {
 }
 
 #logoSafran {
-    height: 70px;
-    margin-left: 40px;
+    height: 100px;
+    margin-top : 10px;
+    margin-left : 10px;
+    margin-right : 40px;
+
 }
 
 .main-content {
     margin-top: 130px;
 }
 
-#tableContainer,
-#tableContainerAdmin {
-    width: 80%;
-    margin: 20px auto;
+.main-container {
+    display: flex;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+}
+
+.sidebar {
+    width: 60px; /* Largeur minimale pour afficher uniquement les icônes */
+    transition: width 0.3s ease; /* Transition fluide lors du changement de largeur */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-family: 'Noto Sans', sans-serif;
+    overflow: hidden; /* Masquer le texte qui dépasse lorsque la barre latérale est rétrécie */
+    max-width : 175px;
+    height: 100vh;
+    
 }
 
 
 
-.button {
+
+.sidebar:hover {
+    width: 250px; /* Largeur maximale pour afficher le texte des boutons */
+}
+
+/* Styles pour la notification en haut à droite */
+.right-sidebar {
+    display: none;
+    position: fixed;
+    top: 20px; /* Distance du haut de l'écran */
+    right: 20px; /* Distance du côté droit de l'écran */
+    width: 300px;
+    padding: 15px;
+    background-color: var(--header-background);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 1000; /* Toujours au-dessus des autres éléments */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(-20px); /* Glisser vers le haut pour l'animation */
+}
+
+.right-sidebar.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0); /* Réinitialiser le glissement pour le rendre visible */
+}
+
+.right-sidebar .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.right-sidebar h2 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #fff;
+}
+
+.right-sidebar p {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.right-sidebar button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background-color: #75a8de;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.right-sidebar button:hover {
+    background-color: #45a049;
+}
+
+.content {
+    flex-grow: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.sidebar .btn, .sidebar select,
+.right-sidebar .btn, .right-sidebar select {
+    width: 100%;
+    margin-bottom: 10px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.dropdown-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.small-dropdown {
+    max-width: 260px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--background-color);
+}
+
+.admin-header .userid {
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+.admin-header .fa-user {
+    margin-right: 10px; /* Espace entre l'icône et le texte */
+}
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--background-color);
+    position: relative;
+    padding-bottom: 50px;
+}
+
+.button,
+.btn-custom,
+.modern-button {
     display: inline-block;
     margin: 10px;
-    padding: 10px 20px;
+    padding: 10px 10px;
     background-color: var(--button-background);
     color: #FFFFFF;
     border: none;
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
+    text-align: center;
+    text-decoration: none;
 }
 
-.button:hover {
-    background-color: var(--button-hover);
+.btn-custom {
+    background-color: #1a245b;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #141c42; /* Couleur légèrement plus foncée pour l'effet hover */
+}
+
+.modern-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    background-color: #6ca1da;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.5s, transform 0.5s;
+}
+
+.modern-button:hover {
+    background-color: #0056b3;
     transform: scale(1.05);
 }
 
-.admin-button-container {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1001;
+.modern-button.secondary {
+    background-color: #6c757d;
 }
 
-.buttonsContainer {
-    margin-bottom: 20px;
+.modern-button.secondary:hover {
+    background-color: #565e64;
+}
+
+.modern-button i {
+    transition: margin-right 0.3s;
+    font-size: 18px; /* Ajuste la taille de l'icône */
+}
+
+.modern-button:hover i {
+    margin-right: 8px; /* Active le margin-right uniquement au survol */
+}
+
+.modern-button .button-text {
+    display: none; /* Masque le texte par défaut */
+}
+
+.modern-button:hover .button-text {
+    display: inline; /* Affiche le texte au survol */
+}
+
+
+
+
+.table-scroll {
+    overflow-x: auto;
+    margin: 20px auto;
+    width: 95%;
+}
+
+.tableContainer.shrink {
+    width: 70%; /* Réduire la largeur de 30% */
+    transition: width 0.3s ease;
 }
 
 .formContainer {
@@ -162,7 +324,6 @@ label {
 
 table {
     width: 100%;
-    border-collapse: separate;
     border-spacing: 0 10px;
     margin-top: 20px;
     border-radius: 20px;
@@ -171,8 +332,7 @@ table {
     color: var(--table-text-color);
 }
 
-th,
-td {
+th, td {
     padding: 10px;
     border: 1px solid var(--table-cell-border);
     border-radius: 20px;
@@ -224,129 +384,93 @@ th {
     background-color: var(--filter-form-button-hover);
 }
 
-.table-scroll {
-    overflow-x: auto;
-    margin: 20px auto;
-    width: 95%;
-}
-
-.sidebar {
-    width: 300px;
-    padding: 10px;
-    border-right: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: 'Noto Sans', sans-serif;
-}
-
-.right-sidebar {
-    width: 300px;
-    padding: 10px;
-    border-left: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: 'Noto Sans', sans-serif;
-}
-
-.dropdown-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sidebar .btn,
-.sidebar select {
-    width: 80%;
-    margin-bottom: 10px;
-    font-family: 'Noto Sans', sans-serif;
-}
-
-
-.right-sidebar .btn,
-.right-sidebar select {
-    width: 80%;
-    margin-bottom: 10px;
-    font-family: 'Noto Sans', sans-serif;
-}
-
-.small-dropdown {
-    max-width: 260px;
-}
-
-/* Style pour le popup */
-.popup-form {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.popup-content {
-    background: linear-gradient(135deg, #1e1e52, #4a4a90);
-    margin: 10% auto;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    width: 90%;
-    color: #fff;
-}
-
-.popup-content h2 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.popup-content input[type=text],
-.popup-content input[type=date],
-.popup-content input[type=range],
-.popup-content textarea,
-.popup-content select {
-    width: 100%;
-    padding: 15px;
-    margin: 10px 0;
-    border: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border-radius: 20px;
-    box-sizing: border-box;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-.popup-content input[type=text]:focus,
-.popup-content input[type=date]:focus,
-.popup-content input[type=range]:focus,
-.popup-content textarea:focus,
-.popup-content select:focus {
-    outline: none;
-    background-color: rgba(160, 160, 160, 0.2);
-}
-
-.popup-content button {
-    width: 100%;
-    padding: 15px;
-    background-color: #75a8de;
-    color: #fff;
-    border: none;
-    border-radius: 20px;
+.add-icon,
+.view-icon {
+    font-size: 54px; /* Taille de l'icône */
+    color: #75a8de; /* Couleur de l'icône */
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #1a245b;
+    border: 2px solid #1a245b;
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    width: 200px;
+    height: auto;
+    box-sizing: border-box;
+    transition: color 0.3s, background-color 0.3s, transform 0.3s;
 }
 
-.popup-content button:hover {
-    background-color: #75a8de;
+.view-icon {
+    font-size: 44px; /* Taille de l'icône alignée */
+}
+
+.add-icon:hover,
+.view-icon:hover {
+    color: #75a8de;
+    background-color: #2d3c7d;
+    border-color: #1a245b;
+    transform: scale(1.1); /* Agrandir légèrement l'icône au survol */
+}
+
+/* Styles pour la barre de recherche */
+#searchInput {
+    width: 0;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    color: var(--text-color); /* Couleur du texte */
+    background-color: var(--form-input-background); /* Couleur de fond */
+    border: 1px solid var(--table-cell-border); /* Bordure */
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    box-sizing: border-box;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#searchInput::placeholder {
+    color: var(--text-color); /* Couleur du texte du placeholder */
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.search-container.active #searchInput {
+    width: 200px; /* Largeur de la barre de recherche dépliée */
+    opacity: 1;
+}
+
+.search-icon {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.card {
+    background-color: var(--background-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 30px;
+    color: white;
+    max-width: 1650px; /* Limite la largeur maximale à 1650px */
+    margin: 0 auto;
+}
+
+.card-body {
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: var(--header-background);
+    border-radius: 30px;
+}
+
+#gantt-container {
+    width: 95%;
+    margin: 0 auto;
 }
 
 .close {
@@ -357,110 +481,6 @@ th {
     cursor: pointer;
 }
 
-/* Styles existants ici */
-.main-container {
-    display: flex;
-    align-items: flex-start;
-    transition: all 0.3s ease;
-}
-
-.sidebar, .right-sidebar {
-    width: 300px; /* Ajustez la largeur selon vos besoins */
-    padding: 10px;
-    display: grid;
-    gap: 5px;
-    justify-items: center;
-}
-
-.mainContent {
-    flex-grow: 1;
-    padding: 10px;
-}
-
-.sidebar .btn,
-.sidebar select {
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.right-sidebar .btn,
-.right-sidebar select {
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-
-
-.form-group {
-    margin-bottom: 10px;
-}
-
-.admin-header {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 10px;
-    background-color: #121a45;
-}
-
-.admin-header .userid {
-    margin-right: 20px;
-    font-weight: bold;
-}
-
-.site-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #121a45;
-    position: relative;
-}
-
-
-.btn-custom {
-    background-color: #1a245b;
-    color: white;
-    border: none;
-    border-radius: 25px; /* Arrondir les bords */
-    padding: 10px 20px; /* Ajuster le padding pour une meilleure apparence */
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Animation de transition pour l'effet hover */
-}
-
-.btn-custom:hover {
-    background-color: #141c42; /* Couleur légèrement plus foncée pour l'effet hover */
-}
-
-.date-depassee {
-    color: rgb(255, 56, 56);
-}
-
-
-/* Réduire la largeur du contenu principal de 20% */
-.tableContainer.shrink {
-    width: 70%; /* Réduire la largeur de 30% */
-    transition: width 0.3s ease;
-}
-
-/* Style pour la colonne de droite */
-.right-sidebar {
-    display: none;
-    position: relative;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-}
-.right-sidebar.active {
-    display: block;
-}
-
-
-/* Style pour le popup */
 .popup-form {
     display: none;
     position: fixed;
@@ -532,154 +552,3 @@ th {
 .popup-content button:hover {
     background-color: #45a049;
 }
-
-.close {
-    top: 25px;
-    right: 25px;
-    font-size: 40px;
-    color: #fff;
-    cursor: pointer;
-}
-
-
-
-.add-icon {
-    font-size: 54px; /* Taille de l'icône */
-    color: #75a8de; /* Couleur du texte ou de l'icône */
-    cursor: pointer; /* Curseur en forme de main */
-    display: inline-block; /* Pour le formatage du bouton */
-    margin: 10px 0; /* Marges autour du bouton */
-    padding: 10px 20px; /* Espacement interne du bouton */
-    background-color: #1a245b; /* Couleur de fond du bouton */
-    border: 2px solid #1a245b; /* Bordure du bouton */
-    border-radius: 12px; /* Bords arrondis */
-    text-align: center; /* Centre le texte ou l'icône */
-    text-decoration: none; /* Supprime les soulignements si le texte est un lien */
-    width: 200px; /* Ajuste la largeur en fonction du contenu */
-    height: auto; /* Ajuste la hauteur en fonction du contenu */
-    box-sizing: border-box; /* Inclut la bordure et le padding dans les dimensions totales */
-}
-
-.add-icon:hover {
-    color: #75a8de; /* Couleur du texte ou de l'icône au survol */
-    background-color: #2d3c7d; /* Couleur de fond au survol */
-    border-color: #1a245b; /* Couleur de la bordure au survol */
-}
-
-
-
-
-
-
-.view-icon {
-    font-size: 44px; /* Taille de l'icône, alignée avec celle de .add-icon */
-    color: #75a8de; /* Couleur de l'icône, alignée avec celle de .add-icon */
-    cursor: pointer; /* Curseur en forme de main pour indiquer que c'est cliquable */
-    display: inline-block; /* Affichage en ligne */
-    margin: 10px 0; /* Marges autour de l'icône, alignées avec celles de .add-icon */
-    padding: 10px 20px; /* Padding pour correspondre aux dimensions de .add-icon */
-    background-color: #1a245b; /* Couleur de fond du bouton, alignée avec celle de .add-icon */
-    border: 2px solid #1a245b; /* Bordure du bouton */
-    border-radius: 12px; /* Bords arrondis pour correspondre à .add-icon */
-    transition: color 0.3s, background-color 0.3s, transform 0.3s; /* Animation de transition pour les changements de couleur et de transformation */
-    width: 200px; /* Largeur du bouton pour correspondre à .add-icon */
-    height: auto; /* Ajuste la hauteur en fonction du contenu */
-    box-sizing: border-box; /* Inclure le padding et la bordure dans la largeur et la hauteur */
-    text-align: center; /* Centrer l'icône horizontalement */
-}
-
-.view-icon:hover {
-    color: #75a8de; /* Couleur de l'icône au survol, alignée avec celle de .add-icon */
-    background-color: #2d3c7d; /* Couleur de fond au survol, alignée avec celle de .add-icon */
-    border-color: #1a245b; /* Couleur de la bordure au survol */
-    transform: scale(1.1); /* Agrandir légèrement l'icône au survol */
-}
-
-
-
-
-
-
-
-
-
-
-
-
-.modern-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    color: #ffffff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 25px;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.modern-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-.modern-button i {
-    margin-right: 8px;
-}
-
-.modern-button.secondary {
-    background-color: #6c757d;
-}
-
-.modern-button.secondary:hover {
-    background-color: #565e64;
-}
-
-/* Styles pour la barre de recherche */
-#searchInput {
-    width : 0;
-    transition: width 0.3s ease, opacity 0.3s ease;
-    color: var(--text-color); /* Couleur du texte */
-    background-color: var(--form-input-background); /* Couleur de fond */
-    border: 1px solid var(--table-cell-border); /* Bordure */
-    padding: 10px; /* Espacement intérieur */
-    border-radius: 20px; /* Arrondir les bords */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Ombre interne */
-    font-size: 16px; /* Taille de la police */
-    box-sizing: border-box; /* Inclure le padding et la bordure dans la largeur et la hauteur */
-    opacity: 0;
-    pointer-events: none;
-     
-}
-
-#searchInput::placeholder {
-    color: var(--placeholder-color); /* Couleur du texte du placeholder */
-}
-
-
-
-/* Style de la barre de recherche repliée */
-.search-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    position: relative;
-}
-
-.search-container.active #searchInput {
-    width: 200px; /* Largeur de la barre de recherche dépliée */
-    opacity: 1;
-    position: relative;
-    left: 0;
-}
-
-.search-icon {
-    font-size: 20px;
-    cursor: pointer;
-}
-
-
-

@@ -95,11 +95,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
     background-color: var(--background-color);
     padding: 10px;
     color: var(--text-color);
     border-radius: 20px;
+    margin-top: 15px;
 }
 
 .gantt-nav-icon {

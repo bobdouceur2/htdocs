@@ -10,6 +10,29 @@ if (!$conn) {
     die("Erreur de connexion à la base de données : " . mysqli_connect_error());
 }
 
+
+
+
+// Requête pour obtenir les noms des colonnes de la table "projets"
+$query = "SHOW COLUMNS FROM projets";
+$result = $conn->query($query);
+
+// Tableau pour stocker les noms de colonnes
+$columns = [];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $columns[] = $row['Field'];
+    }
+}
+
+$result->free();
+
+
+
+
+
+
 $project = null;
 $jalons = []; // Initialiser le tableau des jalons
 
@@ -17,7 +40,7 @@ if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
     
     // Préparez et exécutez la requête SQL pour récupérer les données du projet
-    $query = "SELECT ID, Intitule, DateDeDebut, DateDeFin, Avancement, Levier, Participants, Localisation, dates_jalon FROM projets WHERE ID = ?";
+    $query = "SELECT * FROM projets WHERE ID = ?";
     $stmt = $conn->prepare($query);
     if (!$stmt) {
         die("Erreur de préparation de la requête : " . $conn->error);
@@ -115,11 +138,12 @@ function generateGanttChart($project) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualisation du projet</title>
-    <link rel="stylesheet" type="text/css" href="visualisation.css">
+    <link rel="stylesheet" type="text/css" href="visualisation.css" defer>
     <!-- FontAwesome pour l'icône de réglage -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Script Google Maps et Google Places API -->
     <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1JmYjZBnnWhmmfCmoNylVAN3DQ2a0voI&libraries=places&callback=initMap"></script>
+    
     <script>
     function initMap() {
         const address = "<?php echo htmlspecialchars($project['Localisation'] ?? ''); ?>";
@@ -163,88 +187,203 @@ function generateGanttChart($project) {
             }
         });
     }
+
+    function togglePCDView(theme) {
+        // Masquer toutes les cartes
+        const allCards = document.querySelectorAll('.card');
+        allCards.forEach(card => card.style.display = 'none');
+
+        // Afficher les cartes en fonction du thème sélectionné
+        if (theme === 'Progrès') {
+            const progressColumns = ['objectifs', 'datededebut', 'datedefin', 'avancement', 'etapes', 'planification', 'objectifs-operationnels', 'perimetre', 'equipe'];
+            progressColumns.forEach(column => {
+                const card = document.querySelector(`.card.${column}`);
+                if (card) card.style.display = 'block';
+            });
+        } else if (theme === 'Compétitivité') {
+            const competitivenessColumns = ['levier', 'type-de-gain', 'source-de-financement', 'kpi', 'priorite', 'axe-pf-se'];
+            competitivenessColumns.forEach(column => {
+                const card = document.querySelector(`.card.${column}`);
+                if (card) card.style.display = 'block';
+            });
+        } else if (theme === 'Digitalisation') {
+            const digitalizationColumns = ['digitalisation', 'di', 'dt', 'modifications'];
+            digitalizationColumns.forEach(column => {
+                const card = document.querySelector(`.card.${column}`);
+                if (card) card.style.display = 'block';
+            });
+        }
+    }
+
+    function applySettings() {
+        // Récupère le formulaire des paramètres
+        var form = document.getElementById('settings-form');
+
+        // Sélectionne toutes les cases à cocher du formulaire
+        var checkboxes = form.querySelectorAll('input[name="fields[]"]');
+
+        // Parcourt chaque case à cocher
+        checkboxes.forEach(function(checkbox) {
+            // Convertit la valeur de la case à cocher en minuscule pour correspondre aux classes CSS
+            var field = checkbox.value.toLowerCase();
+
+            // Remplace les espaces et les underscores pour correspondre aux noms de classe CSS
+            field = field.replace(/ /g, '-').replace('_', '-');
+
+            // Sélectionne la carte (div) qui correspond à la colonne
+            var card = document.querySelector('.card.' + field);
+
+            // Vérifie si la carte existe
+            if (card) { 
+                // Affiche ou masque la carte en fonction de l'état de la case à cocher
+                if (checkbox.checked) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+
+            // Gère spécifiquement les cas comme "DatesJalon" ou d'autres champs similaires
+            if (field === 'datesjalon') {
+                // Sélectionne la carte associée aux dates jalons
+                var datesJalonCard = document.querySelector('.card.dates-jalon');
+
+                // Affiche ou masque la carte des dates jalons en fonction de l'état de la case à cocher
+                if (datesJalonCard) {
+                    datesJalonCard.style.display = checkbox.checked ? 'block' : 'none';
+                }
+            }
+        });
+
+        // Ferme le popup après avoir appliqué les paramètres
+        closePopup();
+    }
+
+
+    function closePopup() {
+        document.getElementById('settings-popup').style.display = 'none';
+    }
+
+    document.getElementById('settings-icon').addEventListener('click', function() {
+        document.getElementById('settings-popup').style.display = 'block';
+    });
+
+
+    function togglePopup() {
+        var popup = document.getElementById('settings-popup');
+        if (popup.style.display === 'block') {
+            popup.style.display = 'none';
+        } else {
+            popup.style.display = 'block';
+        }
+    }
+
+    document.getElementById('settings-icon').addEventListener('click', togglePopup);
+
+
+
+
+
+
+
+
+
+
+
+
     </script>
 </head>
 <body>
     <header>
+        <!-- Bouton pour l'icône Triangle PCD -->
+        <button class="pcd-button" onclick="document.getElementById('pcd-popup').style.display = 'block'">
+            <i class="fas fa-caret-up"></i> <!-- Utiliser caret-up comme triangle -->
+            Triangle PCD
+        </button>
+        
         <div class="header-spacer"></div>
         <h1>Visualisation pour l'ID: <?php echo htmlspecialchars($id ?? ''); ?></h1>
         <i class="fas fa-cog" id="settings-icon"></i>
     </header>
 
+    <!-- Popup pour le choix des thèmes PCD -->
+    <div id="pcd-popup" class="popup-form">
+        <div class="popup-content">
+            <span class="close-icon" onclick="document.getElementById('pcd-popup').style.display = 'none'">
+                <i class="fa-regular fa-rectangle-xmark"></i>
+            </span>
+            <h2>Choisissez un thème à afficher</h2>
+            <button onclick="togglePCDView('Progrès')">Progrès</button>
+            <br><br>
+            <button onclick="togglePCDView('Compétitivité')">Compétitivité</button>
+            <br><br>
+            <button onclick="togglePCDView('Digitalisation')">Digitalisation</button>
+        </div>
+    </div>
+
+    <!-- Popup pour la sélection des colonnes à afficher -->
     <div class="popup-form" id="settings-popup">
         <div class="popup-content">
+            <span class="close-icon" onclick="closePopup()">
+                <i class="fa-regular fa-rectangle-xmark"></i>
+            </span>
+
             <h2>Choisissez les données à afficher</h2>
+
             <form id="settings-form">
-                <label><input type="checkbox" name="fields[]" value="Intitule" checked> Intitulé</label><br>
-                <label><input type="checkbox" name="fields[]" value="Objectifs" checked> Objectifs</label><br>
-                <label><input type="checkbox" name="fields[]" value="Levier" checked> Levier</label><br>
-                <label><input type="checkbox" name="fields[]" value="Avancement" checked> Avancement</label><br>
-                <label><input type="checkbox" name="fields[]" value="Participants" checked> Participants</label><br>
-                <label><input type="checkbox" name="fields[]" value="Localisation" checked> Localisation</label><br>
-                <label><input type="checkbox" name="fields[]" value="DatesJalon" checked> Dates Jalon</label><br>
+            <div class="settings-controls">
+                <button type="button" class="settings-button" onclick="toggleAllCheckboxes(true)">Tout sélectionner</button>
+                <button type="button" class="settings-button" onclick="toggleAllCheckboxes(false)">Tout désélectionner</button>
+                <button type="button" class="settings-button" onclick="resetToDefaults()">Réinitialiser</button>
+            </div>
+            
+            <form id="settings-form">
+                <?php
+                // Générer des cases à cocher pour chaque colonne
+                foreach ($columns as $column) {
+                    $checked = 'checked'; // Toutes les cases sont cochées par défaut
+                    echo "<label><input type='checkbox' name='fields[]' value='$column' $checked> $column</label><br>";
+                }
+                ?>
                 <button type="button" onclick="applySettings()">Appliquer</button>
-                <button type="button" onclick="closePopup()">Annuler</button>
             </form>
         </div>
     </div>
 
+
     <div class="dashboard">
-    <?php if ($project): ?>
-        <div class="card large intitule">
-            <h2>Intitulé</h2>
-            <p><?php echo htmlspecialchars($project['Intitule'] ?? ''); ?></p>
-        </div>
-        <div class="card small objectifs">
-            <h2>Objectifs</h2>
-            <p><?php echo htmlspecialchars($project['Objectifs'] ?? ''); ?></p>
-        </div>
+        <?php
+        // Générer les cartes pour chaque colonne
+        foreach ($columns as $column) {
+            // Contenu par défaut si la colonne est vide
+            $content = isset($project[$column]) ? $project[$column] : 'Aucune donnée disponible.';
 
-        <div class="card small levier">
-            <h2>Levier</h2>
-            <p><?php echo htmlspecialchars($project['Levier'] ?? ''); ?></p>
-        </div>
+            // Remplacer les espaces et caractères spéciaux pour les utiliser comme classe CSS
+            $columnClass = strtolower(str_replace([' ', '_'], '-', $column));
 
-        <div class="card large avancement">
-            <h2>Avancement (%)</h2>
-            <p><?php echo htmlspecialchars($project['Avancement'] ?? ''); ?>%</p>
-            <div class="progress-bar">
-                <div class="progress" style="width: <?php echo htmlspecialchars($project['Avancement'] ?? ''); ?>%;"></div>
-            </div>
-        </div>
-
-        <div class="card large gantt">
-            <h2>Dates de Début - Fin : <?php echo $formattedStartDate; ?> - <?php echo $formattedEndDate; ?></h2>
-            <?php generateGanttChart($project); ?>
-        </div>
-        
-        <div class="card small localisation">
-            <h2>Localisation</h2>
-            <p><?php echo htmlspecialchars($project['Localisation'] ?? ''); ?></p>
-            <div id="map"></div>
-        </div>
-
-        <!-- Nouvelle carte pour les Dates Jalons -->
-        <div class="card small dates-jalon">
-            <h2>Dates Jalons</h2>
-            <?php if (!empty($jalons)): ?>
-                <ul>
-                    <?php foreach ($jalons as $jalon): ?>
-                        <li><?php echo htmlspecialchars($jalon['date'] . ' - ' . ($jalon['text'] ?? 'Pas de description disponible')); ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <p>Aucune date jalon disponible.</p>
-            <?php endif; ?>
-        </div>
-
-    <?php else: ?>
-        <p>Aucune donnée de projet à afficher.</p>
-    <?php endif; ?>
-</div>
+            echo "<div class='card $columnClass'>";
+            echo "<h2>" . htmlspecialchars($column) . "</h2>";
+            echo "<p>" . htmlspecialchars($content) . "</p>";
+            echo "</div>";
+        }
+        ?>
+    </div>
 
 
-<script>
+    <script>
+
+        function toggleAllCheckboxes(selectAll) {
+                    const checkboxes = document.querySelectorAll('#settings-form input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => checkbox.checked = selectAll);
+                }
+
+                function resetToDefaults() {
+                    const checkboxes = document.querySelectorAll('#settings-form input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = ['Intitule', 'Objectifs', 'Levier', 'Avancement', 'Participants', 'Localisation', 'DatesJalon', 'DescriptionProbleme', 'ObjectifsOperationnels', 'Perimetre', 'Planning', 'Equipe'].includes(checkbox.value);
+                    });
+                }
+
     function applySettings() {
         var form = document.getElementById('settings-form');
         var checkboxes = form.querySelectorAll('input[name="fields[]"]');
@@ -264,7 +403,7 @@ function generateGanttChart($project) {
                 }
             }
 
-            // Vérifiez spécifiquement pour "Dates Jalon"
+            // Vérifiez spécifiquement pour "Dates Jalon" et autres champs similaires
             if (field === 'datesjalon') {
                 var datesJalonCard = document.querySelector('.card.dates-jalon');
                 if (datesJalonCard) {
@@ -288,7 +427,6 @@ function generateGanttChart($project) {
         document.getElementById('settings-popup').style.display = 'block';
     });
 </script>
-
 
 </body>
 </html>

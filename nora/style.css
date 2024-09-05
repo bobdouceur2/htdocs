@@ -1,19 +1,19 @@
 :root {
-    --background-color: #1F1D2B; /* Couleur de fond principale en bleu nuit très sombre */
-    --text-color: #FFFFFF; /* Couleur de texte en blanc */
-    --header-background: #252836; /* Couleur du header */
-    --button-background: #1F1D2B; /* Couleur des boutons */
-    --button-hover: #252836; /* Couleur différente des boutons lors du survol */
-    --form-background: #252836; /* Couleur de fond des formulaires */
-    --form-input-background: #252836; /* Fond des champs de formulaire */
-    --form-input-border: #343456; /* Bordure des champs de formulaire */
-    --table-background: #1F1D2B; /* Couleur de fond du tableau */
-    --table-text-color: #FFFFFF; /* Couleur du texte des cellules */
-    --table-header-background: #1F1D2B; /* Couleur des en-têtes de colonnes */
-    --table-cell-border: #2c2c4600; /* Bordure des cellules en gris très foncé */
-    --table-even-row-background: #0f112e; /* Couleur de fond des cellules paires */
-    --filter-form-button-background: #1F1D2B; /* Couleur des boutons du formulaire */
-    --filter-form-button-hover: #252836; /* Couleur différente des boutons du formulaire lors du survol */
+    --background-color: #1b1c27;
+    --text-color: #FFFFFF;
+    --header-background: #252836;
+    --button-background: #1F1D2B;
+    --button-hover: #252836;
+    --form-background: #252836;
+    --form-input-background: #252836;
+    --form-input-border: #343456;
+    --table-background: #1F1D2B;
+    --table-text-color: #FFFFFF;
+    --table-header-background: #1F1D2B;
+    --table-cell-border: #2c2c4600;
+    --table-even-row-background: #0f112e;
+    --filter-form-button-background: #1F1D2B;
+    --filter-form-button-hover: #252836;
 }
 
 body {
@@ -39,10 +39,7 @@ header {
 
 #logoSafran {
     height: 100px;
-    margin-top : 10px;
-    margin-left : 10px;
-    margin-right : 40px;
-
+    margin-right: 40px;
 }
 
 .main-content {
@@ -52,57 +49,71 @@ header {
 .main-container {
     display: flex;
     align-items: flex-start;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
 }
 
 .sidebar {
-    width: 60px; /* Largeur minimale pour afficher uniquement les icônes */
-    transition: width 0.3s ease; /* Transition fluide lors du changement de largeur */
-    padding: 10px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    font-family: 'Noto Sans', sans-serif;
-    overflow: hidden; /* Masquer le texte qui dépasse lorsque la barre latérale est rétrécie */
-    max-width : 175px;
-    height: 100vh;
-    
+    align-items: center;
+    transition: width 0.4s ease, max-height 0.4s ease;
+    width: 70px;
+    overflow: hidden;
+    max-width: 250px;
+    height: auto; /* Hauteur automatique pour s'adapter au contenu */
+    max-height: 100vh; /* Hauteur maximale pour éviter de déborder de l'écran */
+    padding: 10px;
+    background-color: var(--background-color); /* Couleur de fond pour la card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
-
-
-
-.sidebar:hover {
-    width: 250px; /* Largeur maximale pour afficher le texte des boutons */
+.sidebar.expanded {
+    width: 250px;
+    align-items: flex-start; /* Aligne les éléments à gauche quand la sidebar est étendue */
+    padding-left: 20px; 
 }
 
-/* Styles pour la notification en haut à droite */
+.form-group {
+    margin-bottom: 0 !important;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+/* Styles pour la barre latérale droite centrée */
+/* Updated Styles for the Right Sidebar */
 .right-sidebar {
     display: none;
     position: fixed;
-    top: 20px; /* Distance du haut de l'écran */
-    right: 20px; /* Distance du côté droit de l'écran */
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 300px;
     padding: 15px;
-    background-color: var(--header-background);
+    background-color: var(--form-input-background);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    z-index: 1000; /* Toujours au-dessus des autres éléments */
+    z-index: 1000;
     transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 0;
-    transform: translateY(-20px); /* Glisser vers le haut pour l'animation */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #75a8de; /* Added border color to match the button color */
 }
 
+/* Afficher la sidebar quand elle est active */
 .right-sidebar.active {
-    display: block;
-    opacity: 1;
-    transform: translateY(0); /* Réinitialiser le glissement pour le rendre visible */
+    display: flex; /* Afficher flex pour l'alignement */
+    opacity: 1; /* Rendre visible */
 }
 
+/* Boutons et contenu de la right sidebar */
 .right-sidebar .close-btn {
     position: absolute;
-    top: 5px;
-    right: 10px;
+    top: 10px; /* Ajuster selon le design */
+    right: 10px; /* Ajuster selon le design */
     font-size: 20px;
     color: #fff;
     cursor: pointer;
@@ -119,6 +130,7 @@ header {
     color: #ccc;
 }
 
+/* Styles pour les boutons dans la right-sidebar */
 .right-sidebar button {
     margin-top: 10px;
     width: 100%;
@@ -129,23 +141,32 @@ header {
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
+/* Survol des boutons */
 .right-sidebar button:hover {
     background-color: #45a049;
 }
 
+
+
+
+
 .content {
     flex-grow: 1;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0 10px;
 }
 
-.sidebar .btn, .sidebar select,
-.right-sidebar .btn, .right-sidebar select {
+.sidebar .btn, 
+.sidebar select,
+.right-sidebar .btn, 
+.right-sidebar select {
     width: 100%;
     margin-bottom: 10px;
-    font-family: 'Noto Sans', sans-serif;
 }
 
 .dropdown-container {
@@ -159,27 +180,35 @@ header {
     max-width: 260px;
 }
 
-.form-group {
-    margin-bottom: 10px;
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-}
-
 .admin-header {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     padding: 10px;
-    background-color: var(--background-color);
+    background-color: var(--form-input-background);
+    width: 100%; 
+}
+
+.admin-header-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--form-input-background); /* Couleur de fond similaire à la barre de recherche */
+    border-radius: 20px; /* Coins arrondis */
+    padding: 10px 10px; /* Espacement interne pour un meilleur look */
+    padding-left : 50px;
+    width: 300px; /* Largeur fixe */
+    margin-left: 160px; /* Espace à gauche, ajuster si nécessaire */
+    margin-right: auto; /* Centrer horizontalement */
+    cursor: pointer; /* Ajoute un curseur pointeur pour indiquer que c'est cliquable */
 }
 
 .admin-header .userid {
-    margin-right: 20px;
-    font-weight: bold;
+    color: var(--form); /* Assure que le texte est lisible */
+    font-weight: bold; /* Rendre le texte plus visible */
 }
 
 .admin-header .fa-user {
+    color: var(--text-color); /* Assure que l'icône a la bonne couleur */
     margin-right: 10px; /* Espace entre l'icône et le texte */
 }
 
@@ -196,10 +225,10 @@ header {
 .button,
 .btn-custom,
 .modern-button {
-    display: inline-block;
+    display: flex;
     margin: 10px;
-    padding: 10px 10px;
-    background-color: var(--button-background);
+    padding: 10px;
+    background-color: transparent;
     color: #FFFFFF;
     border: none;
     border-radius: 20px;
@@ -210,58 +239,56 @@ header {
 }
 
 .btn-custom {
-    background-color: #1a245b;
+    
     font-size: 16px;
     transition: background-color 0.3s ease;
 }
 
-.btn-custom:hover {
-    background-color: #141c42; /* Couleur légèrement plus foncée pour l'effet hover */
-}
+
 
 .modern-button {
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    background-color: #6ca1da;
+    background-color: transparent;
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.5s, transform 0.5s;
 }
 
 .modern-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-.modern-button.secondary {
-    background-color: #6c757d;
-}
-
-.modern-button.secondary:hover {
-    background-color: #565e64;
+    background-color: var(--background-color);
+    transform: scale(1.1);
 }
 
 .modern-button i {
     transition: margin-right 0.3s;
-    font-size: 18px; /* Ajuste la taille de l'icône */
-}
-
-.modern-button:hover i {
-    margin-right: 8px; /* Active le margin-right uniquement au survol */
+    font-size: 18px;
 }
 
 .modern-button .button-text {
-    display: none; /* Masque le texte par défaut */
+    display: none;
+    font-size : 18px;
 }
 
-.modern-button:hover .button-text {
-    display: inline; /* Affiche le texte au survol */
+.sidebar.expanded .modern-button .button-text {
+    display: inline;
+}
+
+.sidebar.expanded .modern-button:hover i,
+.sidebar.expanded .modern-button i {
+    margin-right: 8px;
 }
 
 
 
+/* Désactiver le hover pour les boutons en mode non-expansion */
+.sidebar:not(.expanded) .modern-button:hover,
+.sidebar:not(.expanded) .modern-button {
+    background-color: transparent;
+    transform: none;
+}
 
 .table-scroll {
     overflow-x: auto;
@@ -270,7 +297,7 @@ header {
 }
 
 .tableContainer.shrink {
-    width: 70%; /* Réduire la largeur de 30% */
+    width: 70%;
     transition: width 0.3s ease;
 }
 
@@ -283,11 +310,6 @@ header {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 20px;
     color: var(--text-color);
-}
-
-.formContainer h2 {
-    text-align: center;
-    margin-bottom: 20px;
 }
 
 input[type="number"],
@@ -386,8 +408,8 @@ th {
 
 .add-icon,
 .view-icon {
-    font-size: 54px; /* Taille de l'icône */
-    color: #75a8de; /* Couleur de l'icône */
+    font-size: 54px;
+    color: #75a8de;
     cursor: pointer;
     display: inline-block;
     margin: 10px 0;
@@ -398,13 +420,12 @@ th {
     text-align: center;
     text-decoration: none;
     width: 200px;
-    height: auto;
     box-sizing: border-box;
     transition: color 0.3s, background-color 0.3s, transform 0.3s;
 }
 
 .view-icon {
-    font-size: 44px; /* Taille de l'icône alignée */
+    font-size: 44px;
 }
 
 .add-icon:hover,
@@ -412,58 +433,63 @@ th {
     color: #75a8de;
     background-color: #2d3c7d;
     border-color: #1a245b;
-    transform: scale(1.1); /* Agrandir légèrement l'icône au survol */
+    transform: scale(1.1);
 }
 
 /* Styles pour la barre de recherche */
-#searchInput {
-    width: 0;
-    transition: width 0.3s ease, opacity 0.3s ease;
-    color: var(--text-color); /* Couleur du texte */
-    background-color: var(--form-input-background); /* Couleur de fond */
-    border: 1px solid var(--table-cell-border); /* Bordure */
-    padding: 10px;
-    border-radius: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    box-sizing: border-box;
-    opacity: 0;
-    pointer-events: none;
-}
-
-#searchInput::placeholder {
-    color: var(--text-color); /* Couleur du texte du placeholder */
-}
-
+/* Styles mis à jour pour la barre de recherche */
 .search-container {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    position: relative;
+    background-color: var(--form-input-background); /* Utilisation de la couleur de fond des boutons */
+    border-radius: 20px; /* Coins arrondis */
+    padding: 5px 10px; /* Espacement interne pour un meilleur look */
+    width: 300px; /* Largeur fixe */
+  
+    margin-right: auto; /* Centrer horizontalement */
+    position: relative; /* Nécessaire pour positionner l'input correctement */
 }
 
-.search-container.active #searchInput {
-    width: 200px; /* Largeur de la barre de recherche dépliée */
-    opacity: 1;
+#searchInput {
+    width: 100%; /* Toujours à pleine largeur */
+    color: var(--text-color);
+    background-color: var(--form-input-background);
+    border: none; /* Retirer la bordure par défaut */
+    padding: 10px;
+    border-radius: 20px; /* Coins arrondis pour correspondre au conteneur */
+    box-shadow: none; /* Retirer les ombres si non nécessaires */
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none; /* Retirer l'outline par défaut sur focus */
+}
+
+#searchInput::placeholder {
+    color: var(--text-color);
 }
 
 .search-icon {
-    font-size: 30px;
+    font-size: 20px;
     cursor: pointer;
+    color: var(--text-color);
+    margin-left: 10px; /* Espacement entre l'icône et l'input */
+    margin-top: 10px; /* Espacement entre l'icône et l'input */
+    margin-bottom: 10px; /* Espacement entre l'icône et l'input */
+
+
 }
 
+
 .card {
-    background-color: var(--background-color);
+    position: relative;
+    background-color: var(--header-background);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 30px;
     color: white;
-    max-width: 1650px; /* Limite la largeur maximale à 1650px */
+    max-width: 1650px;
     margin: 0 auto;
 }
 
 .card-body {
-    padding-left: 20px;
-    padding-right: 20px;
     background-color: var(--header-background);
     border-radius: 30px;
 }
@@ -506,7 +532,7 @@ th {
 
 .popup-content h2 {
     text-align: center;
-    font-size: 24px;
+    font-size: 20px;
     margin-bottom: 20px;
 }
 
@@ -551,4 +577,39 @@ th {
 
 .popup-content button:hover {
     background-color: #45a049;
+}
+
+
+/* Nouvelle classe pour afficher le texte au survol */
+.hover-text-show .button-text {
+    display: none; /* Masquer le texte par défaut */
+}
+
+.hover-text-show:hover .button-text {
+    display: inline; /* Afficher le texte au survol */
+    margin-left: 8px; /* Ajouter un espace entre l'icône et le texte */
+}
+
+
+.settings-icon {
+    position: absolute; /* Positionner l'icône de manière absolue */
+    top: 25px; /* Ajuster la distance depuis le haut */
+    left: 1550px; /* Ajuster la distance depuis la gauche */
+    font-size: 25px; /* Taille de l'icône */
+    color: var(--text-color); /* Couleur de l'icône */
+    cursor: pointer; /* Changer le curseur lors du survol */
+    z-index: 10; /* Assurez-vous que l'icône est au-dessus du contenu de la carte */
+}
+
+
+h3 {
+    display: block; /* Assure que l'élément est en bloc */
+    margin: 0 auto; /* Centre l'élément horizontalement */
+    text-align: center; /* Centre le texte à l'intérieur de l'élément */
+    padding: 10px; /* Ajoute un padding de 10px autour de l'élément */
+}
+
+
+.hidden-fields {
+    display: none;
 }

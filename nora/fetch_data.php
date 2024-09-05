@@ -4,11 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau des projets</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <style>
+        :root {
+            --background-color: #1b1c27;
+            --text-color: #FFFFFF;
+            --header-background: #252836;
+            --button-background: #1F1D2B;
+            --button-hover: #252836;
+            --form-background: #252836;
+            --form-input-background: #252836;
+            --form-input-border: #343456;
+            --table-background: #1F1D2B;
+            --table-text-color: #FFFFFF;
+            --table-header-background: #1F1D2B;
+            --table-cell-border: #2c2c4600;
+            --table-even-row-background: #0f112e;
+            --filter-form-button-background: #1F1D2B;
+            --filter-form-button-hover: #252836;
+        }
+
         /* Styles pour les dates dépassées */
         .date-depassee {
             color: red;
+        }
+
+        /* Styles pour les colonnes masquées */
+        .hidden-column {
+            display: none;
         }
 
         /* Styles pour les checkboxes personnalisées */
@@ -32,7 +56,7 @@
             height: 20px;
             width: 20px;
             background-color: #eee;
-            border-radius: 5px;
+            border-radius: 30px;
         }
 
         .custom-checkbox input:checked + .checkmark {
@@ -59,18 +83,6 @@
             transform: rotate(45deg);
         }
 
-        /* Styles pour les icônes de tri */
-        .sort-icon {
-            font-size: 12px;
-            margin-left: 5px;
-        }
-        .sort-asc::after {
-            content: '▲';
-        }
-        .sort-desc::after {
-            content: '▼';
-        }
-
         a {
             color: white;
             text-decoration: none;
@@ -89,170 +101,140 @@
             margin-left: 5px;
             color: white;
         }
-    </style>
-    <script>
-        function sortTable(column) {
-            const url = new URL(window.location.href);
-            const currentSort = url.searchParams.get('sort');
-            let newSort;
 
-            if (currentSort === column + 'Asc') {
-                newSort = column + 'Desc';
-            } else {
-                newSort = column + 'Asc';
-            }
-
-            url.searchParams.set('sort', newSort);
-            window.location.href = url.toString();
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--table-cell-border);
         }
-    </script>
+
+        th:first-child,
+        td:first-child {
+            width: 75px; /* Largeur plus petite pour la colonne des checkboxes */
+        }
+
+        /* Styles pour le popup */
+        .popup {
+            display: none; /* Masqué par défaut */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--form-background);
+            padding: 20px;
+            border: 2px solid var(--form-input-border);
+            border-radius: 8px;
+            z-index: 1000;
+            width: 80%; /* Largeur du popup ajustée */
+            max-width: 600px; /* Limite de la largeur maximale */
+            max-height: 80vh; /* Limite de la hauteur maximale */
+            overflow-y: auto; /* Ajout d'un défilement vertical si nécessaire */
+        }
+
+        .popup.active {
+            display: block; /* Afficher lorsque actif */
+        }
+
+        .overlay {
+            display: none; /* Masqué par défaut */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+        }
+
+        .overlay.active {
+            display: block; /* Afficher lorsque actif */
+        }
+
+        .close-popup {
+            background-color: var(--button-background);
+            border: none;
+            color: var(--text-color);
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Style pour la carte contenant l'icône de bouton */
+        .icon-card {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background-color: var(--button-background);
+            border: 1px solid var(--form-input-border);
+            border-radius: 8px;
+            padding: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style pour l'icône de bouton à l'intérieur de la carte */
+        .icon-button {
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--text-color);
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .icon-button:hover {
+            color: #2196F3;
+        }
+    </style>
 </head>
 <body>
+
+    <!-- Carte contenant l'icône de réglage placée à droite -->
+    <div class="icon-card">
+        <button id="openPopup" class="icon-button">
+            <i class="fas fa-cog"></i> <!-- Utilisation de FontAwesome pour l'icône de réglage -->
+        </button>
+    </div>
+
+    <!-- Overlay pour le popup -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Popup pour sélectionner les colonnes à afficher -->
+    <div id="columnPopup" class="popup">
+        <form method="POST" id="columnSelector">
+            <h3>Choisissez les colonnes à afficher :</h3>
+
+            <?php
+            require_once 'db_connection.php';
+
+            // Récupérer toutes les colonnes de la table "projets"
+            $query = "SHOW COLUMNS FROM projets";
+            $result = $conn->query($query);
+
+            // Afficher toutes les colonnes comme options dans le popup
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $column_name = $row['Field'];
+                    $checked = in_array($column_name, ['Intitule', 'DescriptionProbleme', 'ObjectifsOperationnels', 'DateDeDebut', 'DateDeFin', 'dates_jalon', 'Avancement', 'Equipe']) ? 'checked' : '';
+                    echo "<label><input type='checkbox' name='columns[]' value='$column_name' $checked> $column_name</label><br>";
+                }
+            }
+
+            $result->free();
+            ?>
+
+            <button type="submit">Mettre à jour le tableau</button>
+        </form>
+        <button class="close-popup" id="closePopup">Fermer</button>
+    </div>
+
     <?php
-    require_once 'db_connection.php';
+    // Vérifier quelles colonnes sont sélectionnées
+    $selected_columns = isset($_POST['columns']) ? $_POST['columns'] : ['Intitule', 'DescriptionProbleme', 'ObjectifsOperationnels', 'DateDeDebut', 'DateDeFin', 'dates_jalon', 'Avancement', 'Equipe'];
 
-    echo "<link rel='stylesheet' type='text/css' href='style.css'>";
-
-    $levier = isset($_GET['levier']) ? $_GET['levier'] : null;
-    $sort = isset($_GET['sort']) ? $_GET['sort'] : 'dateAsc';
-    $showAll = isset($_GET['showAll']) ? filter_var($_GET['showAll'], FILTER_VALIDATE_BOOLEAN) : false;
-
-    $userId = $_SESSION['userId'];
-
-    $sortIcons = [
-        'id' => '',
-        'intitule' => '',
-        'objectifs' => '',
-        'date' => '',
-        'dateFin' => '',
-        'avancement' => '',
-        'levier' => '',
-        'participants' => '',
-        'localisation' => '',
-        'datesJalon' => ''
-    ];
-
-    switch ($sort) {
-        case 'localisationAsc':
-            $orderBy = "Localisation ASC";
-            $sortIcons['localisation'] = 'sort-asc';
-            break;
-        case 'localisationDesc':
-            $orderBy = "Localisation DESC";
-            $sortIcons['localisation'] = 'sort-desc';
-            break;
-        case 'idAsc':
-            $orderBy = "ID ASC";
-            $sortIcons['id'] = 'sort-asc';
-            break;
-        case 'idDesc':
-            $orderBy = "ID DESC";
-            $sortIcons['id'] = 'sort-desc';
-            break;
-        case 'intituleAsc':
-            $orderBy = "Intitule ASC";
-            $sortIcons['intitule'] = 'sort-asc';
-            break;
-        case 'intituleDesc':
-            $orderBy = "Intitule DESC";
-            $sortIcons['intitule'] = 'sort-desc';
-            break;
-        case 'objectifsAsc':
-            $orderBy = "Objectifs ASC";
-            $sortIcons['objectifs'] = 'sort-asc';
-            break;
-        case 'objectifsDesc':
-            $orderBy = "Objectifs DESC";
-            $sortIcons['objectifs'] = 'sort-desc';
-            break;
-        case 'dateFinAsc':
-            $orderBy = "DateDeFin ASC";
-            $sortIcons['dateFin'] = 'sort-asc';
-            break;
-        case 'dateFinDesc':
-            $orderBy = "DateDeFin DESC";
-            $sortIcons['dateFin'] = 'sort-desc';
-            break;
-        case 'avancementAsc':
-            $orderBy = "Avancement ASC";
-            $sortIcons['avancement'] = 'sort-asc';
-            break;
-        case 'avancementDesc':
-            $orderBy = "Avancement DESC";
-            $sortIcons['avancement'] = 'sort-desc';
-            break;
-        case 'levierAsc':
-            $orderBy = "Levier ASC";
-            $sortIcons['levier'] = 'sort-asc';
-            break;
-        case 'levierDesc':
-            $orderBy = "Levier DESC";
-            $sortIcons['levier'] = 'sort-desc';
-            break;
-        case 'participantsAsc':
-            $orderBy = "Participants ASC";
-            $sortIcons['participants'] = 'sort-asc';
-            break;
-        case 'participantsDesc':
-            $orderBy = "Participants DESC";
-            $sortIcons['participants'] = 'sort-desc';
-            break;
-        case 'dateAsc':
-            $orderBy = "DateDeDebut ASC";
-            $sortIcons['date'] = 'sort-asc';
-            break;
-        case 'dateDesc':
-            $orderBy = "DateDeDebut DESC";
-            $sortIcons['date'] = 'sort-desc';
-            break;
-        case 'datesJalonAsc':
-            $orderBy = "dates_jalon ASC";
-            $sortIcons['datesJalon'] = 'sort-asc';
-            break;
-        case 'datesJalonDesc':
-            $orderBy = "dates_jalon DESC";
-            $sortIcons['datesJalon'] = 'sort-desc';
-            break;
-        default:
-            $orderBy = "DateDeDebut ASC";
-            break;
-    }
-
-    if ($showAll) {
-        $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants, Localisation, dates_jalon FROM projets ORDER BY $orderBy";
-    } else {
-        $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants, Localisation, dates_jalon 
-                  FROM projets 
-                  WHERE Participants = ? OR Participants LIKE ? 
-                  ORDER BY $orderBy";
-    }
-
-    if ($levier) {
-        if ($showAll) {
-            $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants, Localisation, dates_jalon 
-                      FROM projets 
-                      WHERE Levier = ? 
-                      ORDER BY $orderBy";
-        } else {
-            $query = "SELECT ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Levier, Participants, Localisation, dates_jalon 
-                      WHERE Levier = ? AND (Participants = ? OR Participants LIKE ?) 
-                      ORDER BY $orderBy";
-        }
-    }
-
+    // Construire la requête SQL dynamique
+    $columns_to_select = implode(", ", $selected_columns);
+    $query = "SELECT $columns_to_select, ID FROM projets";  // Assurer que 'ID' est toujours sélectionné pour les checkboxes
     $stmt = $conn->prepare($query);
-    $searchUserId = "%" . $userId . "%";
-    if ($levier) {
-        if ($showAll) {
-            $stmt->bind_param("s", $levier);
-        } else {
-            $stmt->bind_param("sss", $levier, $userId, $searchUserId);
-        }
-    } else {
-        if (!$showAll) {
-            $stmt->bind_param("ss", $userId, $searchUserId);
-        }
-    }
 
     $stmt->execute();
     $result = $stmt->get_result();
@@ -267,61 +249,87 @@
                     <span class='checkmark'></span>
                 </label>
               </th>";
-        echo "<th><a href='#' onclick=\"sortTable('id')\">ID<span class='sort-icon {$sortIcons['id']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('intitule')\">Intitulé<span class='sort-icon {$sortIcons['intitule']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('objectifs')\">Objectifs<span class='sort-icon {$sortIcons['objectifs']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('date')\">Date de début<span class='sort-icon {$sortIcons['date']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('dateFin')\">Date de fin<span class='sort-icon {$sortIcons['dateFin']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('avancement')\">Avancement (%)<span class='sort-icon {$sortIcons['avancement']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('levier')\">Levier<span class='sort-icon {$sortIcons['levier']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('participants')\">Participants<span class='sort-icon {$sortIcons['participants']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('localisation')\">Localisation<span class='sort-icon {$sortIcons['localisation']}'></span></a></th>";
-        echo "<th><a href='#' onclick=\"sortTable('datesJalon')\">Dates Jalon<span class='sort-icon {$sortIcons['datesJalon']}'></span></a></th>"; // Nouvelle colonne
+
+        // Affichage dynamique des en-têtes de colonnes
+        foreach ($selected_columns as $column) {
+            echo "<th>" . htmlspecialchars($column) . "</th>";
+        }
+
         echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
 
         while ($row = $result->fetch_assoc()) {
-            $dateDeFin = new DateTime($row["DateDeFin"]);
-            $aujourdhui = new DateTime();
-            $classeDateDepassee = ($dateDeFin < $aujourdhui) ? 'date-depassee' : '';
-
             echo "<tr>";
             echo "<td>
                     <label class='custom-checkbox'>
-                        <input type='checkbox' class='rowCheckbox' data-id='" . $row['ID'] . "'>
+                        <input type='checkbox' class='rowCheckbox' data-id='" . htmlspecialchars($row['ID']) . "'>
                         <span class='checkmark'></span>
                     </label>
                   </td>";
-            echo "<td>" . $row["ID"] . "</td>";
-            echo "<td>" . htmlspecialchars($row["Intitule"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["Objectifs"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["DateDeDebut"]) . "</td>";
-            echo "<td class='$classeDateDepassee'>" . htmlspecialchars($row["DateDeFin"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["Avancement"]) . "%</td>";
-            echo "<td>" . htmlspecialchars($row["Levier"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["Participants"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["Localisation"]) . "</td>"; // Affichage de la localisation
 
-            // Affichage de la nouvelle colonne "dates_jalon"
-            $datesJalon = json_decode($row["dates_jalon"], true); // Décoder le JSON
-            echo "<td>";
-            if (!empty($datesJalon)) {
-                foreach ($datesJalon as $jalon) {
-                    echo htmlspecialchars($jalon['date']) . ": " . htmlspecialchars($jalon['text']) . "<br>";
+            // Affichage dynamique des données des colonnes
+            foreach ($selected_columns as $column) {
+                if ($column == "dates_jalon") {
+                    // Gestion spéciale pour les colonnes de type JSON
+                    $datesJalon = json_decode($row["dates_jalon"], true);
+                    echo "<td>";
+                    if (!empty($datesJalon)) {
+                        foreach ($datesJalon as $jalon) {
+                            echo htmlspecialchars($jalon['date']) . ": " . htmlspecialchars($jalon['text']) . "<br>";
+                        }
+                    } else {
+                        echo "Aucune date jalon";
+                    }
+                    echo "</td>";
+                } else {
+                    echo "<td>" . htmlspecialchars($row[$column]) . "</td>";
                 }
-            } else {
-                echo "Aucune date jalon";
             }
-            echo "</td>";
 
             echo "</tr>";
         }
+
         echo "</tbody>";
         echo "</table>";
     } else {
         echo "0 résultats";
     }
+
+    $stmt->close();
+    $conn->close();
     ?>
+
+    <script>
+        // Script pour afficher/masquer le popup
+        document.getElementById('openPopup').addEventListener('click', function() {
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('columnPopup').classList.add('active');
+        });
+
+        document.getElementById('closePopup').addEventListener('click', function() {
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('columnPopup').classList.remove('active');
+        });
+
+        // Script pour sélectionner/désélectionner toutes les lignes
+        document.getElementById('selectAll').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('.rowCheckbox');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        // Mise à jour des boutons en fonction des lignes sélectionnées
+        document.querySelectorAll('.rowCheckbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (!this.checked) {
+                    document.getElementById('selectAll').checked = false;
+                } else if (Array.from(document.querySelectorAll('.rowCheckbox')).every(cb => cb.checked)) {
+                    document.getElementById('selectAll').checked = true;
+                }
+            });
+        });
+    </script>
 </body>
 </html>

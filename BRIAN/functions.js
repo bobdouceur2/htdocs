@@ -98,10 +98,19 @@ function toggleForm(formId) {
 
 
 
-// Fonction pour rechercher dans le tableau
+document.getElementById('searchInput').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Empêche le comportement par défaut du formulaire
+        console.log("Recherche déclenchée avec la valeur :", e.target.value); // Debug: affiche la valeur de recherche
+        searchTable();
+    }
+});
+
 function searchTable() {
+    console.log("Fonction searchTable() appelée."); // Debug
     var input = document.getElementById('searchInput').value.toLowerCase();
-    input = input.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    input = input.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // Supprimer les accents
+    console.log("Valeur de recherche normalisée :", input); // Debug
     var tableRows = document.querySelectorAll('#tableContainer tr');
 
     tableRows.forEach(function(row) {
@@ -110,7 +119,7 @@ function searchTable() {
 
         columns.forEach(function(column) {
             var text = column.textContent.toLowerCase();
-            text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // Supprimer les accents
             if (text.includes(input)) {
                 found = true;
             }
@@ -123,6 +132,7 @@ function searchTable() {
         }
     });
 }
+
 
 
 
@@ -304,7 +314,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             deleteButton.textContent = "Supprimer la ligne";
         } else if (selectedIds.length > 1) {
             editButton.style.display = "none";
-            deleteButton.textContent = "Supprimer les lignes";
+            deleteButton.textContent = "Supprimer les projets";
         } else {
             editButton.style.display = "block";
             deleteButton.textContent = "Supprimer la ligne";
@@ -392,17 +402,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const rightSidebar = document.getElementById('rightSidebar');
     const mainContent = document.getElementById('mainContent');
 
+    console.log('DOM fully loaded and parsed');
+    console.log('Initial rightSidebar classList:', rightSidebar.classList);
+    console.log('Initial mainContent classList:', mainContent.classList);
+
     selectAllCheckbox.addEventListener('change', function() {
+        console.log('Select All checkbox changed:', this.checked);
         rowCheckboxes.forEach(checkbox => {
             checkbox.checked = this.checked;
+            console.log('Checkbox', checkbox, 'set to', this.checked);
         });
         toggleRightSidebar();
     });
 
     rowCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
+            console.log('Row checkbox changed:', this.checked, 'Checkbox:', checkbox);
             if (!this.checked) {
                 selectAllCheckbox.checked = false;
+                console.log('Select All checkbox unchecked due to row checkbox');
             }
             toggleRightSidebar();
         });
@@ -410,15 +428,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     function toggleRightSidebar() {
         const selectedCount = document.querySelectorAll('.rowCheckbox:checked').length;
+        console.log('Selected row count:', selectedCount);
+
         if (selectedCount > 0) {
             rightSidebar.classList.add('active');
             mainContent.classList.add('shrink');
+            console.log('Right sidebar activated, main content shrunk');
         } else {
             rightSidebar.classList.remove('active');
             mainContent.classList.remove('shrink');
+            console.log('Right sidebar deactivated, main content restored');
         }
+
+        console.log('Updated rightSidebar classList:', rightSidebar.classList);
+        console.log('Updated mainContent classList:', mainContent.classList);
     }
+
+    // Ajout d'un écouteur d'événements pour chaque checkbox
+    document.querySelectorAll('.rowCheckbox').forEach(checkbox => {
+        checkbox.addEventListener('change', toggleRightSidebar);
+    });
 });
+
 
 
 
@@ -447,9 +478,6 @@ function openEditPopupForm() {
     // Obtenir les identifiants des lignes sélectionnées
     const selectedIds = getSelectedRowIds();
 
-    // Afficher les identifiants sélectionnés pour le débogage
-    
-
     // Vérifier si plus d'une ligne est sélectionnée
     if (selectedIds.length !== 1) {
         alert("Vous ne pouvez modifier qu'une seule ligne à la fois.");
@@ -465,8 +493,6 @@ function openEditPopupForm() {
         .then(response => response.json())
         // Une fois les données converties en JSON, les utiliser pour remplir le formulaire
         .then(data => {
-            
-
             // Vérifier s'il y a une erreur dans les données reçues
             if (data.error) {
                 // Si une erreur est présente, afficher une alerte avec le message d'erreur
@@ -483,12 +509,39 @@ function openEditPopupForm() {
                 document.getElementById('editAvancementValue').textContent = data.Avancement + '%';
                 document.getElementById('editParticipants').value = data.Participants;
                 document.getElementById('editLevier').value = data.Levier;
+                document.getElementById('editLocalisation').value = data.Localisation;
+
+                // Effacer les anciennes entrées de dates jalon
+                const jalonContainer = document.getElementById('editDatesJalonContainer');
+                jalonContainer.innerHTML = `<label><b>Dates Jalon</b></label>`; // Réinitialiser le conteneur
+
+                // Charger les dates jalon existantes
+                if (data.dates_jalon) {
+                    try {
+                        const jalonData = JSON.parse(data.dates_jalon);
+                        jalonData.forEach(jalon => {
+                            const newEntry = document.createElement('div');
+                            newEntry.classList.add('dates-jalon-entry');
+                            newEntry.innerHTML = `
+                                <input type="date" name="edit_jalon_dates[]" value="${jalon.date}">
+                                <input type="text" name="edit_jalon_texts[]" value="${jalon.text}">
+                                <button type="button" onclick="removeDateJalonEntry(this)">Supprimer</button>
+                            `;
+                            jalonContainer.appendChild(newEntry);
+                        });
+                    } catch (e) {
+                        console.error('Erreur de parsing JSON pour dates_jalon:', e);
+                    }
+                }
+
+                // Afficher le formulaire de modification
                 document.getElementById('editPopupForm').style.display = 'block';
             }
         })
         // Gérer les erreurs éventuelles de la requête fetch et les afficher dans la console
         .catch(error => console.error('Error:', error));
 }
+
 
 
 
@@ -639,6 +692,24 @@ function addRow() {
     if (!formData.get('levier')) missingParams.push('Levier');
     if (!formData.get('localisation')) missingParams.push('Localisation');
 
+    // Vérifier les dates jalon
+    var jalonDates = formData.getAll('jalon_dates[]');
+    var jalonTexts = formData.getAll('jalon_texts[]');
+    var datesJalonArray = [];
+
+    jalonDates.forEach((date, index) => {
+        if (date && jalonTexts[index]) {
+            datesJalonArray.push({ date: date, text: jalonTexts[index] });
+        }
+    });
+
+    // Ajouter dates_jalon au formData si non vide
+    if (datesJalonArray.length > 0) {
+        formData.append('dates_jalon', JSON.stringify(datesJalonArray));
+    } else {
+        formData.append('dates_jalon', ''); // ou NULL selon vos besoins
+    }
+
     if (missingParams.length > 0) {
         alert("Les paramètres suivants sont manquants ou vides : " + missingParams.join(', '));
         console.log("Missing parameters: ", missingParams); // Log des paramètres manquants
@@ -678,6 +749,7 @@ function addRow() {
         messageDiv.innerText = 'Erreur : ' + error;
     });
 }
+
 
 
 
@@ -746,6 +818,8 @@ document.addEventListener('click', function(event) {
         document.getElementById('searchInput').value = ''; // Réinitialise le champ de recherche lorsque replié
     }
 });
+
+
 
 
 

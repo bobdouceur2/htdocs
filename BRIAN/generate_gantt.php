@@ -20,24 +20,22 @@ function generateGanttChart($year, $conn, $userId, $showAll) {
         12 => 'Décembre'
     ];
 
-    // Requête pour obtenir les projets pour l'année en cours
     if ($showAll) {
         $query = "SELECT ID, Intitule, DateDeDebut, DateDeFin 
                   FROM projets 
-                  WHERE YEAR(DateDeDebut) = ? 
-                     OR YEAR(DateDeFin) = ?";
+                  WHERE (YEAR(DateDeDebut) <= ? AND YEAR(DateDeFin) >= ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $year, $year);
     } else {
         $query = "SELECT ID, Intitule, DateDeDebut, DateDeFin 
                   FROM projets 
-                  WHERE (YEAR(DateDeDebut) = ? 
-                     OR YEAR(DateDeFin) = ?)
+                  WHERE (YEAR(DateDeDebut) <= ? AND YEAR(DateDeFin) >= ?)
                      AND (Participants = ? OR Participants LIKE ?)";
         $stmt = $conn->prepare($query);
         $searchUserId = "%" . $userId . "%";
         $stmt->bind_param("iiss", $year, $year, $userId, $searchUserId);
     }
+    
 
     $stmt->execute();
     $result = $stmt->get_result();
@@ -80,30 +78,34 @@ function generateGanttChart($year, $conn, $userId, $showAll) {
     foreach ($tasks as $task) {
         $colorClass = "color-" . $colorIndex;
         echo "<tr><td>{$task['Intitule']}</td>";
+        echo "<td colspan='12'>";
+        echo "<div class='gantt-bar-container'>";
+    
         $startDate = new DateTime($task['DateDeDebut']);
         $endDate = new DateTime($task['DateDeFin']);
-        
-        $formattedStartDate = $startDate->format('d/m/Y');
-        $formattedEndDate = $endDate->format('d/m/Y');
-        
-        $startMonth = (int) $startDate->format('n');
-        $endMonth = (int) $endDate->format('n');
-        $startYear = (int) $startDate->format('Y');
-        $endYear = (int) $endDate->format('Y');
     
-        for ($month = $firstMonth; $month <= $lastMonth; $month++) {
-            if (($startYear < $year || ($startYear == $year && $month >= $startMonth)) &&
-                ($endYear > $year || ($endYear == $year && $month <= $endMonth))) {
-                echo "<td class='gantt-bar $colorClass' data-start='{$formattedStartDate}' data-end='{$formattedEndDate}'></td>";
-            } else {
-                echo "<td></td>";
-            }
-        }
-        echo "</tr>";
-        
+        // Calcul du début et de la fin en pourcentage par rapport à l'année affichée
+        $startYear = (int)$startDate->format('Y');
+        $endYear = (int)$endDate->format('Y');
+        $startMonth = ($startYear < $year) ? 1 : (int)$startDate->format('m');
+        $endMonth = ($endYear > $year) ? 12 : (int)$endDate->format('m');
+    
+        // Ajuster la largeur de la barre de Gantt en fonction des mois
+        $totalMonths = 12;
+        $startPercentage = (($startMonth - 1) / $totalMonths) * 100;
+        $endPercentage = ($endMonth / $totalMonths) * 100;
+        $widthPercentage = $endPercentage - $startPercentage;
+    
+        echo "<div class='gantt-bar $colorClass' data-start='{$startDate->format('d/m/Y')}' data-end='{$endDate->format('d/m/Y')}' style='width: $widthPercentage%; margin-left: $startPercentage%;'></div>";
+    
+        echo "</div></td></tr>";
+    
         // Incrémenter l'index de couleur et le réinitialiser si nécessaire
         $colorIndex = ($colorIndex % $colorCount) + 1;
     }
+    
+
+    echo "</tbody></table>";
 
     echo "</tbody></table>";
 }
@@ -122,4 +124,3 @@ if ($userId) {
 } else {
     echo "Utilisateur non connecté.";
 }
-

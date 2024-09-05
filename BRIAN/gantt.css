@@ -1,19 +1,19 @@
 :root {
-    --background-color: #0a0f29; /* Couleur de fond principale en bleu nuit très sombre */
-    --text-color: #ffffff; /* Couleur de texte en gris clair */
-    --header-background: #121a45; /* Couleur du header en bleu foncé */
-    --button-background: #1a245b; /* Couleur des boutons en bleu très sombre */
-    --button-hover: #2d3c7d; /* Couleur différente des boutons lors du survol */
-    --form-background: #121a45; /* Couleur de fond des formulaires en bleu foncé */
-    --form-input-background: #1c1c2e; /* Fond des champs de formulaire en bleu très foncé */
-    --form-input-border: #343456; /* Bordure des champs de formulaire en gris foncé */
-    --table-background: #121a45; /* Couleur de fond du tableau en bleu foncé */
-    --table-text-color: #ffffff; /* Couleur du texte des cellules en gris clair */
-    --table-header-background: #1c1c2e; /* Couleur des en-têtes de colonnes en bleu très foncé */
+    --background-color: #1F1D2B; /* Couleur de fond principale en bleu nuit très sombre */
+    --text-color: #FFFFFF; /* Couleur de texte en blanc */
+    --header-background: #252836; /* Couleur du header */
+    --button-background: #1F1D2B; /* Couleur des boutons */
+    --button-hover: #252836; /* Couleur différente des boutons lors du survol */
+    --form-background: #252836; /* Couleur de fond des formulaires */
+    --form-input-background: #252836; /* Fond des champs de formulaire */
+    --form-input-border: #343456; /* Bordure des champs de formulaire */
+    --table-background: #1F1D2B; /* Couleur de fond du tableau */
+    --table-text-color: #FFFFFF; /* Couleur du texte des cellules */
+    --table-header-background: #1F1D2B; /* Couleur des en-têtes de colonnes */
     --table-cell-border: #2c2c4600; /* Bordure des cellules en gris très foncé */
-    --table-even-row-background: #0f112e; /* Couleur de fond des cellules paires en bleu nuit très sombre */
-    --filter-form-button-background: #1a245b; /* Couleur des boutons du formulaire en bleu très sombre */
-    --filter-form-button-hover: #2d3c7d; /* Couleur différente des boutons du formulaire lors du survol */
+    --table-even-row-background: #0f112e; /* Couleur de fond des cellules paires */
+    --filter-form-button-background: #1F1D2B; /* Couleur des boutons du formulaire */
+    --filter-form-button-hover: #252836; /* Couleur différente des boutons du formulaire lors du survol */
 
     /* Couleurs des barres de Gantt */
     --gantt-bar-color-1: #75a8de; /* Couleur 1 - plus claire */
@@ -26,7 +26,6 @@
     --gantt-bar-color-8: #0035b2; /* Couleur 8 */
     --gantt-bar-color-9: #0e35a0; /* Couleur 9 */
     --gantt-bar-color-10: #001762; /* Couleur 10 - plus foncée */
-
 }
 
 body {
@@ -42,29 +41,30 @@ body {
 }
 
 .gantt-chart th, .gantt-chart td {
-    border: 1px solid var(--table-cell-border);
+    border: none;
     padding: 5px;
     text-align: center;
     vertical-align: top;
     position: relative;
-    height: 35px;                               /*changer la hauteur des lignes ici*/
+    height: 35px; /* Changer la hauteur des lignes ici */
     color: var(--table-text-color);
 }
 
 .gantt-chart th:first-child, .gantt-chart td:first-child {
-    width: 100px; /* Largeur ajustée pour la colonne des intitulés de projet */
-    max-width: 100px;
-    min-width: 100px;
+    width: 90px; /* Largeur ajustée pour la colonne des intitulés de projet */
+    max-width: 90px;
+    min-width: 90px;
     text-align: left;
     padding-left: 10px;
 }
 
-
 .gantt-chart th:not(:first-child), .gantt-chart td:not(:first-child) {
     width: 30px; /* Largeur fixe pour chaque jour */
-    max-width: 30px;
-    min-width: 30px;
+    border : none;
+    
 }
+
+
 
 .gantt-chart th {
     background-color: var(--table-header-background);
@@ -77,6 +77,7 @@ body {
     border-radius: 5px;
     position: relative;
     cursor: pointer;
+    
 }
 
 .gantt-bar.color-1 { background-color: var(--gantt-bar-color-1); }
@@ -95,9 +96,10 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background-color: var(--header-background);
+    background-color: var(--background-color);
     padding: 10px;
     color: var(--text-color);
+    border-radius: 20px;
 }
 
 .gantt-nav-icon {
@@ -111,15 +113,14 @@ body {
     color: var(--button-hover);
 }
 
-
 .gantt-bar::after {
     content: attr(data-start) " - " attr(data-end); /* Afficher les dates */
     position: absolute;
     left: 50%;
     top: -30px;
     transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
+    background-color: var(--background-color);
+    color: var(--text-color);
     padding: 5px;
     border-radius: 3px;
     font-size: 12px;

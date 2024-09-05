@@ -1,0 +1,222 @@
+:root {
+    --background-color: #1b1c27;
+    --text-color: #FFFFFF;
+    --header-background: #252836;
+    --button-background: #1F1D2B;
+    --button-hover: #252836;
+    --form-background: #252836;
+    --form-input-background: #252836;
+    --form-input-border: #343456;
+    --table-background: #1F1D2B;
+    --table-text-color: #FFFFFF;
+    --table-header-background: #1F1D2B;
+    --table-cell-border: #2c2c4600;
+    --table-even-row-background: #0f112e;
+    --filter-form-button-background: #1F1D2B;
+    --filter-form-button-hover: #252836;
+}
+
+/* Styles pour les dates dépassées */
+.date-depassee {
+    color: red;
+}
+
+/* Styles pour les checkboxes personnalisées */
+.custom-checkbox {
+    position: relative;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+}
+
+.custom-checkbox input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.custom-checkbox .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border-radius: 5px;
+}
+
+.custom-checkbox input:checked + .checkmark {
+    background-color: #2196F3;
+}
+
+.custom-checkbox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-checkbox input:checked + .checkmark:after {
+    display: block;
+}
+
+.custom-checkbox .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+/* Styles pour les icônes de tri */
+.sort-icon {
+    font-size: 12px;
+    margin-left: 5px;
+}
+.sort-asc::after {
+    content: '▲';
+}
+.sort-desc::after {
+    content: '▼';
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ddd;
+}
+
+th a {
+    color: white;
+}
+
+.sort-icon {
+    font-size: 12px;
+    margin-left: 5px;
+    color: white;
+}
+
+/* Positionnement du bouton Réglages */
+.modern-button.settings-icon-fetch {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background-color: var(--button-background);
+    color: var(--text-color);
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.modern-button.settings-icon-fetch:hover {
+    background-color: var(--button-hover);
+    color: var(--text-color);
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--form-background);
+    border: 1px solid var(--form-input-border);
+    padding: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--header-background);
+    padding: 10px;
+    border-radius: 6px 6px 0 0;
+    margin: -20px -20px 20px;
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.close-btn {
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: var(--button-hover);
+}
+
+.column-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--form-background);
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.column-toggle label {
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.column-toggle input[type="checkbox"] {
+    transform: scale(1.5);
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.column-toggle input[type="checkbox"]:hover {
+    accent-color: var(--button-hover);
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 900;
+}
+
+.hidden {
+    display: none;
+}
+
+.draggable {
+    padding: 10px;
+    background-color: var(--form-input-background);
+    border: 1px solid var(--form-input-border);
+    margin-bottom: 5px;
+    border-radius: 4px;
+    cursor: move;
+    user-select: none;
+}
+
+.dragging {
+    opacity: 0.5;
+}
