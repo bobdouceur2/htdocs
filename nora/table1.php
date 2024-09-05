@@ -46,6 +46,8 @@ if ($result) {
 </head>
 
 <body>
+
+
     <header class="site-header">
         <a href="table1.php">
             <img src="logosafran.png" alt="Logo Safran" id="logoSafran" />
@@ -65,6 +67,11 @@ if ($result) {
             </div>
         </div>
     </header>
+
+
+
+
+    
 
     <div class="main-container">
         <!-- Nouvelle colonne à gauche -->
@@ -471,10 +478,3 @@ if ($result) {
 </body>
 </html>
 
-<h2>Choisissez les données à afficher</h2>
-            <form id="settings-form">
-            <div class="settings-controls">
-                <button type="button" class="settings-button" onclick="toggleAllCheckboxes(true)">Tout sélectionner</button>
-                <button type="button" class="settings-button" onclick="toggleAllCheckboxes(false)">Tout désélectionner</button>
-                <button type="button" class="settings-button" onclick="resetToDefaults()">Réinitialiser</button>
-            </div>

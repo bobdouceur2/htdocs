@@ -39,20 +39,55 @@ body {
 header {
     display: flex;
     align-items: center;
-    justify-content: center; /* Centre le conteneur central */
-    position: relative;
-    padding: 20px 0;
+    justify-content: space-between;
+    padding: 20px;
     background-color: var(--header-background);
     color: var(--text-color);
+    position: relative;
 }
 
-header h1 {
-    margin: 0;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Ajoute un espace entre les éléments */
+}
+
+.header-center {
+    flex-grow: 1;
     text-align: center;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%); /* Centrer exactement le texte */
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+
+}
+
+
+
+
+
+
+#refresh-button {
+    background: none;
+    border: none;
+    cursor: pointer;
     font-size: 30px;
+    color: var(--text-color);
+    position:flex;
+    left : 20px;
+}
+
+
+
+
+
+
+h1 {
+    margin: 0;
+    font-size: 30px;
+    text-align: center;
+    flex-grow: 1; /* Centrer le texte horizontalement dans l'espace disponible */
 }
 
 #settings-icon {
@@ -60,7 +95,6 @@ header h1 {
     padding: 10px;
     color: var(--text-color);
     margin-left: auto;
-    margin-right: 20px;
     cursor: pointer;
     position: absolute;
     right: 20px; /* Positionne à droite */
@@ -104,8 +138,7 @@ header h1 {
 }
 
 .header-spacer {
-    width: 40px;
-    margin-bottom: 20px;
+    flex-grow: 1; /* Laisser l'espace restant entre les éléments à gauche et ceux à droite */
 }
 
 #map {
@@ -399,7 +432,7 @@ header h1 {
     transition: background-color 0.3s, transform 0.3s;
     margin-left: 20px;
     position: absolute;
-    left: 20px; /* Positionne le bouton à gauche */
+    left: 70px; /* Positionne le bouton à gauche */
 }
 
 

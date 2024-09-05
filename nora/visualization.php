@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
     echo "Aucun ID spécifié.<br>";
 }
 
-function generateGanttChart($project) {
+function generateGanttChart($project, $jalons) {
     $mois_francais = [
         1 => 'Janvier',
         2 => 'Février',
@@ -127,9 +127,22 @@ function generateGanttChart($project) {
 
     echo "<div class='gantt-bar $colorClass' data-start='{$startDate->format('d/m/Y')}' data-end='{$endDate->format('d/m/Y')}' style='width: $widthPercentage%; margin-left: $startPercentage%;'></div>";
 
+    // Ajouter les jalons
+    if (!empty($jalons)) {
+        foreach ($jalons as $jalon) {
+            $jalonDate = new DateTime($jalon['date']);
+            $jalonMonth = (int)$jalonDate->format('m');
+            $jalonPercentage = (($jalonMonth - 1) / $totalMonths) * 100;
+            echo "<div class='gantt-jalon' style='left: $jalonPercentage%;' title='{$jalonDate->format('d/m/Y')}'></div>";
+        }
+    }
+
     echo "</div></td></tr>";
     echo "</tbody></table>";
 }
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -142,51 +155,68 @@ function generateGanttChart($project) {
     <!-- FontAwesome pour l'icône de réglage -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Script Google Maps et Google Places API -->
-    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1JmYjZBnnWhmmfCmoNylVAN3DQ2a0voI&libraries=places&callback=initMap"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1JmYjZBnnWhmmfCmoNylVAN3DQ2a0voI&libraries=places&callback=initMap" type="text/javascript"></script>
     
     <script>
-    function initMap() {
-        const address = "<?php echo htmlspecialchars($project['Localisation'] ?? ''); ?>";
-        
-        const map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15,
-            center: { lat: -34.397, lng: 150.644 }  // Coordonnées par défaut
-        });
-        
-        const geocoder = new google.maps.Geocoder();
-        const service = new google.maps.places.PlacesService(map);
 
-        // Géocoder pour rechercher l'adresse ou l'emplacement de l'entreprise
-        geocoder.geocode({ 'address': address }, function(results, status) {
-            if (status === 'OK') {
-                map.setCenter(results[0].geometry.location);
+
+
+
+
+function initMap() {
+    // Vérifier si une adresse de localisation est disponible
+    const address = "<?php echo htmlspecialchars($project['Localisation'] ?? ''); ?>";
+    
+    if (!address) {
+        console.log('Aucune localisation fournie.');
+        return; // Ne pas initialiser la carte si l'adresse est vide
+    }
+
+    const map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15,
+        center: { lat: -34.397, lng: 150.644 }  // Coordonnées par défaut
+    });
+
+    const geocoder = new google.maps.Geocoder();
+    const service = new google.maps.places.PlacesService(map);
+
+    // Géocoder pour rechercher l'adresse ou l'emplacement de l'entreprise
+    geocoder.geocode({ 'address': address }, function(results, status) {
+        if (status === 'OK') {
+            map.setCenter(results[0].geometry.location);
+            const marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location
+            });
+        } else if (status !== 'ZERO_RESULTS') {
+            console.error('Geocode was not successful for the following reason: ' + status);
+        }
+    });
+
+    // Rechercher des établissements spécifiques comme des entreprises
+    service.findPlaceFromQuery({
+        query: address,
+        fields: ['name', 'geometry']
+    }, function(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+            for (let i = 0; i < results.length; i++) {
+                map.setCenter(results[i].geometry.location);
                 const marker = new google.maps.Marker({
                     map: map,
-                    position: results[0].geometry.location
+                    position: results[i].geometry.location
                 });
-            } else if (status !== 'ZERO_RESULTS') {
-                console.error('Geocode was not successful for the following reason: ' + status);
             }
-        });
+        } else if (status !== google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            console.error('Place search was not successful for the following reason: ' + status);
+        }
+    });
+}
 
-        // Rechercher des établissements spécifiques comme des entreprises
-        service.findPlaceFromQuery({
-            query: address,
-            fields: ['name', 'geometry']
-        }, function(results, status) {
-            if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-                for (let i = 0; i < results.length; i++) {
-                    map.setCenter(results[i].geometry.location);
-                    const marker = new google.maps.Marker({
-                        map: map,
-                        position: results[i].geometry.location
-                    });
-                }
-            } else if (status !== google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-                console.error('Place search was not successful for the following reason: ' + status);
-            }
-        });
-    }
+
+
+
+
+
 
     function togglePCDView(theme) {
         // Masquer toutes les cartes
@@ -222,6 +252,9 @@ function generateGanttChart($project) {
         // Sélectionne toutes les cases à cocher du formulaire
         var checkboxes = form.querySelectorAll('input[name="fields[]"]');
 
+        // Initialise un tableau pour les champs cochés
+        var selectedFields = [];
+
         // Parcourt chaque case à cocher
         checkboxes.forEach(function(checkbox) {
             // Convertit la valeur de la case à cocher en minuscule pour correspondre aux classes CSS
@@ -230,34 +263,31 @@ function generateGanttChart($project) {
             // Remplace les espaces et les underscores pour correspondre aux noms de classe CSS
             field = field.replace(/ /g, '-').replace('_', '-');
 
-            // Sélectionne la carte (div) qui correspond à la colonne
-            var card = document.querySelector('.card.' + field);
-
-            // Vérifie si la carte existe
-            if (card) { 
-                // Affiche ou masque la carte en fonction de l'état de la case à cocher
-                if (checkbox.checked) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+            // Si la case est cochée, ajoutez le champ à la liste des champs sélectionnés
+            if (checkbox.checked) {
+                selectedFields.push(field);
             }
+        });
 
-            // Gère spécifiquement les cas comme "DatesJalon" ou d'autres champs similaires
-            if (field === 'datesjalon') {
-                // Sélectionne la carte associée aux dates jalons
-                var datesJalonCard = document.querySelector('.card.dates-jalon');
+        // Masquer toutes les cartes par défaut
+        var cards = document.querySelectorAll('.card');
+        cards.forEach(function(card) {
+            card.style.display = 'none';
+        });
 
-                // Affiche ou masque la carte des dates jalons en fonction de l'état de la case à cocher
-                if (datesJalonCard) {
-                    datesJalonCard.style.display = checkbox.checked ? 'block' : 'none';
-                }
+        // Afficher uniquement les cartes sélectionnées
+        selectedFields.forEach(function(field) {
+            var card = document.querySelector('.card.' + field);
+            if (card) {
+                card.style.display = 'block';
             }
         });
 
         // Ferme le popup après avoir appliqué les paramètres
         closePopup();
     }
+
+
 
 
     function closePopup() {
@@ -295,15 +325,35 @@ function generateGanttChart($project) {
 </head>
 <body>
     <header>
-        <!-- Bouton pour l'icône Triangle PCD -->
-        <button class="pcd-button" onclick="document.getElementById('pcd-popup').style.display = 'block'">
-            <i class="fas fa-caret-up"></i> <!-- Utiliser caret-up comme triangle -->
-            Triangle PCD
-        </button>
+        <div class="header-left">
+            <!-- Bouton pour l'icône Triangle PCD -->
+            <button class="pcd-button" onclick="document.getElementById('pcd-popup').style.display = 'block'">
+                <i class="fas fa-caret-up"></i> Triangle PCD
+            </button>
+
+
+
+
+            <button id="refresh-button" onclick="refreshPage()" title="Rafraîchir la page">
+                <i class="fas fa-sync-alt"></i> <!-- Icône de rafraîchissement FontAwesome -->
+            </button>
+        </div>
+
+
+
+
         
-        <div class="header-spacer"></div>
-        <h1>Visualisation pour l'ID: <?php echo htmlspecialchars($id ?? ''); ?></h1>
-        <i class="fas fa-cog" id="settings-icon"></i>
+        <div class="header-center">
+            <h1>Visualisation pour l'ID: <?php echo htmlspecialchars($id ?? ''); ?></h1>
+        </div>
+        
+        
+        <div class="header-right">
+            <!-- Icône de réglage -->
+            <i class="fas fa-cog" id="settings-icon"></i>
+        </div>
+
+
     </header>
 
     <!-- Popup pour le choix des thèmes PCD -->
@@ -336,7 +386,7 @@ function generateGanttChart($project) {
                 <button type="button" class="settings-button" onclick="toggleAllCheckboxes(false)">Tout désélectionner</button>
                 <button type="button" class="settings-button" onclick="resetToDefaults()">Réinitialiser</button>
             </div>
-            
+
             <form id="settings-form">
                 <?php
                 // Générer des cases à cocher pour chaque colonne
@@ -353,8 +403,13 @@ function generateGanttChart($project) {
 
     <div class="dashboard">
         <?php
-        // Générer les cartes pour chaque colonne
+        // Générer les cartes pour chaque colonne, sauf pour les dates
         foreach ($columns as $column) {
+            // Ne pas afficher de cartes individuelles pour les dates ici
+            if (in_array($column, ['DateDeDebut', 'DateDeFin', 'DatesJalon'])) {
+                continue;
+            }
+
             // Contenu par défaut si la colonne est vide
             $content = isset($project[$column]) ? $project[$column] : 'Aucune donnée disponible.';
 
@@ -363,14 +418,61 @@ function generateGanttChart($project) {
 
             echo "<div class='card $columnClass'>";
             echo "<h2>" . htmlspecialchars($column) . "</h2>";
-            echo "<p>" . htmlspecialchars($content) . "</p>";
+
+            // Vérifier si la colonne est "Localisation" pour afficher Google Maps
+            if ($column == 'Localisation' && !empty($project['Localisation'])) {
+                echo "<div id='map' style='width: 500px; height: 300px;'></div>"; // Div pour Google Maps
+            } 
+            // Ajouter une barre de progression pour "Avancement"
+            elseif ($column == 'Avancement') {
+                $progressValue = intval($content); // Convertir la valeur d'avancement en nombre entier
+                echo "<div class='progress-bar-container'>";
+                echo "<div class='progress-bar' style='width: 100%; background-color: #e0e0e0; border-radius: 13px; overflow: hidden; height: 20px;'>";
+                echo "<div class='progress' style='height: 100%; background-color: #76c7c0; width: $progressValue%; transition: width 0.4s ease;'></div>";
+                echo "</div>";
+                echo "<p>" . htmlspecialchars($progressValue) . "% complété</p>";
+                echo "</div>";
+            } else {
+                echo "<p>" . htmlspecialchars($content) . "</p>";
+            }
+
             echo "</div>";
         }
+
+        // Afficher une seule carte pour le diagramme de Gantt combiné
+        $formattedStartDate = isset($project['DateDeDebut']) ? (new DateTime($project['DateDeDebut']))->format('d/m/Y') : 'N/A';
+        $formattedEndDate = isset($project['DateDeFin']) ? (new DateTime($project['DateDeFin']))->format('d/m/Y') : 'N/A';
+
+        // Extraire les dates jalons
+        $jalonsText = '';
+        if (!empty($jalons)) {
+            foreach ($jalons as $jalon) {
+                $jalonDate = new DateTime($jalon['date']);
+                $jalonsText .= $jalonDate->format('d/m/Y') . ', ';
+            }
+            $jalonsText = rtrim($jalonsText, ', '); // Retirer la dernière virgule
+        } else {
+            $jalonsText = 'Aucun jalon';
+        }
+
+        echo "<div class='card gantt-card'>";
+        echo "<h2>Diagramme de Gantt (Début: $formattedStartDate, Fin: $formattedEndDate, Jalons: $jalonsText)</h2>";
+        echo "<div class='gantt-container'>";
+        generateGanttChart($project, $jalons); // Appel de la fonction Gantt avec les jalons
+        echo "</div>";
+        echo "</div>";
         ?>
     </div>
 
 
+
+
+
     <script>
+
+        function refreshPage() {
+                location.reload(); // Recharger la page actuelle
+            }
 
         function toggleAllCheckboxes(selectAll) {
                     const checkboxes = document.querySelectorAll('#settings-form input[type="checkbox"]');
@@ -384,40 +486,48 @@ function generateGanttChart($project) {
                     });
                 }
 
-    function applySettings() {
-        var form = document.getElementById('settings-form');
-        var checkboxes = form.querySelectorAll('input[name="fields[]"]');
-        
-        checkboxes.forEach(function(checkbox) {
-            var field = checkbox.value.toLowerCase();
+        function applySettings() {
+            // Récupère le formulaire des paramètres
+            var form = document.getElementById('settings-form');
 
-            // Remplacer les espaces et les tirets bas par des tirets pour correspondre aux classes CSS
-            field = field.replace(/ /g, '-').replace('_', '-');
+            // Sélectionne toutes les cases à cocher du formulaire
+            var checkboxes = form.querySelectorAll('input[name="fields[]"]');
 
-            var card = document.querySelector('.card.' + field);
-            if (card) { // Vérifiez si l'élément existe
+            // Initialise un tableau pour les champs cochés
+            var selectedFields = [];
+
+            // Parcourt chaque case à cocher
+            checkboxes.forEach(function(checkbox) {
+                // Convertit la valeur de la case à cocher en minuscule pour correspondre aux classes CSS
+                var field = checkbox.value.toLowerCase();
+
+                // Remplace les espaces et les underscores pour correspondre aux noms de classe CSS
+                field = field.replace(/ /g, '-').replace(/_/g, '-');
+
+                // Si la case est cochée, ajoutez le champ à la liste des champs sélectionnés
                 if (checkbox.checked) {
+                    selectedFields.push(field);
+                }
+            });
+
+            // Masquer toutes les cartes par défaut
+            var cards = document.querySelectorAll('.card');
+            cards.forEach(function(card) {
+                card.style.display = 'none';
+            });
+
+            // Afficher uniquement les cartes sélectionnées
+            selectedFields.forEach(function(field) {
+                var card = document.querySelector('.card.' + field);
+                if (card) {
                     card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
                 }
-            }
+            });
 
-            // Vérifiez spécifiquement pour "Dates Jalon" et autres champs similaires
-            if (field === 'datesjalon') {
-                var datesJalonCard = document.querySelector('.card.dates-jalon');
-                if (datesJalonCard) {
-                    if (checkbox.checked) {
-                        datesJalonCard.style.display = 'block';
-                    } else {
-                        datesJalonCard.style.display = 'none';
-                    }
-                }
-            }
-        });
+            // Ferme le popup après avoir appliqué les paramètres
+            closePopup();
+        }
 
-        closePopup();
-    }
 
     function closePopup() {
         document.getElementById('settings-popup').style.display = 'none';
