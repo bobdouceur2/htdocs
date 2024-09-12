@@ -36,7 +36,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $datedefin = $_POST['datedefin'] ?: null;
     $avancement = $_POST['avancement'] ?: null;
     $equipe = $_POST['equipe'] ?: null;
-    $objectifs = !empty($_POST['objectifs']) ? $_POST['objectifs'] : null;
     $participants = !empty($_POST['participants']) ? $_POST['participants'] : null;
     $levier = !empty($_POST['levier']) ? $_POST['levier'] : null;
     $localisation = !empty($_POST['localisation']) ? $_POST['localisation'] : null;
@@ -45,11 +44,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dates_jalon_json = !empty($_POST['dates_jalon']) ? $_POST['dates_jalon'] : null;
 
     // Log des valeurs après traitement
-    error_log("Valeurs traitées pour la requête: ID=$id, Intitulé=$intitule, DescriptionProblème=$description_probleme, ObjectifsOpérationnels=$objectifs_operationnels, DateDeDébut=$datededebut, DateDeFin=$datedefin, Avancement=$avancement, Équipe=$equipe, Objectifs=$objectifs, Participants=$participants, Levier=$levier, Localisation=$localisation, Perimetre=$perimetre, Planning=$planning, DatesJalonJSON=$dates_jalon_json");
+    error_log("Valeurs traitées pour la requête: ID=$id, Intitulé=$intitule, DescriptionProblème=$description_probleme, ObjectifsOpérationnels=$objectifs_operationnels, DateDeDébut=$datededebut, DateDeFin=$datedefin, Avancement=$avancement, Équipe=$equipe, Participants=$participants, Levier=$levier, Localisation=$localisation, Perimetre=$perimetre, Planning=$planning, DatesJalonJSON=$dates_jalon_json");
 
     // Mise à jour de la table projets avec les nouvelles données, y compris les dates jalons
     error_log("Préparation de la requête SQL pour mettre à jour le projet.");
-    $sql = "UPDATE projets SET Intitule = ?, DescriptionProbleme = ?, ObjectifsOperationnels = ?, DateDeDebut = ?, DateDeFin = ?, Avancement = ?, Equipe = ?, Objectifs = ?, Participants = ?, Levier = ?, Localisation = ?, Perimetre = ?, Planning = ?, dates_jalon = ? WHERE id = ?";
+    $sql = "UPDATE projets SET Intitule = ?, DescriptionProbleme = ?, ObjectifsOperationnels = ?, DateDeDebut = ?, DateDeFin = ?, Avancement = ?, Equipe = ?, Participants = ?, Levier = ?, Localisation = ?, Perimetre = ?, Planning = ?, dates_jalon = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -60,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Vérification et liaison des paramètres
     error_log("Liaison des paramètres à la requête préparée.");
     if (!$stmt->bind_param(
-        "ssssssssssssssi", 
+        "sssssssssssssi", 
         $intitule, 
         $description_probleme, 
         $objectifs_operationnels, 
@@ -68,7 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $datedefin, 
         $avancement, 
         $equipe, 
-        $objectifs, 
         $participants, 
         $levier, 
         $localisation, 
@@ -102,7 +100,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "Méthode de requête incorrecte";
 }
 
-// Fermeture de la connexion à la base de données
-error_log("Fermeture de la connexion à la base de données.");
-$conn->close();
-?>

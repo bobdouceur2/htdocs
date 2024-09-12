@@ -362,6 +362,7 @@ th, td {
 
 th {
     background-color: var(--table-header-background);
+    padding : 15px !important;
 }
 
 #filterFormContainer,

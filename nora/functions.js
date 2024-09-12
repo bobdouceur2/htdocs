@@ -119,18 +119,35 @@ function closeVisualizationPopupForm() {
 
 
 
-// Fonction pour afficher tous les projets ou uniquement les projets de l'utilisateur
+// Fonction pour afficher tous les projets
 function showAllProjects() {
+    console.log("showAllProjects() appelée");  // Log pour indiquer que la fonction est appelée
+    
     const url = new URL(window.location.href);
-    url.searchParams.set('showAll', 'true');
-    window.location.href = url.href;
+    console.log("URL actuelle:", url.href);  // Log pour afficher l'URL actuelle avant modification
+    
+    url.searchParams.set('showAll', 'true');  // Ajout du paramètre 'showAll'
+    console.log("'showAll' ajouté à l'URL:", url.href);  // Log pour vérifier que le paramètre a été ajouté
+    
+    window.location.href = url.href;  // Redirection vers la nouvelle URL
+    console.log("Redirection vers:", url.href);  // Log pour indiquer l'URL finale vers laquelle la redirection va se faire
 }
 
+
+// Fonction pour afficher uniquement les projets de l'utilisateur
 function showMyProjects() {
+    console.log("showMyProjects() appelée");  // Log pour indiquer que la fonction est appelée
+    
     const url = new URL(window.location.href);
-    url.searchParams.delete('showAll');
-    window.location.href = url.href;
+    console.log("URL actuelle:", url.href);  // Log pour afficher l'URL actuelle avant modification
+    
+    url.searchParams.delete('showAll');  // Suppression du paramètre 'showAll'
+    console.log("'showAll' supprimé de l'URL:", url.href);  // Log pour vérifier que le paramètre a été supprimé
+    
+    window.location.href = url.href;  // Redirection vers la nouvelle URL
+    console.log("Redirection vers:", url.href);  // Log pour indiquer l'URL finale vers laquelle la redirection va se faire
 }
+
 
 function sortProjects() {
     const sortValue = document.getElementById('sortSelect').value;
@@ -427,13 +444,9 @@ function addRow() {
     const missingParams = [];
     if (!formData.get('id')) missingParams.push('ID');
     if (!formData.get('intitule')) missingParams.push('Intitulé');
-    if (!formData.get('objectifs')) missingParams.push('Objectifs');
     if (!formData.get('datededebut')) missingParams.push('Date de début');
     if (!formData.get('datedefin')) missingParams.push('Date de fin');
     if (!formData.get('avancement')) missingParams.push('Avancement');
-    if (!formData.get('participants')) missingParams.push('Participants');
-    if (!formData.get('levier')) missingParams.push('Levier');
-    if (!formData.get('localisation')) missingParams.push('Localisation');
 
     const jalonDates = formData.getAll('jalon_dates[]');
     const jalonTexts = formData.getAll('jalon_texts[]');
@@ -483,6 +496,11 @@ function addRow() {
         messageDiv.innerText = 'Erreur : ' + error;
     });
 }
+
+
+
+
+
 
 function submitVisualizationForm() {
     const id = document.getElementById('visualizationId').value;

@@ -20,7 +20,7 @@ $result = $conn->query($query);
 // Tableau pour stocker les noms de colonnes
 $columns = [];
 
-if ($result->num_rows > 0) {
+if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $columns[] = $row['Field'];
     }
@@ -35,6 +35,7 @@ $result->free();
 
 $project = null;
 $jalons = []; // Initialiser le tableau des jalons
+$intitule = '';
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
@@ -53,6 +54,7 @@ if (isset($_GET['id'])) {
     // Vérifiez si des données ont été trouvées
     if ($result->num_rows > 0) {
         $project = $result->fetch_assoc();
+        $intitule = $project['Intitule'] ?? '';
         // Formatage des dates
         $startDate = new DateTime($project['DateDeDebut']);
         $endDate = new DateTime($project['DateDeFin']);
@@ -156,7 +158,91 @@ function generateGanttChart($project, $jalons) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Script Google Maps et Google Places API -->
     <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1JmYjZBnnWhmmfCmoNylVAN3DQ2a0voI&libraries=places&callback=initMap" type="text/javascript"></script>
-    
+
+
+
+
+
+
+
+<script>
+// Attendre que le DOM soit complètement chargé
+document.addEventListener('DOMContentLoaded', function() {
+    // Rendre chaque carte modifiable au clic
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', function() {
+            console.log('Card clicked:', this); // Vérification de console
+            makeCardEditable(this);
+        });
+    });
+});
+
+function makeCardEditable(card) {
+    const field = card.classList[1].replace(/-/g, '_'); // Utilise la deuxième classe comme nom de champ (colonne) et remplace les tirets par des underscores
+    const currentValue = card.querySelector('p').innerText;
+
+
+    console.log('Making card editable:', field); // Vérification de console
+
+    // Remplacer le contenu de la carte par un champ de saisie pour modification
+    card.innerHTML = `
+        <h2>${field.replace('-', ' ').toUpperCase()}</h2>
+        <input type="text" value="${currentValue}" id="edit-input-${field}">
+        <button onclick="saveChanges('${field}', '${currentValue}', this)">Enregistrer</button>
+        <button onclick="cancelEdit('${field}', '${currentValue}', this)">Annuler</button>
+    `;
+}
+
+function saveChanges(field, originalValue, button) {
+    const card = button.closest('.card');
+    const newValue = card.querySelector('input').value;
+
+    console.log('Saving changes for:', field, 'New Value:', newValue); // Vérification de console
+
+    // Si la valeur n'a pas changé, annuler l'édition
+    if (newValue === originalValue) {
+        cancelEdit(field, originalValue, button);
+        return;
+    }
+
+    // Envoyer les nouvelles données au serveur via AJAX
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'update_project.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Response from server:', xhr.responseText); // Vérification de console
+            // Mise à jour réussie, réafficher la carte avec la nouvelle valeur
+            card.innerHTML = `
+                <h2>${field.replace('-', ' ').toUpperCase()}</h2>
+                <p>${newValue}</p>
+            `;
+        }
+    };
+    xhr.send(`field=${field}&value=${newValue}&id=<?php echo $id; ?>`);
+}
+
+function cancelEdit(field, originalValue, button) {
+    const card = button.closest('.card');
+    console.log('Cancelling edit for:', field); // Vérification de console
+
+    // Restaurer le contenu original de la carte
+    card.innerHTML = `
+        <h2>${field.replace('-', ' ').toUpperCase()}</h2>
+        <p>${originalValue}</p>
+    `;
+}
+</script>
+
+
+
+
+
+
+
+
+
+
     <script>
 
 
@@ -323,6 +409,16 @@ function initMap() {
 
     </script>
 </head>
+
+
+
+
+
+
+
+
+
+
 <body>
     <header>
         <div class="header-left">
@@ -344,7 +440,7 @@ function initMap() {
 
         
         <div class="header-center">
-            <h1>Visualisation pour l'ID: <?php echo htmlspecialchars($id ?? ''); ?></h1>
+            <h1>Visualisation pour l'ID: <?php echo htmlspecialchars($id ?? ''); ?> - <?php echo htmlspecialchars($intitule ?? ''); ?></h1>
         </div>
         
         
@@ -391,8 +487,10 @@ function initMap() {
                 <?php
                 // Générer des cases à cocher pour chaque colonne
                 foreach ($columns as $column) {
-                    $checked = 'checked'; // Toutes les cases sont cochées par défaut
-                    echo "<label><input type='checkbox' name='fields[]' value='$column' $checked> $column</label><br>";
+                    if ($column !== 'Intitule') { // Exclure l'option "Intitulé"
+                        $checked = 'checked'; // Toutes les cases sont cochées par défaut
+                        echo "<label><input type='checkbox' name='fields[]' value='$column' $checked> $column</label><br>";
+                    }
                 }
                 ?>
                 <button type="button" onclick="applySettings()">Appliquer</button>
@@ -403,10 +501,10 @@ function initMap() {
 
     <div class="dashboard">
         <?php
-        // Générer les cartes pour chaque colonne, sauf pour les dates
+        // Générer les cartes pour chaque colonne, sauf pour "Intitulé" et les dates
         foreach ($columns as $column) {
-            // Ne pas afficher de cartes individuelles pour les dates ici
-            if (in_array($column, ['DateDeDebut', 'DateDeFin', 'DatesJalon'])) {
+            // Ne pas afficher de cartes individuelles pour les dates ou pour "Intitulé"
+            if (in_array($column, ['DateDeDebut', 'DateDeFin', 'DatesJalon', 'Intitule'])) {
                 continue;
             }
 
@@ -416,12 +514,12 @@ function initMap() {
             // Remplacer les espaces et caractères spéciaux pour les utiliser comme classe CSS
             $columnClass = strtolower(str_replace([' ', '_'], '-', $column));
 
-            echo "<div class='card $columnClass'>";
+            echo "<div class='card $columnClass' data-column='$column' onclick='editCard(\"$column\", this)'>"; // Ajout d'un attribut data-column pour identifier la colonne et une fonction de clic
             echo "<h2>" . htmlspecialchars($column) . "</h2>";
 
             // Vérifier si la colonne est "Localisation" pour afficher Google Maps
             if ($column == 'Localisation' && !empty($project['Localisation'])) {
-                echo "<div id='map' style='width: 500px; height: 300px;'></div>"; // Div pour Google Maps
+                echo "<div id='map' style='width: 100%; height: 300px;'></div>"; // Div pour Google Maps
             } 
             // Ajouter une barre de progression pour "Avancement"
             elseif ($column == 'Avancement') {

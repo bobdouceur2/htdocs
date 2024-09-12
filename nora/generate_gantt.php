@@ -2,7 +2,7 @@
 
 require_once 'db_connection.php'; // Inclure la connexion à la base de données
 
-// Fonction pour générer un diagramme de Gantt avec des barres de couleurs
+// Fonction pour générer un diagramme de Gantt avec des barres de couleurs et des liens cliquables
 function generateGanttChart($year, $conn, $userId, $showAll) {
     // Tableau des mois en français
     $mois_francais = [
@@ -21,21 +21,22 @@ function generateGanttChart($year, $conn, $userId, $showAll) {
     ];
 
     if ($showAll) {
+        // Si l'utilisateur choisit d'afficher tous les projets
         $query = "SELECT ID, Intitule, DateDeDebut, DateDeFin 
                   FROM projets 
                   WHERE (YEAR(DateDeDebut) <= ? AND YEAR(DateDeFin) >= ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $year, $year);
     } else {
+        // Si l'utilisateur choisit d'afficher uniquement ses projets (participant dans l'équipe)
         $query = "SELECT ID, Intitule, DateDeDebut, DateDeFin 
                   FROM projets 
                   WHERE (YEAR(DateDeDebut) <= ? AND YEAR(DateDeFin) >= ?)
-                     AND (Participants = ? OR Participants LIKE ?)";
+                     AND (Equipe = ? OR Equipe LIKE ?)";
         $stmt = $conn->prepare($query);
         $searchUserId = "%" . $userId . "%";
         $stmt->bind_param("iiss", $year, $year, $userId, $searchUserId);
     }
-    
 
     $stmt->execute();
     $result = $stmt->get_result();
@@ -77,6 +78,8 @@ function generateGanttChart($year, $conn, $userId, $showAll) {
     // Afficher les projets et leurs barres de couleurs dans le Gantt
     foreach ($tasks as $task) {
         $colorClass = "color-" . $colorIndex;
+        $projectId = $task['ID']; // Récupérer l'ID du projet
+
         echo "<tr><td>{$task['Intitule']}</td>";
         echo "<td colspan='12'>";
         echo "<div class='gantt-bar-container'>";
@@ -96,16 +99,16 @@ function generateGanttChart($year, $conn, $userId, $showAll) {
         $endPercentage = ($endMonth / $totalMonths) * 100;
         $widthPercentage = $endPercentage - $startPercentage;
     
+        // Créer un lien cliquable pour chaque barre qui ouvre la page de visualisation dans une nouvelle fenêtre
+        echo "<a href='javascript:void(0);' onclick='openProjectVisualization($projectId)'>";
         echo "<div class='gantt-bar $colorClass' data-start='{$startDate->format('d/m/Y')}' data-end='{$endDate->format('d/m/Y')}' style='width: $widthPercentage%; margin-left: $startPercentage%;'></div>";
+        echo "</a>";
     
         echo "</div></td></tr>";
     
         // Incrémenter l'index de couleur et le réinitialiser si nécessaire
         $colorIndex = ($colorIndex % $colorCount) + 1;
     }
-    
-
-    echo "</tbody></table>";
 
     echo "</tbody></table>";
 }
@@ -124,4 +127,12 @@ if ($userId) {
 } else {
     echo "Utilisateur non connecté.";
 }
+?>
 
+<!-- Ajout du script pour ouvrir la fenêtre de visualisation -->
+<script>
+function openProjectVisualization(projectId) {
+    // Ouvrir la page de visualisation du projet dans une nouvelle fenêtre
+    window.open('visualization.php?id=' + projectId, '_blank');
+}
+</script>

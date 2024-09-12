@@ -32,7 +32,6 @@ if ($result) {
     <meta charset="UTF-8">
     <title>Gestion de Projets</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="colors.css">
     <link rel="stylesheet" href="gantt.css"> <!-- Changer calendar.css en gantt.css pour le diagramme de Gantt -->
     <script src="functions.js" defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -176,65 +175,67 @@ if ($result) {
     </div>
 
     <div id="popupForm" class="popup-form">
-            <div class="popup-content">
-                <span class="close" onclick="closePopupForm()">&times;</span>
-                <h2>Ajouter un Nouveau Projet</h2>
-                <form id="addRowForm" class="form-container">
-                    <label for="id"><b>ID</b></label>
-                    <input type="number" id="id" placeholder="Entrer l'ID" name="id" required value="<?php echo $nextId; ?>">
-                    <br>
+        <div class="popup-content">
+            <span class="close" onclick="closePopupForm()">&times;</span>
+            <h2>Ajouter un Nouveau Projet</h2>
+            <form id="addRowForm" class="form-container">
+                <!-- ID du projet (rempli automatiquement) -->
+                <label for="id"><b>ID</b></label>
+                <input type="number" id="id" placeholder="Entrer l'ID" name="id" required value="<?php echo $nextId; ?>">
+                <br>
 
-                    <label for="intitule"><b>Intitulé</b></label>
-                    <input type="text" id="intitule" placeholder="Entrer l'intitulé" name="intitule" required>
-                    <br>
+                <!-- Champ pour l'intitulé -->
+                <label for="intitule"><b>Intitulé</b></label>
+                <input type="text" id="intitule" placeholder="Entrer l'intitulé" name="intitule" required>
+                <br>
 
-                    <label for="objectifs"><b>Objectifs</b></label>
-                    <input type="text" id="objectifs" placeholder="Entrer les objectifs" name="objectifs" required>
-                    <br>
+                <!-- Champ pour la description du problème -->
+                <label for="description_probleme"><b>Description du Problème</b></label>
+                <textarea id="description_probleme" placeholder="Décrire le problème" name="description_probleme" required></textarea>
+                <br>
 
-                    <label for="datededebut"><b>Date de début</b></label>
-                    <input type="date" id="datededebut" name="datededebut" required>
-                    <br>
+                <!-- Champ pour les objectifs opérationnels -->
+                <label for="objectifs_operationnels"><b>Objectifs Opérationnels</b></label>
+                <textarea id="objectifs_operationnels" placeholder="Décrire les objectifs opérationnels" name="objectifs_operationnels" required></textarea>
+                <br>
 
-                    <label for="datedefin"><b>Date de fin</b></label>
-                    <input type="date" id="datedefin" name="datedefin" required>
-                    <br>
+                <!-- Champ pour la date de début -->
+                <label for="datededebut"><b>Date de début</b></label>
+                <input type="date" id="datededebut" name="datededebut" required>
+                <br>
 
-                    <label for="avancement"><b>Avancement</b></label>
-                    <input type="range" min="0" max="100" value="0" class="slider" id="avancement" name="avancement">
-                    <span id="avancementValue">0%</span>
-                    <br>
+                <!-- Champ pour la date de fin -->
+                <label for="datedefin"><b>Date de fin</b></label>
+                <input type="date" id="datedefin" name="datedefin" required>
+                <br>
 
-                    <label for="participants"><b>Participants</b></label>
-                    <input type="text" id="participants" placeholder="Entrer les participants" name="participants" required>
-                    <br>
-
-                    <label for="levier"><b>Levier</b></label>
-                    <select id="levier" name="levier" required>
-                        <option value="">Sélectionner un levier</option>
-                        <?php include 'levier_options.php'; ?>
-                    </select>
-                    <br>
-
-                    <label for="localisation"><b>Localisation</b></label>
-                    <input type="text" id="localisation" placeholder="Entrer la localisation" name="localisation" required>
-                    <br>
-
-                    <!-- Nouvelle section pour Dates Jalon -->
-                    <div id="datesJalonContainer">
-                        <label><b>Dates Jalon</b></label>
-                        <div class="dates-jalon-entry">
-                            <input type="date" name="jalon_dates[]" placeholder="Date Jalon">
-                            <input type="text" name="jalon_texts[]" placeholder="Description">
-                            <button type="button" onclick="addDateJalonEntry()">Ajouter une Date Jalon</button>
-                        </div>
+                <!-- Section pour ajouter les dates jalons -->
+                <div id="datesJalonContainer">
+                    <label><b>Dates Jalon</b></label>
+                    <div class="dates-jalon-entry">
+                        <input type="date" name="jalon_dates[]" placeholder="Date Jalon">
+                        <input type="text" name="jalon_texts[]" placeholder="Description">
+                        <button type="button" onclick="addDateJalonEntry()">Ajouter une Date Jalon</button>
                     </div>
-                    <br>
+                </div>
+                <br>
 
-                    <button type="button" onclick="addRow()">Ajouter un nouveau Projet</button>
-                </form>
-                <div id="message" style="display: none;"></div>
-            </div>
+                <!-- Champ pour l'avancement -->
+                <label for="avancement"><b>Avancement</b></label>
+                <input type="range" min="0" max="100" value="0" class="slider" id="avancement" name="avancement">
+                <span id="avancementValue">0%</span>
+                <br>
+
+                <!-- Champ pour l'équipe -->
+                <label for="equipe"><b>Équipe</b></label>
+                <input type="text" id="equipe" placeholder="Entrer l'équipe" name="equipe" required>
+                <br>
+
+                <!-- Bouton pour ajouter le projet -->
+                <button type="button" onclick="addRow()">Ajouter un nouveau Projet</button>
+            </form>
+            <div id="message" style="display: none;"></div>
+        </div>
     </div>
 
 
@@ -268,16 +269,18 @@ if ($result) {
         <div class="popup-content">
             <span class="close" onclick="closeSettingsPopup()">&times;</span>
             <h2>Réglages</h2>
-            
+            <br><br>
             <!-- Ajout des boutons pour afficher les projets -->
             <button class="btn btn-primary" onclick="showAllProjects()">
                 <i class="fas fa-tasks"></i> 
                 <span>Afficher tous les projets</span>
             </button>
+            <br><br>
             <button class="btn btn-secondary" onclick="showMyProjects()">
                 <i class="fas fa-user"></i> 
                 <span>Afficher uniquement les projets me concernant</span>
             </button>
+            <br><br>
             
             <!-- Bouton existant pour le mode administrateur -->
             <button class="btn btn-primary" onclick="goToAdminMode()">Mode Administrateur</button>

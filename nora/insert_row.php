@@ -9,16 +9,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Initialiser un tableau pour collecter les paramètres manquants
     $missing_params = [];
 
-    // Récupérer les valeurs des paramètres POST, ajouter les paramètres manquants au tableau
+    // Récupérer les valeurs des paramètres POST obligatoires, ajouter les paramètres manquants au tableau
     $id = isset($_POST['id']) ? $_POST['id'] : $missing_params[] = 'id';
     $intitule = isset($_POST['intitule']) ? $_POST['intitule'] : $missing_params[] = 'intitule';
-    $objectifs = isset($_POST['objectifs']) ? $_POST['objectifs'] : $missing_params[] = 'objectifs';
     $datededebut = isset($_POST['datededebut']) ? $_POST['datededebut'] : $missing_params[] = 'datededebut';
     $datedefin = isset($_POST['datedefin']) ? $_POST['datedefin'] : $missing_params[] = 'datedefin';
     $avancement = isset($_POST['avancement']) ? $_POST['avancement'] : $missing_params[] = 'avancement';
-    $participants = isset($_POST['participants']) ? $_POST['participants'] : $missing_params[] = 'participants';
-    $levier = isset($_POST['levier']) ? $_POST['levier'] : $missing_params[] = 'levier';
-    $localisation = isset($_POST['localisation']) ? $_POST['localisation'] : $missing_params[] = 'localisation';
+
+    // Récupérer les valeurs facultatives
+    $participants = isset($_POST['participants']) ? $_POST['participants'] : null;
+    $levier = isset($_POST['levier']) ? $_POST['levier'] : null;
+    $localisation = isset($_POST['localisation']) ? $_POST['localisation'] : null;
 
     // Récupérer et traiter les données de dates_jalon
     $dates_jalon = isset($_POST['dates_jalon']) ? $_POST['dates_jalon'] : null;
@@ -39,14 +40,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Erreur: Un projet avec cet ID existe déjà.";
         } else {
             // Préparer la requête SQL pour insérer les données avec un ID spécifié
-            $sql = "INSERT INTO projets (ID, Intitule, Objectifs, DateDeDebut, DateDeFin, Avancement, Participants, Levier, Localisation, dates_jalon, modifications) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO projets (ID, Intitule, DateDeDebut, DateDeFin, Avancement, Participants, Levier, Localisation, dates_jalon, modifications) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
 
             // Si dates_jalon n'est pas vide, utiliser JSON pour l'insertion
             $dates_jalon_json = !empty($dates_jalon) ? $dates_jalon : NULL;
             $modifications = ''; // Par exemple, une chaîne vide ou une autre valeur par défaut
 
-            $stmt->bind_param("issssisssss", $id, $intitule, $objectifs, $datededebut, $datedefin, $avancement, $participants, $levier, $localisation, $dates_jalon_json, $modifications);
+            $stmt->bind_param("isssisssss", $id, $intitule, $datededebut, $datedefin, $avancement, $participants, $levier, $localisation, $dates_jalon_json, $modifications);
 
             // Exécuter la requête et vérifier si elle a réussi
             if ($stmt->execute()) {
@@ -61,5 +62,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     echo "Méthode de requête incorrecte";
 }
-
-
+?>
