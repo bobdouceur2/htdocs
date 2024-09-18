@@ -56,17 +56,13 @@ h2 {
     border-bottom: 1px solid var(--table-cell-border);
 }
 
-.table tbody tr:nth-child(even) {
-    background-color: var(--table-even-row-background);
-}
-
 .table tbody td {
     padding: 15px;
     text-align: left;
 }
 
 .table tbody td a.btn {
-    background-color: var(--button-background);
+    background-color: #292639;
     color: var(--text-color);
     padding: 10px 15px;
     border-radius: 5px;
@@ -79,7 +75,7 @@ h2 {
 }
 
 .btn-primary {
-    background-color: var(--button-background);
+    background-color: #282537;
     color: var(--text-color);
     border: none;
     padding: 10px 20px;

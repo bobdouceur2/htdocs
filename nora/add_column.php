@@ -1,43 +1,42 @@
 <?php
-// Activer l'affichage des erreurs pour le débogage
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once 'db_connection.php';
 
-// Vérifier la connexion à la base de données
-if ($conn->connect_error) {
-    die("Erreur de connexion: " . $conn->connect_error);
+// Lire le flux d'entrée brut
+$input = file_get_contents('php://input');
+
+// Décoder le JSON en un tableau associatif
+$data = json_decode($input, true);
+
+// Vérifier si le décodage a réussi
+if ($data === null) {
+    echo 'Données JSON invalides';
+    exit();
 }
 
-// Vérifier si la méthode de la requête est POST
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Lire les données JSON
-    $data = json_decode(file_get_contents('php://input'), true);
+// Récupérer les données
+$columnName = $data['columnName'];
+$columnPosition = $data['columnPosition'];
 
-    $column_name = $data['column_name'];
-    $column_position = $data['column_position'];
+// Vérifier que les données nécessaires sont présentes
+if (empty($columnName) || empty($columnPosition)) {
+    echo 'Nom de colonne ou position manquante';
+    exit();
+}
 
-    // Valider les entrées
-    if (!empty($column_name) && !empty($column_position)) {
-        // Préparer la requête SQL pour ajouter la colonne
-        $sql = "ALTER TABLE projets ADD $column_name VARCHAR(255) AFTER $column_position";
-        
-        // Afficher la requête SQL pour le débogage
-        var_dump($sql);
-        
-        // Exécuter la requête et vérifier les erreurs SQL
-        if ($conn->query($sql) === TRUE) {
-            echo "Nouvelle colonne ajoutée avec succès.";
-        } else {
-            // Afficher l'erreur SQL en cas de problème
-            echo "Erreur lors de l'ajout de la colonne: " . $conn->error;
-        }
-    } else {
-        echo "Veuillez entrer un nom de colonne et une position valide.";
-    }
+// Échapper les valeurs pour éviter les injections SQL
+$columnName = $conn->real_escape_string($columnName);
+
+// Déterminer la position où ajouter la colonne
+$positionParts = explode(':', $columnPosition);
+$position = $positionParts[0]; // 'before' ou 'after'
+$referenceColumn = $conn->real_escape_string($positionParts[1]);
+
+// Construire la requête SQL pour ajouter la colonne
+$addColumnQuery = "ALTER TABLE projets ADD COLUMN `$columnName` VARCHAR(255) $position `$referenceColumn`";
+
+if ($conn->query($addColumnQuery) === TRUE) {
+    echo 'Colonne ajoutée avec succès';
 } else {
-    echo "Méthode de requête incorrecte.";
+    echo 'Erreur lors de l\'ajout de la colonne : ' . $conn->error;
 }
 ?>

@@ -1,6 +1,6 @@
 :root {
-    --background-color: #000000; /* Fond noir pour la page */
-    --text-color: #FFFFFF; /* Texte blanc */
+    --background-color: #000000;
+    --text-color: #FFFFFF;
     --header-background: #252836;
     --button-background: #181621;
     --button-hover: #252836;
@@ -10,79 +10,281 @@
     --table-background: #1F1D2B;
     --table-text-color: #FFFFFF;
     --table-header-background: #1F1D2B;
-    --table-cell-border: transparent; /* Bordures invisibles */
+    --table-cell-border: #FFFFFF;
     --table-hover-background: #343456;
     --filter-form-button-background: #1F1D2B;
     --filter-form-button-hover: #252836;
 }
 
 body {
-    background-color: var(--background-color)!important; /* Fond noir */
-    color: var(--text-color); /* Texte en blanc */
+    background-color: var(--background-color) !important;
+    color: var(--text-color);
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
-    text-align: left; /* Aligne tout le texte à gauche */
+    padding: 0 50px;
+    text-align: left;
 }
 
 h1 {
-    color: var(--text-color); /* Titre en blanc */
+    color: var(--text-color);
     font-size: 30px;
-    text-align: left; /* Assure que le titre est aligné à gauche */
+    text-align: left;
+}
+
+.container,
+.container.mt-4 {
+    margin: 0 auto;
+    padding: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin: 0 auto;
+    border-radius: 30px;
+    margin-top: 15px;
+    height: 850px;
+}
+
+.table-wrapper {
+    border-radius: 30px;
+    overflow: hidden;
+    border: 1px solid var(--table-cell-border);
 }
 
 table {
     width: 100%;
-    border-collapse: collapse; /* Suppression des bordures entre les colonnes */
-    margin: 20px 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
     background-color: var(--table-background);
     color: var(--table-text-color);
-    border-radius: 10px; /* Arrondi des bords du tableau */
-    overflow: hidden;
-    text-align: left; /* Texte aligné à gauche dans le tableau */
+    text-align: left;
+    border-radius: 30px;
 }
 
+/* Styles pour les en-têtes du tableau */
 thead th {
-    background-color: var(--table-header-background);
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background-color: #2B2E3A;
     padding: 10px;
-    text-align: left; /* Texte aligné à gauche pour les en-têtes */
+    text-align: left;
     font-weight: bold;
-    color: var(--text-color); /* Couleur blanche pour les en-têtes */
-    border-radius: 10px; /* Arrondi des bords de l'en-tête */
+    color: var(--text-color);
+    border-bottom: 1px solid var(--table-cell-border);
+    border-radius: 0;
 }
 
+/* Spécifique à la première cellule de l'en-tête (en haut à gauche) */
+thead th:first-child {
+    left: 0;
+    z-index: 5;
+    border-right: 1px solid var(--table-cell-border); /* Bordure droite de la première colonne */
+    background-color: #2B2E3A;
+}
+
+/* Bordure pour la première ligne (l'en-tête) */
+thead th {
+    border-top: 2px solid var(--table-cell-border); /* Bordure supérieure */
+    border-bottom: 2px solid var(--table-cell-border); /* Bordure inférieure */
+}
+
+/* Styles pour les cellules du tableau */
 tbody td {
     padding: 10px;
-    text-align: left; /* Texte aligné à gauche pour les cellules */
-    border-bottom: 1px solid var(--table-cell-border); /* Pas de bordures visibles */
-    color: var(--text-color); /* Texte en blanc */
-    border-radius: 10px; /* Arrondi des bords des cellules */
+    text-align: left;
+    border-bottom: 1px solid var(--table-cell-border);
+    color: var(--text-color);
+    background-color: var(--table-background);
+    border-radius: 0;
 }
 
+/* Bordure pour la première colonne */
+thead th:first-child,
+tbody td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: #2B2E3A;
+    z-index: 4;
+    border-right: 2px solid var(--table-cell-border); /* Bordure droite de la première colonne */
+}
+
+/* Bordure pour la première cellule de chaque ligne */
+tbody td:first-child {
+    border-left: 2px solid var(--table-cell-border); /* Bordure gauche de la première colonne */
+}
+
+/* Supprimer la bordure inférieure de la dernière ligne */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Effet de survol sur les lignes */
 tbody tr:hover {
-    background-color: var(--table-hover-background); /* Changement de couleur au survol */
+    background-color: var(--table-hover-background);
+}
+
+/* Styles pour les boutons */
+button,
+#addColumnBtn,
+#deleteColumnBtn,
+#manageColumnsBtn {
+    background-color: var(--button-background);
+    color: var(--text-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    text-align: left;
+}
+
+button:hover,
+#addColumnBtn:hover,
+#deleteColumnBtn:hover,
+#manageColumnsBtn:hover {
+    background-color: var(--button-hover);
+}
+
+/* Styles pour les popups */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--form-background);
+    padding: 40px;
+    border: 2px solid var(--form-input-border);
+    border-radius: 15px;
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    color: var(--text-color);
+}
+
+.popup.active {
+    display: block;
+}
+
+.popup h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.popup label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: var(--text-color); /* S'assure que le texte est visible */
+}
+
+.popup input[type="text"],
+.popup select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--form-input-border);
+    background-color: var(--form-input-background);
+    color: var(--text-color);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.popup input[type="text"]:focus,
+.popup select:focus {
+    outline: none;
+    border-color: var(--button-hover);
+}
+
+/* Styles pour les checkboxes dans le popup */
+.popup input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+
+.popup button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--button-background);
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.popup button:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+}
+
+.popup .close-icon {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.popup .close-icon:hover {
+    color: #FF5555;
+}
+
+/* Overlay */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 900;
+}
+
+.overlay.active {
+    display: block;
 }
 
 /* Styles pour les checkboxes personnalisées */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .custom-checkbox input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
 }
 
-.custom-checkbox {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* Aligne les checkboxes à gauche */
-}
-
 .custom-checkbox .checkmark {
     width: 20px;
     height: 20px;
     background-color: #eee;
-    border-radius: 5px; /* Arrondi des bords des checkboxes */
+    border-radius: 5px;
     position: relative;
-    margin-right: 15px!important;
+    margin-right: 15px !important;
 }
 
 .custom-checkbox input:checked + .checkmark {
@@ -109,273 +311,17 @@ tbody tr:hover {
     transform: rotate(45deg);
 }
 
-/* Style des boutons */
-button,
-#addColumnBtn,
-#deleteColumnBtn {
-    background-color: var(--button-background);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px; /* Arrondi des bords des boutons */
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    text-align: left; /* Assure que le texte dans les boutons est aligné à gauche */
+/* Surcharge de la bordure pour .table-bordered */
+.table-bordered {
+    border: none !important;
 }
 
-button:hover,
-#addColumnBtn:hover,
-#deleteColumnBtn:hover {
-    background-color: var(--button-hover);
+.table-bordered thead td,
+.table-bordered thead th {
+    border: none !important;
 }
 
-.icon-button {
-    cursor: pointer;
-    font-size: 24px;
-    color: var(--text-color);
-    background: none;
-    border: none;
-    padding: 5px;
-}
-
-.icon-button:hover {
-    color: #2196F3;
-}
-
-/* Style des popups */
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--form-background);
-    padding: 20px;
-    border: 2px solid var(--form-input-border);
-    border-radius: 10px; /* Arrondi des bords du popup */
-    z-index: 1000;
-    width: 90%;
-    max-width: 500px;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Ombre douce pour un effet 3D */
-}
-
-.popup.active {
-    display: block;
-}
-
-#addColumnPopup,
-#deleteColumnPopup {
-    background-color: var(--form-background);
-    padding: 40px; /* Espace autour du contenu */
-    border: 2px solid var(--form-input-border); /* Bordure légère */
-    border-radius: 15px; /* Arrondi plus prononcé des bords */
-    z-index: 1000;
-    width: 90%;
-    max-width: 500px; /* Largeur maximale du popup */
-    max-height: 80vh; /* Limiter la hauteur pour éviter un débordement */
-    overflow-y: auto; /* Permet le défilement si le contenu dépasse la hauteur */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Ombre douce pour un effet 3D */
-    color: var(--text-color); /* Texte en blanc */
-}
-
-#addColumnPopup h2,
-#deleteColumnPopup h2 {
-    text-align: center;
-    font-size: 24px; /* Taille du titre */
-    margin-bottom: 20px; /* Espace sous le titre */
-    color: var(--text-color); /* Texte en blanc */
-}
-
-#addColumnPopup label,
-#deleteColumnPopup label {
-    display: block;
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: var(--text-color); /* Texte en blanc */
-}
-
-#addColumnPopup input[type="text"],
-#addColumnPopup select,
-#deleteColumnPopup select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid var(--form-input-border); /* Bordure fine */
-    background-color: var(--form-input-background); /* Fond des champs */
-    color: var(--text-color); /* Texte en blanc */
-    border-radius: 8px; /* Arrondi des bords des champs */
-    font-size: 16px;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-#addColumnPopup input[type="text"]:focus,
-#addColumnPopup select:focus,
-#deleteColumnPopup select:focus {
-    outline: none; /* Supprime la bordure par défaut */
-    border-color: var(--button-hover); /* Change la couleur de la bordure au focus */
-}
-
-#addColumnPopup button,
-#deleteColumnPopup button {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--button-background);
-    color: var(--text-color);
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-#addColumnPopup button:hover,
-#deleteColumnPopup button:hover {
-    background-color: var(--button-hover); /* Couleur au survol */
-    transform: translateY(-2px); /* Légère animation de montée au survol */
-}
-
-#addColumnPopup .close-icon,
-#deleteColumnPopup .close-icon {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--text-color); /* Icône de fermeture en blanc */
-    transition: color 0.3s ease;
-}
-
-#addColumnPopup .close-icon:hover,
-#deleteColumnPopup .close-icon:hover {
-    color: #FF5555; /* Icône de fermeture en rouge au survol */
-}
-
-/* Overlay */
-.overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 900;
-}
-
-.overlay.active {
-    display: block;
-}
-
-.overlay.active {
-    background-color: rgba(0, 0, 0, 0.7); /* Assombrit l'arrière-plan */
-}
-
-/* Container margin reset */
-.container.mt-4 {
-    margin: 0 !important; /* Supprime toute marge */
-}
-
-
-#manageColumnsBtn {
-    background-color: var(--button-background);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    text-align: left;
-}
-
-#manageColumnsBtn:hover {
-    background-color: var(--button-hover);
-}
-
-#manageColumnsPopup {
-    background-color: var(--form-background);
-    padding: 40px; /* Espace autour du contenu */
-    border: 2px solid var(--form-input-border); /* Bordure légère */
-    border-radius: 15px; /* Arrondi plus prononcé des bords */
-    z-index: 1000; /* S'assure que le popup est au-dessus */
-    width: 90%;
-    max-width: 500px; /* Largeur maximale du popup */
-    max-height: 80vh; /* Limiter la hauteur pour éviter un débordement */
-    overflow-y: auto; /* Permet le défilement si le contenu dépasse la hauteur */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Ombre douce pour un effet 3D */
-    color: var(--text-color); /* Texte en blanc */
-}
-
-#manageColumnsPopup h2 {
-    text-align: center;
-    font-size: 24px; /* Taille du titre */
-    margin-bottom: 20px; /* Espace sous le titre */
-    color: var(--text-color); /* Texte en blanc */
-}
-
-#manageColumnsPopup label {
-    display: flex;
-    align-items: center; /* Aligner la checkbox et le texte */
-    font-size: 18px;
-    margin-bottom: 10px;
-    padding-left : 10px;
-    color: var(--text-color); /* Texte en blanc */
-}
-
-#manageColumnsPopup input[type="checkbox"] {
-    margin-right: 15px!important;
-    width: 18px;
-    height: 18px;
-    accent-color: white; /* Checkbox en blanc */
-}
-
-#manageColumnsPopup select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid var(--form-input-border); /* Bordure fine */
-    background-color: var(--form-input-background); /* Fond des champs */
-    color: var(--text-color); /* Texte en blanc */
-    border-radius: 8px; /* Arrondi des bords des champs */
-    font-size: 16px;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-#manageColumnsPopup select:focus {
-    outline: none; /* Supprime la bordure par défaut */
-    border-color: var(--button-hover); /* Change la couleur de la bordure au focus */
-}
-
-#manageColumnsPopup button {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--button-background);
-    color: var(--text-color);
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-#manageColumnsPopup button:hover {
-    background-color: var(--button-hover); /* Couleur au survol */
-    transform: translateY(-2px); /* Légère animation de montée au survol */
-}
-
-#manageColumnsPopup .close-icon {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--text-color); /* Icône de fermeture en blanc */
-    transition: color 0.3s ease;
-}
-
-#manageColumnsPopup .close-icon:hover {
-    color: #FF5555; /* Icône de fermeture en rouge au survol */
+.table-bordered td,
+.table-bordered th {
+    border: none !important;
 }

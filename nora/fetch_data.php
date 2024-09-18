@@ -25,22 +25,33 @@ if ($default_columns_result && $default_columns_result->num_rows > 0) {
 // Vérifier quelles colonnes sont sélectionnées dans le formulaire
 $selected_columns = isset($_POST['columns']) ? $_POST['columns'] : $default_columns;
 
-// Construire la requête SQL dynamique
-$columns_to_select = implode(", ", $selected_columns);
-$query = "SELECT $columns_to_select, ID FROM projets";
+// Construire la requête SQL dynamique avec tri par warning_level
+$columns_to_select = implode(", ", array_map(function($col) {
+    return "`" . $col . "`";  // Échapper chaque colonne avec des backticks pour éviter les erreurs
+}, $selected_columns));
+
+$query = "
+    SELECT $columns_to_select, ID 
+    FROM projets";
 
 // Ajouter une condition pour n'afficher que les projets liés à l'utilisateur si "showAll" n'est pas activé
 if (!$showAll) {
-    // Utiliser LOWER() pour rendre la recherche insensible à la casse et chercher l'e-mail de l'utilisateur
     $query .= " WHERE LOWER(Equipe) LIKE LOWER(?)";
 }
+
+// Ajouter l'ordre par warning_level après la condition WHERE
+$query .= " ORDER BY 
+    CASE
+        WHEN warning_level = 'rouge' THEN 1
+        WHEN warning_level = 'orange' THEN 2
+        WHEN warning_level = 'vert' THEN 3
+        ELSE 4
+    END, ID";
 
 $stmt = $conn->prepare($query);
 
 // Lier l'ID de l'utilisateur si le filtre est actif
 if (!$showAll) {
-    // Rechercher l'e-mail de l'utilisateur sans se soucier des caractères environnants
-    // % correspond à n'importe quel caractère avant ou après l'e-mail dans la chaîne
     $userIdLike = '%' . $userId . '%';
     $stmt->bind_param("s", $userIdLike);
 }
@@ -49,7 +60,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
-    echo "<table border='1'>";
+    echo "<table border='1' id='projectsTable'>";
     echo "<thead>";
     echo "<tr>";
     echo "<th>
@@ -69,22 +80,20 @@ if ($result->num_rows > 0) {
     echo "<tbody>";
 
     while ($row = $result->fetch_assoc()) {
-        echo "<tr>";
+        echo "<tr data-id='" . htmlspecialchars($row['ID'] ?? '', ENT_QUOTES, 'UTF-8') . "'>";
         echo "<td>
                 <label class='custom-checkbox'>
-                    <input type='checkbox' class='rowCheckbox' data-id='" . htmlspecialchars($row['ID'] ?? '', ENT_QUOTES, 'UTF-8') . "'>
+                    <input type='checkbox' class='rowCheckbox'>
                     <span class='checkmark'></span>
                 </label>
               </td>";
 
-        // Affichage dynamique des données des colonnes
         foreach ($selected_columns as $column) {
             if ($column == "dates_jalon") {
-                // Vérification si "dates_jalon" n'est pas vide ou null avant d'utiliser json_decode
                 if (!empty($row["dates_jalon"])) {
                     $datesJalon = json_decode($row["dates_jalon"], true);
                 } else {
-                    $datesJalon = []; // Valeur par défaut si dates_jalon est null ou vide
+                    $datesJalon = [];
                 }
 
                 echo "<td>";
@@ -96,8 +105,19 @@ if ($result->num_rows > 0) {
                     echo "Aucune date jalon";
                 }
                 echo "</td>";
+            } elseif ($column == "warning_level") {
+                $warning_level = htmlspecialchars($row["warning_level"] ?? '', ENT_QUOTES, 'UTF-8');
+                if ($warning_level == "vert") {
+                    echo "<td><span class='status-circle green'></span> Vert</td>";
+                } elseif ($warning_level == "orange") {
+                    echo "<td><span class='status-circle orange'></span> Orange</td>";
+                } elseif ($warning_level == "rouge") {
+                    echo "<td><span class='status-circle red'></span> Rouge</td>";
+                } else {
+                    echo "<td>Aucun niveau</td>";
+                }
             } else {
-                echo "<td>" . htmlspecialchars($row[$column] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td contenteditable='true' class='editable-cell' data-column='" . htmlspecialchars($column, ENT_QUOTES, 'UTF-8') . "'>" . htmlspecialchars($row[$column] ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
             }
         }
 
@@ -109,18 +129,8 @@ if ($result->num_rows > 0) {
 } else {
     echo "0 résultats";
 }
+
 ?>
-
-
-
-
-
-
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -131,347 +141,72 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <style>
-        :root {
-            --background-color: #1b1c27;
-            --text-color: #FFFFFF;
-            --header-background: #252836;
-            --button-background: #1F1D2B;
-            --button-hover: #252836;
-            --form-background: #252836;
-            --form-input-background: #252836;
-            --form-input-border: #343456;
-            --table-background: #1F1D2B;
-            --table-text-color: #FFFFFF;
-            --table-header-background: #1F1D2B;
-            --table-cell-border: #2c2c4600;
-            --table-even-row-background: #0f112e;
-            --filter-form-button-background: #1F1D2B;
-            --filter-form-button-hover: #252836;
-        }
-
-        .date-depassee {
-            color: red;
-        }
-
-        .hidden-column {
-            display: none;
-        }
-
-        /* Cacher la case à cocher par défaut */
-        .custom-checkbox input {
-            position: absolute;
-            opacity: 0;
+        /* Styles divers */
+        .editable-cell {
+            background-color: #1F1D2B;
             cursor: pointer;
         }
 
-        .custom-checkbox {
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Centrer les checkboxes horizontalement */
+        .editable-cell:focus {
+            outline: none;
+            background-color: #1b1c27;
         }
 
-
-        .custom-checkbox .checkmark {
-            position: relative;
-            width: 25px;
-            height: 25px;
-            background-color: #eee;
-            border-radius: 4px;
-            margin-right: 10px;
+        .status-circle {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
         }
 
-        /* Couleur de fond lorsque la case est cochée */
-        .custom-checkbox input:checked + .checkmark {
-            background-color: #2196F3;
+        .green {
+            background-color: green;
         }
 
-        /* Ajouter le symbole de validation (✓) */
-        .custom-checkbox .checkmark:after {
-            content: "";
-            position: absolute;
-            display: none;
+        .orange {
+            background-color: orange;
         }
 
-        /* Afficher le symbole lorsque la case est cochée */
-        .custom-checkbox input:checked + .checkmark:after {
-            display: block;
+        .red {
+            background-color: red;
         }
-
-        /* Style du symbole (✓) */
-        .custom-checkbox .checkmark:after {
-            left: 9px;
-            top: 7px;
-            width: 8px;
-            height: 14px;
-            border: solid white;
-            border-width: 0 3px 3px 0;
-            transform: rotate(45deg);
-        }
-
-        a {
-            color: white;
-            text-decoration: none;
-        }
-
-        a:hover {
-            color: #ddd;
-        }
-
-        th a {
-            color: white;
-        }
-
-        .sort-icon {
-            font-size: 12px;
-            margin-left: 5px;
-            color: white;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: center;
-            border-bottom: 1px solid var(--table-cell-border);
-        }
-
-        th:first-child,
-        td:first-child {
-            width: 75px;
-        }
-
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: var(--form-background);
-            padding: 20px;
-            border: 2px solid var(--form-input-border);
-            border-radius: 8px;
-            z-index: 1000;
-            width: 90%; /* Augmentation de la largeur */
-            max-width: 1000px; /* Limite de la largeur maximale */
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .popup.active {
-            display: block;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 900;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-
-        .icon-card {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            background-color: var(--button-background);
-            border: 1px solid var(--form-input-border);
-            border-radius: 8px;
-            padding: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .icon-button {
-            cursor: pointer;
-            font-size: 24px;
-            color: var(--text-color);
-            background: none;
-            border: none;
-            padding: 5px;
-        }
-
-        .icon-button:hover {
-            color: #2196F3;
-        }
-
-        .popup .close-icon {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            cursor: pointer;
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .reset-icon {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            cursor: pointer;
-            color: #fff;
-            font-size: 30px;
-            font-weight: bold;
-        }
-
-        .close-icon {
-            position: absolute!important;
-            top: 0px!important;
-            right: 20px!important;
-            cursor: pointer!important;
-            color: #fff!important;
-            font-size: 50px!important;
-            font-weight: bold!important;
-        }
-
-        button[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            text-align: center;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        button[type="submit"]:active {
-            background-color: #397d3a;
-            box-shadow: 0 5px #666;
-            transform: translateY(2px);
-        }
-
-        .popup *:not(i) {
-            font-size: calc(100% + 2.5px);
-        }
-
-        .columns-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Deux colonnes */
-            gap: 40px; /* Espacement entre les colonnes */
-            justify-content: center; /* Centrer les colonnes horizontalement */
-            text-align: center;
-        }
-
-        .custom-h3 {
-            font-size: 30px!important; /* Taille de police agrandie */
-            font-weight: bold; /* Texte en gras */
-            color: #ffffff; /* Couleur blanche, ajustable selon votre thème */
-            margin-bottom: 20px; /* Espace sous le titre */
-            letter-spacing: 1px; /* Espacement entre les lettres */
-            
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </style>
 </head>
 <body>
-    <div class="icon-card">
-        <button id="openPopup" class="icon-button">
-            <i class="fas fa-cog"></i>
-        </button>
-    </div>
 
-    <div id="overlay" class="overlay"></div>
+<script>
+document.querySelectorAll('.editable-cell').forEach(cell => {
+    cell.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const row = this.closest('tr');
+            const projectId = row.getAttribute('data-id');
+            const columnName = this.getAttribute('data-column');
+            const newValue = this.innerText;
 
-    <div id="columnPopup" class="popup">
-        <span class="reset-icon" id="resetColumns"><i class="fas fa-sync-alt"></i></span>
-        <span class="close-icon" id="closePopup">&times;</span>
-        <br><br>
-        <form method="POST" id="columnSelector">
-            <h3 class="custom-h3">Choisissez les colonnes à afficher :</h3>
+            // Envoyer la mise à jour via AJAX
+            updateProject(projectId, columnName, newValue);
+        }
+    });
+});
 
-            <br><br>
-            <?php
-                // Requête pour récupérer les colonnes de la table "projets"
-                $query = "SHOW COLUMNS FROM projets";
-                $result = $conn->query($query);
-
-                if ($result->num_rows > 0) {
-                    echo "<div class='columns-wrapper'>"; // Début du conteneur pour les colonnes
-
-                    while ($row = $result->fetch_assoc()) {
-                        $column_name = $row['Field'];
-                        // Cocher la colonne si elle fait partie des colonnes sélectionnées
-                        $checked = in_array($column_name, $selected_columns) ? 'checked' : '';
-
-                        // Afficher les checkboxes avec la classe 'custom-checkbox' et 'checkmark'
-                        echo "<label class='custom-checkbox'><input type='checkbox' name='columns[]' value='$column_name' $checked><span class='checkmark'></span> $column_name</label>";
-                    }
-
-                    echo "</div>"; // Fin du conteneur pour les colonnes
-                } else {
-                    echo 'Aucune colonne trouvée.';
-                }
-
-                $result->free();
-            ?>
-
-            <br><br>
-            <button type="submit">Mettre à jour le tableau</button>
-        </form>
-        
-    </div>
-
-    <script>
-        document.getElementById('openPopup').addEventListener('click', function() {
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById('columnPopup').classList.add('active');
-        });
-
-        document.getElementById('closePopup').addEventListener('click', function() {
-            document.getElementById('overlay').classList.remove('active');
-            document.getElementById('columnPopup').classList.remove('active');
-        });
-
-        document.getElementById('selectAll').addEventListener('change', function() {
-            var checkboxes = document.querySelectorAll('.rowCheckbox');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-
-        document.querySelectorAll('.rowCheckbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                if (!this.checked) {
-                    document.getElementById('selectAll').checked = false;
-                } else if (Array.from(document.querySelectorAll('.rowCheckbox')).every(cb => cb.checked)) {
-                    document.getElementById('selectAll').checked = true;
-                }
-            });
-        });
-
-        // Réinitialiser les colonnes à afficher aux colonnes par défaut
-        document.getElementById('resetColumns').addEventListener('click', function() {
-            document.querySelectorAll('input[name="columns[]"]').forEach(checkbox => {
-                checkbox.checked = ['Intitule', 'DescriptionProbleme', 'ObjectifsOperationnels', 'DateDeDebut', 'DateDeFin', 'dates_jalon', 'Avancement', 'Equipe'].includes(checkbox.value);
-            });
-        });
-    </script>
+function updateProject(id, column, value) {
+    fetch('update_projectb.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id, column: column, value: value }),
+    })
+    .then(response => response.text())
+    .then(result => {
+        alert('Mise à jour réussie');
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+    });
+}
+</script>
 </body>
 </html>

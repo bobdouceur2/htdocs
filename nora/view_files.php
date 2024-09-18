@@ -22,15 +22,20 @@ if (isset($_GET['delete_id'])) {
 $searchTerm = '';
 if (isset($_GET['search']) && !empty($_GET['search'])) {
     $searchTerm = $_GET['search'];
-    $query = "SELECT id, name, note FROM documents WHERE name LIKE ? OR note LIKE ?";
+    $query = "SELECT d.id, d.name, d.note, p.Intitule AS projet_name 
+              FROM documents d 
+              LEFT JOIN projets p ON d.projet_id = p.id 
+              WHERE d.name LIKE ? OR d.note LIKE ? OR p.Intitule LIKE ?";
     $stmt = $conn->prepare($query);
     $likeTerm = "%" . $searchTerm . "%";
-    $stmt->bind_param("ss", $likeTerm, $likeTerm);
+    $stmt->bind_param("sss", $likeTerm, $likeTerm, $likeTerm);
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    // Récupérer tous les fichiers de la base de données
-    $query = "SELECT id, name, note FROM documents";
+    // Récupérer tous les fichiers de la base de données avec leur projet associé
+    $query = "SELECT d.id, d.name, d.note, p.Intitule AS projet_name 
+              FROM documents d 
+              LEFT JOIN projets p ON d.projet_id = p.id";
     $result = $conn->query($query);
 }
 ?>
@@ -46,50 +51,48 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 </head>
 <body>
     <div class="container">
-        
-            <h2>Fichiers disponibles</h2>
+        <h2>Fichiers disponibles</h2>
             
-            <!-- Formulaire de recherche -->
-            <form method="GET" action="view_files.php" class="mb-3">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Rechercher un fichier..." value="<?php echo htmlspecialchars($searchTerm); ?>">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
-                    </div>
+        <!-- Formulaire de recherche -->
+        <form method="GET" action="view_files.php" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Rechercher un fichier..." value="<?php echo htmlspecialchars($searchTerm); ?>">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
                 </div>
-            </form>
+            </div>
+        </form>
 
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom du fichier</th>
-                        <th>Note</th>
-                        <th>Action</th>
-                        <th>Supprimer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            echo "<tr>";
-                            echo "<td>" . htmlspecialchars($row['id']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['name']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['note']) . "</td>";
-                            echo "<td><a href='download.php?id=" . urlencode($row['id']) . "' class='btn btn-primary'>Télécharger</a></td>";
-                            echo "<td><a href='view_files.php?delete_id=" . urlencode($row['id']) . "' class='btn btn-danger' onclick='return confirm(\"Êtes-vous sûr de vouloir supprimer ce fichier?\")'>✖</a></td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='5'>Aucun fichier disponible</td></tr>";
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom du fichier</th>
+                    <th>Note</th>
+                    <th>Projet associé</th>
+                    <th>Action</th>
+                    <th>Supprimer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['note']) . "</td>";
+                        echo "<td>" . (!empty($row['projet_name']) ? htmlspecialchars($row['projet_name']) : "Aucun projet") . "</td>";
+                        echo "<td><a href='download.php?id=" . urlencode($row['id']) . "' class='btn btn-primary'>Télécharger</a></td>";
+                        echo "<td><a href='view_files.php?delete_id=" . urlencode($row['id']) . "' class='btn btn-danger' onclick='return confirm(\"Êtes-vous sûr de vouloir supprimer ce fichier?\")'>✖</a></td>";
+                        echo "</tr>";
                     }
-                    ?>
-                </tbody>
-            </table>
-        
+                } else {
+                    echo "<tr><td colspan='6'>Aucun fichier disponible</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
-
-

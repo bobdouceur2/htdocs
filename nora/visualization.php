@@ -73,6 +73,13 @@ if (isset($_GET['id'])) {
     } else {
         echo "Aucun projet trouvé avec cet ID.<br>";
     }
+
+        // Requête pour récupérer les fichiers associés au projet
+        $queryFiles = "SELECT * FROM documents WHERE projet_id = ?";
+        $stmtFiles = $conn->prepare($queryFiles);
+        $stmtFiles->bind_param("i", $id);
+        $stmtFiles->execute();
+        $filesResult = $stmtFiles->get_result();
 } else {
     echo "Aucun ID spécifié.<br>";
 }
@@ -560,6 +567,24 @@ function initMap() {
         echo "</div>";
         echo "</div>";
         ?>
+    </div>
+
+        <!-- Section pour afficher les fichiers liés au projet -->
+        <div class="files-section">
+        <h2>Fichiers liés au projet</h2>
+        <?php if ($filesResult->num_rows > 0): ?>
+            <ul>
+                <?php while ($file = $filesResult->fetch_assoc()): ?>
+                    <li>
+                        <a href="download.php?id=<?php echo $file['id']; ?>" onclick="return confirm('Voulez-vous vraiment télécharger ce fichier ?')">
+                            <?php echo htmlspecialchars($file['name']); ?>
+                        </a>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <p>Aucun fichier lié à ce projet.</p>
+        <?php endif; ?>
     </div>
 
 

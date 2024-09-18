@@ -524,7 +524,7 @@ function closeSettingsPopup() {
 }
 
 function goToAdminMode() {
-    window.location.href = 'admin_mode.php';
+    window.location.href = 'admin_login.php';
 }
 
 function clearSearch() {

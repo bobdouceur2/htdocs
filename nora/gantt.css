@@ -15,17 +15,27 @@
     --filter-form-button-background: #1F1D2B; /* Couleur des boutons du formulaire */
     --filter-form-button-hover: #252836; /* Couleur différente des boutons du formulaire lors du survol */
 
-    /* Couleurs des barres de Gantt */
-    --gantt-bar-color-1: #75a8de; /* Couleur 1 - plus claire */
-    --gantt-bar-color-2: #629deb; /* Couleur 2 */
-    --gantt-bar-color-3: #4d8ae6; /* Couleur 3 */
-    --gantt-bar-color-4: #3071e1; /* Couleur 4 */
-    --gantt-bar-color-5: #2166e5; /* Couleur 5 */
-    --gantt-bar-color-6: #1156e0; /* Couleur 6 */
-    --gantt-bar-color-7: #0044cc; /* Couleur 7 */
-    --gantt-bar-color-8: #0035b2; /* Couleur 8 */
-    --gantt-bar-color-9: #0e35a0; /* Couleur 9 */
-    --gantt-bar-color-10: #001762; /* Couleur 10 - plus foncée */
+    /* Couleurs des barres de Gantt en dégradé de bleu du plus clair au plus foncé */
+    --gantt-bar-color-1:  #99CCFF; /* Bleu clair */
+    --gantt-bar-color-2:  #80C0FF;
+    --gantt-bar-color-3:  #66B3FF;
+    --gantt-bar-color-4:  #4DA6FF;
+    --gantt-bar-color-5:  #3399FF;
+    --gantt-bar-color-6:  #1A8CFF;
+    --gantt-bar-color-7:  #0080FF;
+    --gantt-bar-color-8:  #0073E6;
+    --gantt-bar-color-9:  #0066CC;
+    --gantt-bar-color-10: #0059B3;
+    --gantt-bar-color-11: #004D99;
+    --gantt-bar-color-12: #004080;
+    --gantt-bar-color-13: #003366;
+    --gantt-bar-color-14: #00264D;
+    --gantt-bar-color-15: #001A33;
+    --gantt-bar-color-16: #000D1A;
+    --gantt-bar-color-17: #0000FF; /* Bleu pur */
+    --gantt-bar-color-18: #0000CC;
+    --gantt-bar-color-19: #000099;
+    --gantt-bar-color-20: #000066; /* Bleu foncé */
 }
 
 body {
@@ -60,11 +70,8 @@ body {
 
 .gantt-chart th:not(:first-child), .gantt-chart td:not(:first-child) {
     width: 30px; /* Largeur fixe pour chaque jour */
-    border : none;
-    
+    border: none;
 }
-
-
 
 .gantt-chart th {
     background-color: var(--table-header-background);
@@ -77,19 +84,28 @@ body {
     border-radius: 5px;
     position: relative;
     cursor: pointer;
-    
 }
 
-.gantt-bar.color-1 { background-color: var(--gantt-bar-color-1); }
-.gantt-bar.color-2 { background-color: var(--gantt-bar-color-2); }
-.gantt-bar.color-3 { background-color: var(--gantt-bar-color-3); }
-.gantt-bar.color-4 { background-color: var(--gantt-bar-color-4); }
-.gantt-bar.color-5 { background-color: var(--gantt-bar-color-5); }
-.gantt-bar.color-6 { background-color: var(--gantt-bar-color-6); }
-.gantt-bar.color-7 { background-color: var(--gantt-bar-color-7); }
-.gantt-bar.color-8 { background-color: var(--gantt-bar-color-8); }
-.gantt-bar.color-9 { background-color: var(--gantt-bar-color-9); }
+.gantt-bar.color-1  { background-color: var(--gantt-bar-color-1); }
+.gantt-bar.color-2  { background-color: var(--gantt-bar-color-2); }
+.gantt-bar.color-3  { background-color: var(--gantt-bar-color-3); }
+.gantt-bar.color-4  { background-color: var(--gantt-bar-color-4); }
+.gantt-bar.color-5  { background-color: var(--gantt-bar-color-5); }
+.gantt-bar.color-6  { background-color: var(--gantt-bar-color-6); }
+.gantt-bar.color-7  { background-color: var(--gantt-bar-color-7); }
+.gantt-bar.color-8  { background-color: var(--gantt-bar-color-8); }
+.gantt-bar.color-9  { background-color: var(--gantt-bar-color-9); }
 .gantt-bar.color-10 { background-color: var(--gantt-bar-color-10); }
+.gantt-bar.color-11 { background-color: var(--gantt-bar-color-11); }
+.gantt-bar.color-12 { background-color: var(--gantt-bar-color-12); }
+.gantt-bar.color-13 { background-color: var(--gantt-bar-color-13); }
+.gantt-bar.color-14 { background-color: var(--gantt-bar-color-14); }
+.gantt-bar.color-15 { background-color: var(--gantt-bar-color-15); }
+.gantt-bar.color-16 { background-color: var(--gantt-bar-color-16); }
+.gantt-bar.color-17 { background-color: var(--gantt-bar-color-17); }
+.gantt-bar.color-18 { background-color: var(--gantt-bar-color-18); }
+.gantt-bar.color-19 { background-color: var(--gantt-bar-color-19); }
+.gantt-bar.color-20 { background-color: var(--gantt-bar-color-20); }
 
 .gantt-navigation {
     display: flex;
